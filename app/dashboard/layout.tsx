@@ -11,12 +11,30 @@ import {
   Sparkles,
   BarChart3,
   Menu,
-  X
+  X,
+  LogOut,
+  Settings,
+  User,
+  HelpCircle,
+  Moon,
+  Sun
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Navbar } from "@/components/layout/navbar"
-import { useState } from "react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuGroup,
+} from "@/components/ui/dropdown-menu"
+import { useSession, signOut } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
+import { useState, useEffect } from "react"
 
 const sidebarItems = [
   {
@@ -69,12 +87,44 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { data: session } = useSession()
+  const { theme, setTheme } = useTheme()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const handleSignOut = async () => {
+    await signOut({
+      callbackUrl: "/login",
+      redirect: true
+    })
+  }
+
+  const getInitials = (name?: string | null, email?: string | null) => {
+    if (name) {
+      return name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    }
+    if (email) {
+      return email[0].toUpperCase()
+    }
+    return "U"
+  }
+
+  const userInitials = getInitials(session?.user?.name, session?.user?.email)
+  const userName = session?.user?.name || "Uživatel"
+  const userEmail = session?.user?.email || "user@example.com"
 
   return (
-    <>
-      <Navbar />
-      <div className="min-h-screen w-full bg-gradient-to-br from-background via-primary/5 via-30% to-background relative overflow-hidden">
+    <div className="min-h-screen w-full bg-gradient-to-br from-background via-primary/5 via-30% to-background relative overflow-hidden">
         {/* Animated background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -132,8 +182,73 @@ export default function DashboardLayout({
 
           {/* Content */}
           <div className="relative h-full flex flex-col p-6">
+            {/* User Menu */}
+            <div className="mb-6">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="w-full justify-start gap-3 h-auto p-3 hover:bg-primary/10">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={session?.user?.image || undefined} alt={userName} />
+                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                        {userInitials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col items-start text-left flex-1 min-w-0">
+                      <p className="text-sm font-medium leading-none truncate w-full">{userName}</p>
+                      <p className="text-xs text-muted-foreground truncate w-full mt-1">
+                        {userEmail}
+                      </p>
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="start" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{userName}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {userEmail}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem onClick={() => router.push("/settings")}>
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Nastavení</span>
+                    </DropdownMenuItem>
+                    {mounted && (
+                      <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+                        {theme === "dark" ? (
+                          <Sun className="mr-2 h-4 w-4" />
+                        ) : (
+                          <Moon className="mr-2 h-4 w-4" />
+                        )}
+                        <span>{theme === "dark" ? "Světlý režim" : "Tmavý režim"}</span>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem onClick={() => router.push("/help")}>
+                      <HelpCircle className="mr-2 h-4 w-4" />
+                      <span>Nápověda</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Odhlásit se</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
             {/* Logo/Title */}
-            <div className="mb-8">
+            <div className="mb-6 pb-4 border-b border-white/10">
               <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
                 Habit Tracker
               </h1>
@@ -227,8 +342,73 @@ export default function DashboardLayout({
           >
             <div className="w-full h-full rounded-2xl border border-white/20 bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-2xl shadow-2xl overflow-hidden">
               <div className="relative h-full flex flex-col p-6">
+                {/* User Menu */}
+                <div className="mb-6">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-start gap-3 h-auto p-3 hover:bg-primary/10">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={session?.user?.image || undefined} alt={userName} />
+                          <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                            {userInitials}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col items-start text-left flex-1 min-w-0">
+                          <p className="text-sm font-medium leading-none truncate w-full">{userName}</p>
+                          <p className="text-xs text-muted-foreground truncate w-full mt-1">
+                            {userEmail}
+                          </p>
+                        </div>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56" align="start" forceMount>
+                      <DropdownMenuLabel className="font-normal">
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm font-medium leading-none">{userName}</p>
+                          <p className="text-xs leading-none text-muted-foreground">
+                            {userEmail}
+                          </p>
+                        </div>
+                      </DropdownMenuLabel>
+
+                      <DropdownMenuSeparator />
+
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem onClick={() => router.push("/settings")}>
+                          <Settings className="mr-2 h-4 w-4" />
+                          <span>Nastavení</span>
+                        </DropdownMenuItem>
+                        {mounted && (
+                          <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+                            {theme === "dark" ? (
+                              <Sun className="mr-2 h-4 w-4" />
+                            ) : (
+                              <Moon className="mr-2 h-4 w-4" />
+                            )}
+                            <span>{theme === "dark" ? "Světlý režim" : "Tmavý režim"}</span>
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem onClick={() => router.push("/help")}>
+                          <HelpCircle className="mr-2 h-4 w-4" />
+                          <span>Nápověda</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+
+                      <DropdownMenuSeparator />
+
+                      <DropdownMenuItem
+                        onClick={handleSignOut}
+                        className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Odhlásit se</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
                 {/* Logo/Title */}
-                <div className="mb-8">
+                <div className="mb-6 pb-4 border-b border-white/10">
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
                     Habit Tracker
                   </h1>
@@ -296,7 +476,6 @@ export default function DashboardLayout({
       <main className="lg:ml-64 xl:ml-72 relative">
         {children}
       </main>
-      </div>
-    </>
+    </div>
   )
 }
