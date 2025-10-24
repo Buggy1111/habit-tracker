@@ -1,0 +1,202 @@
+// Habit Tracker - Prisma Schema
+// Science-based habit tracking application
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER & AUTHENTICATION
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  habits         Habit[]
+  habitLogs      HabitLog[]
+  identities     Identity[]
+  thoughtRecords ThoughtRecord[]
+
+  @@map("users")
+}
+
+// ============================================
+// HABITS
+// ============================================
+
+model Habit {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  color       String   @default("#3B82F6") // Tailwind blue-500
+  icon        String   @default("target")   // Lucide icon name
+
+  frequency   String   @default("daily")    // daily, weekly, custom
+  goal        Int      @default(1)          // times per day/week
+
+  startDate   DateTime @default(now())
+  isActive    Boolean  @default(true)
+
+  // Implementation Intention (IF-THEN)
+  // "When [trigger], I will [action], in [context]"
+  trigger     String?  // When: "After I drink coffee"
+  action      String?  // I will: "drink water"
+  context     String?  // In: "in the kitchen"
+
+  // Science-based features
+  daysSinceStart  Int     @default(0)      // For neuroplasticity tracking
+  stackedAfter    String? // Habit stacking: ID of habit to do this after
+  replacesHabit   String? // Replacement behavior: old habit being replaced
+
+  // Identity linking
+  identityId      String?
+  identity        Identity? @relation(fields: [identityId], references: [id], onDelete: SetNull)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  logs           HabitLog[]
+  woopPlans      WoopPlan[]
+  thoughtRecords ThoughtRecord[]
+
+  @@index([userId])
+  @@index([userId, isActive])
+  @@index([identityId])
+  @@map("habits")
+}
+
+// ============================================
+// HABIT LOGS (Check-ins)
+// ============================================
+
+model HabitLog {
+  id        String   @id @default(cuid())
+  habitId   String
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date      DateTime @default(now())
+  completed Boolean  @default(true)
+
+  // Optional fields
+  note      String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([habitId, userId, date])
+  @@index([habitId])
+  @@index([userId])
+  @@index([date])
+  @@map("habit_logs")
+}
+
+// ============================================
+// IDENTITY (Phase 2 - Identity Designer)
+// ============================================
+
+model Identity {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String   // "I am a healthy person"
+  description String?  // Detailed description
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  habits     Habit[]
+  milestones IdentityMilestone[]
+
+  @@index([userId])
+  @@map("identities")
+}
+
+model IdentityMilestone {
+  id         String    @id @default(cuid())
+  identityId String
+  identity   Identity  @relation(fields: [identityId], references: [id], onDelete: Cascade)
+
+  title      String    // "30 days in a row"
+  achieved   Boolean   @default(false)
+  achievedAt DateTime?
+
+  createdAt  DateTime  @default(now())
+
+  @@index([identityId])
+  @@map("identity_milestones")
+}
+
+// ============================================
+// WOOP METHOD (Phase 2 - Mental Contrasting)
+// ============================================
+
+model WoopPlan {
+  id       String @id @default(cuid())
+  habitId  String
+  habit    Habit  @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  wish     String // Wish: What do I want?
+  outcome  String // Outcome: Best result?
+  obstacle String // Obstacle: What stands in the way?
+  plan     String // Plan: If-then for obstacle
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([habitId])
+  @@map("woop_plans")
+}
+
+// ============================================
+// CBT (Phase 3 - Cognitive Behavioral Therapy)
+// ============================================
+
+model ThoughtRecord {
+  id       String  @id @default(cuid())
+  habitId  String?
+  habit    Habit?  @relation(fields: [habitId], references: [id], onDelete: SetNull)
+
+  userId   String
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // ABC Model
+  adversity    String  // A: What happened
+  belief       String  // B: Automatic thought
+  consequence  String  // C: Feelings and reactions
+
+  // Cognitive Reframing
+  evidence     String? // Evidence FOR and AGAINST
+  alternative  String? // Alternative interpretation
+
+  // 3 P's (Learned Optimism)
+  permanence      String? // Temporary vs. Permanent
+  pervasiveness   String? // Specific vs. Universal
+  personalization String? // External vs. Internal
+
+  createdAt DateTime @default(now())
+
+  @@index([habitId])
+  @@index([userId])
+  @@map("thought_records")
+}

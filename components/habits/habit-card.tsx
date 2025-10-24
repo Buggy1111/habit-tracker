@@ -1,0 +1,251 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Check, Flame, MoreVertical, Target, Sparkles, Brain, TrendingUp, AlertTriangle } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { useCompleteHabit, useDeleteHabit, type Habit } from "@/hooks/use-habits"
+import { EditHabitDialog } from "./edit-habit-dialog"
+
+interface HabitCardProps {
+  habit: Habit
+}
+
+export function HabitCard({ habit }: HabitCardProps) {
+  const router = useRouter()
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const { mutate: completeHabit, isPending } = useCompleteHabit()
+  const { mutate: deleteHabit, isPending: isDeleting } = useDeleteHabit()
+
+  const handleComplete = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent card click
+    if (!habit.completed && !isPending) {
+      completeHabit(habit.id)
+    }
+  }
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent card click
+    setEditDialogOpen(true)
+  }
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent card click
+    setDeleteDialogOpen(true)
+  }
+
+  const handleDeleteConfirm = () => {
+    deleteHabit(habit.id)
+    setDeleteDialogOpen(false)
+  }
+
+  const handleCardClick = () => {
+    router.push(`/habits/${habit.id}`)
+  }
+
+  // Format implementation intention
+  const hasIntention = habit.trigger || habit.action
+  const intentionText = [
+    habit.trigger,
+    habit.action,
+    habit.context ? `v ${habit.context}` : null,
+  ]
+    .filter(Boolean)
+    .join(", ")
+
+  return (
+    <Card
+      className="relative overflow-hidden transition-shadow hover:shadow-lg cursor-pointer"
+      onClick={handleCardClick}
+    >
+      <div
+        className="absolute left-0 top-0 h-1 w-full"
+        style={{ backgroundColor: habit.color }}
+      />
+      <CardHeader className="pb-3 sm:pb-4">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+            <div
+              className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg flex-shrink-0"
+              style={{ backgroundColor: `${habit.color}20` }}
+            >
+              <Target className="h-5 w-5 sm:h-6 sm:w-6" style={{ color: habit.color }} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <CardTitle className="text-sm sm:text-base lg:text-lg truncate">{habit.name}</CardTitle>
+              {habit.description && (
+                <CardDescription className="text-xs sm:text-sm line-clamp-2">
+                  {habit.description}
+                </CardDescription>
+              )}
+            </div>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleEdit}>
+                Upravit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={handleDeleteClick}
+                disabled={isDeleting}
+              >
+                Smazat
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3 sm:space-y-4">
+        {hasIntention && (
+          <div className="rounded-lg bg-primary/10 border border-primary/20 p-2 sm:p-3">
+            <div className="flex items-start gap-2">
+              <Sparkles className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+              <p className="text-xs sm:text-sm text-primary">
+                {intentionText}
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center space-x-2">
+            <Flame className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500" />
+            <span className="text-xs sm:text-sm lg:text-base font-medium">
+              {habit.streak} {habit.streak === 1 ? 'den' : habit.streak < 5 ? 'dny' : 'dní'}
+            </span>
+          </div>
+          <Badge variant={habit.completed ? "default" : "outline"} className="text-xs sm:text-sm">
+            {habit.completed ? "Hotovo" : "Čeká"}
+          </Badge>
+        </div>
+
+        {/* Science-based metrics */}
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+          {/* Habit Strength */}
+          {habit.habitStrength !== undefined && habit.strengthLevel && (
+            <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+              <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" style={{ color: habit.strengthLevel.color }} />
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Síla</p>
+                <p className="text-xs sm:text-sm font-semibold truncate" style={{ color: habit.strengthLevel.color }}>
+                  {habit.habitStrength}/100
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Neuroplasticity Phase */}
+          {habit.neuroplasticityPhase && (
+            <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20">
+              <Brain className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0 text-purple-500" />
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Fáze</p>
+                <p className="text-xs sm:text-sm font-semibold text-purple-600 dark:text-purple-400 truncate">
+                  {habit.neuroplasticityPhase.phase}/4
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Extinction Burst Warning */}
+        {habit.extinctionBurst?.detected && (
+          <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-orange-500/10 border border-orange-500/30">
+            <AlertTriangle className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0 text-orange-500" />
+            <p className="text-[10px] sm:text-xs font-medium text-orange-600 dark:text-orange-400">
+              Extinction burst detekován - klikni pro více info
+            </p>
+          </div>
+        )}
+
+        <Progress value={habit.completed ? 100 : 0} className="h-2 sm:h-2.5" />
+
+        <Button
+          className="w-full text-xs sm:text-sm lg:text-base"
+          size="default"
+          variant={habit.completed ? "outline" : "default"}
+          onClick={handleComplete}
+          disabled={habit.completed || isPending}
+        >
+          {habit.completed ? (
+            <>
+              <Check className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+              Dokončeno dnes
+            </>
+          ) : isPending ? (
+            <>Označuji...</>
+          ) : (
+            <>
+              <Check className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+              Označit jako hotové
+            </>
+          )}
+        </Button>
+      </CardContent>
+
+      <EditHabitDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        habit={habit}
+      />
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Opravdu chceš smazat tento návyk?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tato akce je nevratná. Návyk "{habit.name}" a všechny jeho záznamy budou trvale smazány.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Zrušit</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Mažu..." : "Smazat návyk"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Card>
+  )
+}

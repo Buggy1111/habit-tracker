@@ -1,36 +1,175 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 Habit Tracker - Science-Based Habit Building
 
-## Getting Started
+Modern habit tracking application built with Next.js 15, React 19, TypeScript, and shadcn/ui.
 
-First, run the development server:
+## ✨ Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **🎯 Habit Tracking** - Create and track daily habits
+- **🔥 Streak Visualization** - GitHub-style activity calendar
+- **💡 Implementation Intentions** - Science-proven IF-THEN triggers
+- **📊 Progress Analytics** - Track your 66-day neuroplasticity journey
+- **🎨 Beautiful UI** - Modern design with shadcn/ui components
+- **🔐 Authentication** - Secure login with NextAuth v5
+
+## 🛠️ Tech Stack
+
+- **Framework:** Next.js 15 (App Router)
+- **Language:** TypeScript 5.8
+- **UI Components:** shadcn/ui + Radix UI
+- **Styling:** Tailwind CSS v4
+- **Database:** PostgreSQL + Prisma ORM
+- **Authentication:** NextAuth v5
+- **Icons:** Lucide React
+- **State Management:** React Query + Zustand
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL database (local or cloud)
+- npm/yarn/pnpm
+
+### Installation
+
+1. **Clone and install dependencies:**
+   ```bash
+   cd habit-tracker
+   npm install
+   ```
+
+2. **Setup database:**
+
+   Update `.env` with your PostgreSQL connection:
+   ```env
+   DATABASE_URL="postgresql://user:password@localhost:5432/habittracker?schema=public"
+   NEXTAUTH_SECRET="your-secret-key"
+   NEXTAUTH_URL="http://localhost:3000"
+   ```
+
+3. **Run migrations:**
+   ```bash
+   npx prisma migrate dev --name init
+   npx prisma generate
+   ```
+
+4. **Start development server:**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open browser:**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 📁 Project Structure
+
+```
+habit-tracker/
+├── app/
+│   ├── api/              # API routes
+│   │   ├── auth/         # NextAuth endpoints
+│   │   ├── habits/       # Habit CRUD
+│   │   └── register/     # User registration
+│   ├── dashboard/        # Main dashboard
+│   └── page.tsx          # Landing page
+├── components/
+│   ├── habits/           # Habit components
+│   ├── layout/           # Layout components
+│   └── ui/               # shadcn/ui components
+├── lib/
+│   ├── auth.ts           # NextAuth config
+│   ├── prisma.ts         # Prisma client
+│   └── utils.ts          # Utility functions
+└── prisma/
+    └── schema.prisma     # Database schema
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎨 Features Breakdown
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### MVP (Current)
+- ✅ User authentication (register/login)
+- ✅ Create habits with IF-THEN triggers
+- ✅ Daily check-ins
+- ✅ Streak tracking
+- ✅ Activity visualization
+- ✅ Responsive design
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Coming Soon (Phase 2)
+- [ ] WOOP method integration
+- [ ] Neuroplasticity progress tracking
+- [ ] Habit analytics & insights
+- [ ] Notifications system
+- [ ] Dark mode
 
-## Learn More
+## 🗄️ Database Schema
 
-To learn more about Next.js, take a look at the following resources:
+### User
+- id, email, password, name
+- Relations: habits, habitLogs
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Habit
+- id, name, description, color, icon
+- frequency, goal, trigger (IF-THEN)
+- Relations: user, logs
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### HabitLog
+- id, habitId, userId, date, completed
+- Relations: habit, user
 
-## Deploy on Vercel
+## 🔧 Available Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npx prisma studio    # Open Prisma Studio (DB GUI)
+npx prisma migrate   # Run database migrations
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🌍 Environment Variables
+
+Required environment variables in `.env`:
+
+```env
+# Database
+DATABASE_URL="postgresql://..."
+
+# NextAuth
+NEXTAUTH_SECRET="random-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+## 📚 Science Behind the App
+
+Based on research from:
+- **Phillippa Lally (2010)** - 66-day habit formation
+- **Peter Gollwitzer** - Implementation intentions (IF-THEN)
+- **Gabriele Oettingen** - WOOP method
+- **James Clear** - Atomic Habits principles
+
+## 🤝 Contributing
+
+This is an MVP/skeleton version. To extend:
+
+1. Add more habit frequencies (weekly, custom)
+2. Implement WOOP planning module
+3. Add notification system
+4. Create analytics dashboard
+5. Implement social features
+
+## 📄 License
+
+MIT License - Built as a learning project
+
+## 🙋 Support
+
+For issues or questions, check:
+- Architecture docs in `C:\Users\micha\OneDrive\Plocha\mysl\CLAUDE.md`
+- Prisma docs: https://www.prisma.io/docs
+- Next.js docs: https://nextjs.org/docs
+- shadcn/ui: https://ui.shadcn.com
+
+---
+
+**Built with ❤️ using Next.js 15, React 19, and modern web technologies**
