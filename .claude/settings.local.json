@@ -7,7 +7,8 @@
       "WebFetch(domain:www.lapa.ninja)",
       "Bash(python remove_bg.py)",
       "Read(//c/Users/micha/OneDrive/Plocha/mysl/**)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

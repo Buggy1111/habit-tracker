@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { LiveClock } from "./live-clock"
 
 export function Navbar() {
   return (
@@ -23,7 +24,12 @@ export function Navbar() {
           </a>
         </div>
 
-        <div className="flex flex-1 items-center justify-end space-x-2 sm:space-x-4">
+        <div className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4">
+          <div className="hidden md:block">
+            <LiveClock />
+          </div>
+
+          <div className="flex items-center space-x-2 sm:space-x-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 rounded-full">
@@ -57,6 +63,7 @@ export function Navbar() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          </div>
         </div>
       </div>
     </header>

@@ -1,6 +1,7 @@
 "use client"
 
-import { Sparkles } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Sparkles, Calendar as CalendarIcon } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { motion } from "framer-motion"
 
@@ -17,11 +18,38 @@ export function DashboardHero({
   totalHabits,
   currentStreak,
 }: DashboardHeroProps) {
+  const [currentDate, setCurrentDate] = useState(new Date())
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentDate(new Date())
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
+
   const getGreeting = () => {
-    const hour = new Date().getHours()
+    const hour = currentDate.getHours()
     if (hour < 12) return "Dobré ráno"
     if (hour < 18) return "Dobré odpoledne"
     return "Dobrý večer"
+  }
+
+  const formatDate = () => {
+    return currentDate.toLocaleDateString("cs-CZ", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  }
+
+  const formatTime = () => {
+    return currentDate.toLocaleTimeString("cs-CZ", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    })
   }
 
   const getMotivationalMessage = () => {
@@ -69,10 +97,20 @@ export function DashboardHero({
       <div className="relative p-4 sm:p-6 lg:p-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col gap-2">
               <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold">
                 {getGreeting()}! 👋
               </h2>
+              <div className="flex items-center gap-3 text-sm sm:text-base text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <CalendarIcon className="h-4 w-4" />
+                  <span className="font-medium">{formatDate()}</span>
+                </div>
+                <span className="hidden sm:inline text-muted-foreground/50">•</span>
+                <span className="hidden sm:inline font-mono font-semibold text-primary">
+                  {formatTime()}
+                </span>
+              </div>
             </div>
             <p className="text-sm sm:text-base text-muted-foreground max-w-2xl">
               {getMotivationalMessage()}
