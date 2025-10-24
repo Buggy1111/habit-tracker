@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Navbar } from "@/components/layout/navbar"
 import { useState } from "react"
 
 const sidebarItems = [
@@ -71,8 +72,10 @@ export default function DashboardLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-background via-primary/5 via-30% to-background relative overflow-hidden">
-      {/* Animated background blobs */}
+    <>
+      <Navbar />
+      <div className="min-h-screen w-full bg-gradient-to-br from-background via-primary/5 via-30% to-background relative overflow-hidden">
+        {/* Animated background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl"
@@ -293,6 +296,7 @@ export default function DashboardLayout({
       <main className="lg:ml-64 xl:ml-72 relative">
         {children}
       </main>
-    </div>
+      </div>
+    </>
   )
 }
