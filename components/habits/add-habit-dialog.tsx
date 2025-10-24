@@ -95,7 +95,7 @@ export function AddHabitDialog({ open, onOpenChange, defaultIdentityId }: AddHab
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Přidat nový návyk</DialogTitle>

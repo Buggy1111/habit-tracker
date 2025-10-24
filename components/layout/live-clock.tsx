@@ -33,10 +33,10 @@ export function LiveClock() {
 
   return (
     <div className="flex items-center gap-2 text-sm">
-      <Clock className="h-4 w-4 text-muted-foreground" />
+      <Clock className="h-4 w-4 text-muted-foreground hidden sm:block" />
       <div className="flex flex-col">
-        <span className="font-medium">{formatTime(time)}</span>
-        <span className="text-xs text-muted-foreground hidden sm:block">
+        <span className="font-medium text-xs sm:text-sm">{formatTime(time)}</span>
+        <span className="text-xs text-muted-foreground hidden md:block">
           {formatDate(time)}
         </span>
       </div>
