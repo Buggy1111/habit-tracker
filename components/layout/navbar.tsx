@@ -92,6 +92,9 @@ export function Navbar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-64" align="end" forceMount>
+                <div className="px-2 py-1.5 text-xs text-center text-muted-foreground/70 italic border-b">
+                  Built on behavioral psychology
+                </div>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{userName}</p>
