@@ -72,9 +72,10 @@ model Habit {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  logs           HabitLog[]
-  woopPlans      WoopPlan[]
-  thoughtRecords ThoughtRecord[]
+  logs              HabitLog[]
+  woopPlans         WoopPlan[]
+  thoughtRecords    ThoughtRecord[]
+  extinctionBursts  ExtinctionBurstEvent[]
 
   @@index([userId])
   @@index([userId, isActive])
@@ -200,4 +201,26 @@ model ThoughtRecord {
   @@index([habitId])
   @@index([userId])
   @@map("thought_records")
+}
+
+// ============================================
+// EXTINCTION BURST (Automation Feature)
+// ============================================
+
+model ExtinctionBurstEvent {
+  id           String    @id @default(cuid())
+  habitId      String
+  habit        Habit     @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  detectedAt   DateTime  @default(now())
+  addressedAt  DateTime? // When user completed recovery flow
+
+  previousRate Float     // e.g., 0.85 (85% success rate in previous 14 days)
+  recentRate   Float     // e.g., 0.42 (42% success rate in recent 14 days)
+
+  createdAt    DateTime  @default(now())
+
+  @@index([habitId, detectedAt])
+  @@index([habitId, addressedAt])
+  @@map("extinction_burst_events")
 }
