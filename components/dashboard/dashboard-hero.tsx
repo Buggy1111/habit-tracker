@@ -21,9 +21,10 @@ export function DashboardHero({
   const [currentDate, setCurrentDate] = useState(new Date())
 
   useEffect(() => {
+    // ✅ OPTIMIZED: Update every minute instead of every second (reduces re-renders by 60x)
     const timer = setInterval(() => {
       setCurrentDate(new Date())
-    }, 1000)
+    }, 60000) // 60 seconds
 
     return () => clearInterval(timer)
   }, [])
@@ -48,7 +49,7 @@ export function DashboardHero({
     return currentDate.toLocaleTimeString("cs-CZ", {
       hour: "2-digit",
       minute: "2-digit",
-      second: "2-digit",
+      // ✅ OPTIMIZED: Removed seconds display to justify updating every minute
     })
   }
 
@@ -74,17 +75,9 @@ export function DashboardHero({
 
   return (
     <Card className="relative overflow-hidden border-white/20 bg-gradient-to-br from-card/90 to-card/50 backdrop-blur-2xl shadow-2xl">
-      {/* Animated gradient background */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-primary/20 via-blue-500/10 to-purple-500/10"
-        animate={{
-          backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
-        }}
+      {/* ✅ OPTIMIZED: Replaced infinite framer-motion with CSS animation (better performance) */}
+      <div
+        className="absolute inset-0 bg-gradient-to-br from-primary/20 via-blue-500/10 to-purple-500/10 animate-gradient-shift"
         style={{
           backgroundSize: "200% 200%",
         }}

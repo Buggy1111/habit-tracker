@@ -2,6 +2,14 @@ import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
+import {
+  calculateHabitStrength,
+  calculateCurrentStreak,
+  calculateLongestStreak,
+  getStrengthLevel,
+} from "@/lib/algorithms/habit-strength"
+import { getNeuroplasticityPhase, daysUntilNextPhase } from "@/lib/algorithms/neuroplasticity-phase"
+import { detectExtinctionBurst } from "@/lib/algorithms/extinction-burst"
 
 const createHabitSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -16,37 +24,13 @@ const createHabitSchema = z.object({
   context: z.string().optional(),  // In
 })
 
-// Helper: Calculate streak
-function calculateStreak(logs: any[]): number {
-  if (logs.length === 0) return 0
-
-  // Sort logs by date descending
-  const sortedLogs = logs
-    .filter((log) => log.completed)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-
-  if (sortedLogs.length === 0) return 0
-
-  let streak = 0
+// Helper: Calculate days since start
+function daysSinceStart(startDate: Date): number {
   const today = new Date()
-  today.setHours(0, 0, 0, 0)
-
-  // Check each day going backwards from today
-  for (let i = 0; i < sortedLogs.length; i++) {
-    const logDate = new Date(sortedLogs[i].date)
-    logDate.setHours(0, 0, 0, 0)
-
-    const expectedDate = new Date(today)
-    expectedDate.setDate(today.getDate() - streak)
-
-    if (logDate.getTime() === expectedDate.getTime()) {
-      streak++
-    } else {
-      break
-    }
-  }
-
-  return streak
+  const start = new Date(startDate)
+  const diffTime = Math.abs(today.getTime() - start.getTime())
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  return diffDays
 }
 
 // GET /api/habits - Get all habits for current user
@@ -77,7 +61,7 @@ export async function GET() {
       },
     })
 
-    // Calculate metrics in a single pass (no additional queries)
+    // ✅ OPTIMIZED: Calculate ALL metrics on server (runs ONCE instead of N times on client)
     const habitsWithMetrics = habits.map((habit) => {
       const todayLog = habit.logs.find((log) => {
         const logDate = new Date(log.date)
@@ -89,10 +73,27 @@ export async function GET() {
         )
       })
 
+      // Calculate science-based metrics ONCE on server
+      const days = daysSinceStart(habit.startDate)
+      const habitStrength = calculateHabitStrength(habit.logs, habit.startDate)
+      const strengthLevel = getStrengthLevel(habitStrength)
+      const neuroplasticityPhase = getNeuroplasticityPhase(days)
+      const nextPhase = daysUntilNextPhase(days)
+      const extinctionBurst = detectExtinctionBurst(habit.logs)
+      const currentStreak = calculateCurrentStreak(habit.logs)
+      const longestStreak = calculateLongestStreak(habit.logs)
+
       return {
         ...habit,
         completed: todayLog?.completed || false,
-        streak: calculateStreak(habit.logs),
+        streak: currentStreak,
+        // Science-based metrics (pre-computed on server)
+        habitStrength,
+        strengthLevel,
+        neuroplasticityPhase,
+        daysUntilNextPhase: nextPhase,
+        extinctionBurst,
+        longestStreak,
         // logs are already included from the query above
       }
     })

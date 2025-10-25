@@ -1,13 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
-import {
-  calculateHabitStrength,
-  calculateCurrentStreak,
-  calculateLongestStreak,
-  getStrengthLevel,
-} from "@/lib/algorithms/habit-strength"
-import { getNeuroplasticityPhase, daysUntilNextPhase } from "@/lib/algorithms/neuroplasticity-phase"
+import { getStrengthLevel } from "@/lib/algorithms/habit-strength"
+import { getNeuroplasticityPhase } from "@/lib/algorithms/neuroplasticity-phase"
 import { detectExtinctionBurst } from "@/lib/algorithms/extinction-burst"
+
+// Note: All metric calculations (habitStrength, neuroplasticityPhase, etc.) are now done on server
+// Client only imports types for TypeScript
 
 // Types
 export interface Habit {
@@ -69,57 +67,31 @@ export interface UpdateHabitInput {
 }
 
 /**
- * Calculate days since start
+ * Parse habit data from API (convert date strings to Date objects)
+ * ✅ OPTIMIZED: Metrics are now pre-computed on server, no client-side calculations!
  */
-function daysSinceStart(startDate: Date): number {
-  const today = new Date()
-  const start = new Date(startDate)
-  const diffTime = Math.abs(today.getTime() - start.getTime())
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  return diffDays
-}
-
-/**
- * Enrich habit with computed science-based metrics
- */
-function enrichHabit(habit: any): Habit {
-  const logs = habit.logs.map((log: any) => ({
-    ...log,
-    date: new Date(log.date),
-    createdAt: new Date(log.createdAt),
-  }))
-
-  const days = daysSinceStart(habit.startDate)
-  const habitStrength = calculateHabitStrength(logs, new Date(habit.startDate))
-  const strengthLevel = getStrengthLevel(habitStrength)
-  const neuroplasticityPhase = getNeuroplasticityPhase(days)
-  const nextPhase = daysUntilNextPhase(days)
-  const extinctionBurst = detectExtinctionBurst(logs)
-  const currentStreak = calculateCurrentStreak(logs)
-  const longestStreak = calculateLongestStreak(logs)
-
+function parseHabit(habit: any): Habit {
   return {
     ...habit,
     startDate: new Date(habit.startDate),
-    streak: currentStreak,
-    habitStrength,
-    strengthLevel,
-    neuroplasticityPhase,
-    daysUntilNextPhase: nextPhase,
-    extinctionBurst,
-    longestStreak,
-    logs,
+    logs: habit.logs.map((log: any) => ({
+      ...log,
+      date: new Date(log.date),
+      createdAt: new Date(log.createdAt),
+    })),
+    // All metrics (habitStrength, neuroplasticityPhase, etc.) are already computed on server!
   }
 }
 
-// Fetch all habits
+// Fetch all habits (metrics pre-computed on server)
 async function fetchHabits(): Promise<Habit[]> {
   const res = await fetch("/api/habits")
   if (!res.ok) {
     throw new Error("Failed to fetch habits")
   }
   const data = await res.json()
-  return data.map(enrichHabit)
+  // Just parse dates, all metrics are already computed on server
+  return data.map(parseHabit)
 }
 
 // Create new habit
