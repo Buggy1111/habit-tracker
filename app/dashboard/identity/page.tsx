@@ -7,8 +7,18 @@ import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useIdentities } from "@/hooks/use-identities"
 import { IdentityCard } from "@/components/identity/identity-card"
-import { CreateIdentityDialog } from "@/components/identity/create-identity-dialog"
-import { motion } from "framer-motion"
+import dynamic from "next/dynamic"
+
+// Lazy load dialog (only when needed)
+const CreateIdentityDialog = dynamic(
+  () => import("@/components/identity/create-identity-dialog").then(mod => ({ default: mod.CreateIdentityDialog })),
+  { ssr: false }
+)
+
+// Lazy load framer-motion
+const motion = dynamic(() => import("framer-motion").then(mod => ({ default: mod.motion })), {
+  ssr: false,
+}) as any
 
 export default function IdentityPage() {
   const { data: identities, isLoading } = useIdentities()

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, useMemo, memo } from "react"
 import { useRouter } from "next/navigation"
 import { Check, Flame, MoreVertical, Target, Sparkles, Brain, TrendingUp, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -36,48 +36,51 @@ interface HabitCardProps {
   habit: Habit
 }
 
-export function HabitCard({ habit }: HabitCardProps) {
+export const HabitCard = memo(function HabitCard({ habit }: HabitCardProps) {
   const router = useRouter()
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const { mutate: completeHabit, isPending } = useCompleteHabit()
   const { mutate: deleteHabit, isPending: isDeleting } = useDeleteHabit()
 
-  const handleComplete = (e: React.MouseEvent) => {
+  const handleComplete = useCallback((e: React.MouseEvent) => {
     e.stopPropagation() // Prevent card click
     if (!habit.completed && !isPending) {
       completeHabit(habit.id)
     }
-  }
+  }, [habit.completed, habit.id, isPending, completeHabit])
 
-  const handleEdit = (e: React.MouseEvent) => {
+  const handleEdit = useCallback((e: React.MouseEvent) => {
     e.stopPropagation() // Prevent card click
     setEditDialogOpen(true)
-  }
+  }, [])
 
-  const handleDeleteClick = (e: React.MouseEvent) => {
+  const handleDeleteClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation() // Prevent card click
     setDeleteDialogOpen(true)
-  }
+  }, [])
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = useCallback(() => {
     deleteHabit(habit.id)
     setDeleteDialogOpen(false)
-  }
+  }, [habit.id, deleteHabit])
 
-  const handleCardClick = () => {
+  const handleCardClick = useCallback(() => {
     router.push(`/habits/${habit.id}`)
-  }
+  }, [habit.id, router])
 
-  // Format implementation intention
-  const hasIntention = habit.trigger || habit.action
-  const intentionText = [
-    habit.trigger,
-    habit.action,
-    habit.context ? `v ${habit.context}` : null,
-  ]
-    .filter(Boolean)
-    .join(", ")
+  // Format implementation intention - memoized
+  const { hasIntention, intentionText } = useMemo(() => {
+    const hasIntention = !!(habit.trigger || habit.action)
+    const intentionText = [
+      habit.trigger,
+      habit.action,
+      habit.context ? `v ${habit.context}` : null,
+    ]
+      .filter(Boolean)
+      .join(", ")
+    return { hasIntention, intentionText }
+  }, [habit.trigger, habit.action, habit.context])
 
   return (
     <Card
@@ -248,4 +251,4 @@ export function HabitCard({ habit }: HabitCardProps) {
       </AlertDialog>
     </Card>
   )
-}
+})

@@ -1,5 +1,6 @@
 import { Brain, Calendar, Flame, Target, TrendingUp } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -31,10 +32,13 @@ export default function Home() {
             {/* Glow Effect Behind Image */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full blur-2xl opacity-50 animate-pulse" />
 
-            {/* 3D Brain Image - Transparent PNG */}
-            <img
+            {/* 3D Brain Image - Optimized with Next.js Image */}
+            <Image
               src="/mozek.png"
               alt="Neuroplasticity Brain"
+              width={128}
+              height={128}
+              priority
               className="relative w-full h-full object-contain drop-shadow-2xl"
             />
           </div>

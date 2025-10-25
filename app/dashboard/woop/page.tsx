@@ -7,9 +7,19 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useHabits } from "@/hooks/use-habits"
-import { WoopWizard } from "@/components/woop/woop-wizard"
-import { motion } from "framer-motion"
 import Link from "next/link"
+import dynamic from "next/dynamic"
+
+// Lazy load wizard dialog
+const WoopWizard = dynamic(
+  () => import("@/components/woop/woop-wizard").then(mod => ({ default: mod.WoopWizard })),
+  { ssr: false }
+)
+
+// Lazy load framer-motion
+const motion = dynamic(() => import("framer-motion").then(mod => ({ default: mod.motion })), {
+  ssr: false,
+}) as any
 
 export default function WoopPage() {
   const { data: habits, isLoading: habitsLoading } = useHabits()

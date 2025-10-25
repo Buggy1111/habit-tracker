@@ -2,13 +2,32 @@
 
 import { ArrowRight, Target, Calendar, ListTodo, TrendingUp, Sparkles } from "lucide-react"
 import Link from "next/link"
-import { DashboardHero } from "@/components/dashboard/dashboard-hero"
-import { StatsOverview } from "@/components/dashboard/stats-overview"
-import { ExtinctionBurstAlert } from "@/components/habits/extinction-burst-alert"
 import { useHabits } from "@/hooks/use-habits"
 import { useIdentities } from "@/hooks/use-identities"
-import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
+import dynamic from "next/dynamic"
+import { Skeleton } from "@/components/ui/skeleton"
+
+// Lazy load heavy components
+const DashboardHero = dynamic(
+  () => import("@/components/dashboard/dashboard-hero").then(mod => ({ default: mod.DashboardHero })),
+  { loading: () => <Skeleton className="h-48 w-full rounded-2xl" /> }
+)
+
+const StatsOverview = dynamic(
+  () => import("@/components/dashboard/stats-overview").then(mod => ({ default: mod.StatsOverview })),
+  { loading: () => <div className="grid gap-4 sm:grid-cols-4"><Skeleton className="h-32" /><Skeleton className="h-32" /><Skeleton className="h-32" /><Skeleton className="h-32" /></div> }
+)
+
+const ExtinctionBurstAlert = dynamic(
+  () => import("@/components/habits/extinction-burst-alert").then(mod => ({ default: mod.ExtinctionBurstAlert })),
+  { ssr: false }
+)
+
+// Lazy load framer-motion for animations
+const motion = dynamic(() => import("framer-motion").then(mod => ({ default: mod.motion })), {
+  ssr: false,
+}) as any
 
 export default function DashboardPage() {
   const router = useRouter()
