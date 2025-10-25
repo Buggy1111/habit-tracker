@@ -13,17 +13,39 @@ import { WelcomeDialog } from "@/components/onboarding/welcome-dialog"
 
 // Lazy load heavy components
 const DashboardHero = dynamic(
-  () => import("@/components/dashboard/dashboard-hero").then(mod => ({ default: mod.DashboardHero })),
+  () =>
+    import("@/components/dashboard/dashboard-hero").then((mod) => ({ default: mod.DashboardHero })),
   { loading: () => <Skeleton className="h-48 w-full rounded-2xl" /> }
 )
 
 const StatsOverview = dynamic(
-  () => import("@/components/dashboard/stats-overview").then(mod => ({ default: mod.StatsOverview })),
-  { loading: () => <div className="grid gap-4 sm:grid-cols-4"><Skeleton className="h-32" /><Skeleton className="h-32" /><Skeleton className="h-32" /><Skeleton className="h-32" /></div> }
+  () =>
+    import("@/components/dashboard/stats-overview").then((mod) => ({ default: mod.StatsOverview })),
+  {
+    loading: () => (
+      <div className="grid gap-4 sm:grid-cols-4">
+        <Skeleton className="h-32" />
+        <Skeleton className="h-32" />
+        <Skeleton className="h-32" />
+        <Skeleton className="h-32" />
+      </div>
+    ),
+  }
 )
 
 const ExtinctionBurstAlert = dynamic(
-  () => import("@/components/habits/extinction-burst-alert").then(mod => ({ default: mod.ExtinctionBurstAlert })),
+  () =>
+    import("@/components/habits/extinction-burst-alert").then((mod) => ({
+      default: mod.ExtinctionBurstAlert,
+    })),
+  { ssr: false }
+)
+
+const NeuroplasticityCard = dynamic(
+  () =>
+    import("@/components/neuroplasticity/neuroplasticity-card").then((mod) => ({
+      default: mod.NeuroplasticityCard,
+    })),
   { ssr: false }
 )
 
@@ -39,9 +61,14 @@ export default function DashboardPage() {
   const totalIdentities = identities?.length || 0
 
   // Find habits with extinction burst
-  const habitsWithExtinctionBurst = habits?.filter(
-    (h) => h.extinctionBurst?.detected
-  ) || []
+  const habitsWithExtinctionBurst = habits?.filter((h) => h.extinctionBurst?.detected) || []
+
+  // Find habits to show neuroplasticity coaching for
+  // Show for habits that: 1) are active, 2) have neuroplasticity data, 3) are not yet in phase 4
+  const habitsWithNeuroplasticity =
+    habits?.filter(
+      (h) => h.isActive && h.neuroplasticityPhase && h.neuroplasticityPhase.phase < 4
+    ) || []
 
   // Calculate weekly completion rate
   const calculateWeeklyRate = () => {
@@ -54,9 +81,7 @@ export default function DashboardPage() {
     let totalCompleted = 0
 
     habits.forEach((habit) => {
-      const recentLogs = habit.logs.filter(
-        (log) => new Date(log.date) >= last7Days
-      )
+      const recentLogs = habit.logs.filter((log) => new Date(log.date) >= last7Days)
       totalPossible += 7 // 7 days
       totalCompleted += recentLogs.filter((log) => log.completed).length
     })
@@ -79,7 +104,7 @@ export default function DashboardPage() {
       href: "/dashboard/today",
       icon: Target,
       gradient: "from-blue-500 to-cyan-500",
-      stats: `${completedToday}/${totalHabits} splněno`
+      stats: `${completedToday}/${totalHabits} splněno`,
     },
     {
       title: "Identity Designer",
@@ -87,7 +112,7 @@ export default function DashboardPage() {
       href: "/dashboard/identity",
       icon: Sparkles,
       gradient: "from-purple-500 to-pink-500",
-      stats: `${totalIdentities} ${totalIdentities === 1 ? "identita" : totalIdentities < 5 ? "identity" : "identit"}`
+      stats: `${totalIdentities} ${totalIdentities === 1 ? "identita" : totalIdentities < 5 ? "identity" : "identit"}`,
     },
     {
       title: "Týdenní přehled",
@@ -95,7 +120,7 @@ export default function DashboardPage() {
       href: "/dashboard/week",
       icon: Calendar,
       gradient: "from-indigo-500 to-purple-500",
-      stats: `${weeklyCompletionRate}% úspěšnost`
+      stats: `${weeklyCompletionRate}% úspěšnost`,
     },
     {
       title: "Všechny návyky",
@@ -103,7 +128,7 @@ export default function DashboardPage() {
       href: "/dashboard/habits",
       icon: ListTodo,
       gradient: "from-green-500 to-emerald-500",
-      stats: `${totalHabits} aktivních`
+      stats: `${totalHabits} aktivních`,
     },
     {
       title: "Statistiky",
@@ -111,13 +136,12 @@ export default function DashboardPage() {
       href: "/dashboard/analytics",
       icon: TrendingUp,
       gradient: "from-orange-500 to-red-500",
-      stats: `${longestStreak} nejdelší série`
-    }
+      stats: `${longestStreak} nejdelší série`,
+    },
   ]
 
   return (
     <div className="relative mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
-
       {/* Hero Section - Full width banner with animation */}
       <motion.section
         className="mb-8 lg:mb-12"
@@ -154,6 +178,37 @@ export default function DashboardPage() {
               />
             </motion.div>
           ))}
+        </motion.section>
+      )}
+
+      {/* Neuroplasticity Coaching */}
+      {!isLoading && habitsWithNeuroplasticity.length > 0 && (
+        <motion.section
+          className="mb-8 lg:mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <h2 className="text-2xl font-bold mb-6">Tvůj Neuroplasticity Progress</h2>
+          <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
+            {habitsWithNeuroplasticity.slice(0, 4).map((habit, index) => {
+              // Calculate days since start from startDate
+              const daysSinceStart = Math.ceil(
+                (new Date().getTime() - new Date(habit.startDate).getTime()) / (1000 * 60 * 60 * 24)
+              )
+
+              return (
+                <motion.div
+                  key={habit.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.25 + index * 0.1 }}
+                >
+                  <NeuroplasticityCard daysSinceStart={daysSinceStart} habitName={habit.name} />
+                </motion.div>
+              )
+            })}
+          </div>
         </motion.section>
       )}
 
@@ -196,7 +251,9 @@ export default function DashboardPage() {
                 <Link href={link.href}>
                   <div className="relative group h-full rounded-2xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden">
                     {/* Gradient accent line */}
-                    <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${link.gradient}`} />
+                    <div
+                      className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${link.gradient}`}
+                    />
 
                     {/* Shine effect on hover */}
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
@@ -204,7 +261,9 @@ export default function DashboardPage() {
                     {/* Content */}
                     <div className="relative p-6">
                       <div className="flex items-start justify-between mb-4">
-                        <div className={`p-3 rounded-xl bg-gradient-to-br ${link.gradient} bg-opacity-20`}>
+                        <div
+                          className={`p-3 rounded-xl bg-gradient-to-br ${link.gradient} bg-opacity-20`}
+                        >
                           <Icon className="h-6 w-6" />
                         </div>
                         <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform duration-300" />
@@ -213,7 +272,9 @@ export default function DashboardPage() {
                       <h3 className="text-lg font-semibold mb-2">{link.title}</h3>
                       <p className="text-sm text-muted-foreground mb-3">{link.description}</p>
 
-                      <div className={`text-sm font-medium bg-gradient-to-r ${link.gradient} bg-clip-text text-transparent`}>
+                      <div
+                        className={`text-sm font-medium bg-gradient-to-r ${link.gradient} bg-clip-text text-transparent`}
+                      >
                         {link.stats}
                       </div>
                     </div>
