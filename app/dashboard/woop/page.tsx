@@ -7,9 +7,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useHabits } from "@/hooks/use-habits"
-import { WoopCard } from "@/components/woop/woop-card"
 import { WoopWizard } from "@/components/woop/woop-wizard"
-import { useWoopPlans } from "@/hooks/use-woop"
 import { motion } from "framer-motion"
 import Link from "next/link"
 
@@ -18,21 +16,11 @@ export default function WoopPage() {
   const [selectedHabitId, setSelectedHabitId] = useState<string | null>(null)
   const [woopWizardOpen, setWoopWizardOpen] = useState(false)
 
-  // Get all WOOP plans for all habits
-  const allWoopPlans = habits?.flatMap(habit => {
-    const { data: woopPlans } = useWoopPlans(habit.id)
-    return (woopPlans || []).map(woop => ({
-      ...woop,
-      habit: {
-        id: habit.id,
-        name: habit.name,
-        color: habit.color,
-        icon: habit.icon,
-      },
-    }))
-  }) || []
-
   const selectedHabit = habits?.find(h => h.id === selectedHabitId)
+
+  // Note: This page shows info about WOOP method
+  // Individual WOOP plans are viewed on habit detail pages
+  // We just show how many habits have WOOP plans here
 
   return (
     <div className="min-h-screen p-4 sm:p-6 lg:p-8 space-y-6">
@@ -84,83 +72,68 @@ export default function WoopPage() {
         </Card>
       </motion.div>
 
-      {/* WOOP Plans */}
+      {/* Your Habits - Create WOOP Plans */}
       <motion.div
         className="space-y-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Vaše WOOP plány</h2>
-          <p className="text-sm text-muted-foreground">
-            {allWoopPlans.length} {allWoopPlans.length === 1 ? 'plán' : allWoopPlans.length < 5 ? 'plány' : 'plánů'}
-          </p>
-        </div>
+        <h2 className="text-2xl font-bold">Vytvořte WOOP plán pro svůj návyk</h2>
 
         {habitsLoading ? (
-          <div className="space-y-4">
-            <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-64 w-full" />
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <Skeleton className="h-32" />
+            <Skeleton className="h-32" />
+            <Skeleton className="h-32" />
           </div>
-        ) : allWoopPlans.length > 0 ? (
-          <div className="space-y-6">
-            {allWoopPlans.map((woopWithHabit) => (
+        ) : habits && habits.length > 0 ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {habits.map((habit, index) => (
               <motion.div
-                key={woopWithHabit.id}
+                key={habit.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
               >
-                {/* Habit Info */}
-                <Link href={`/habits/${woopWithHabit.habit.id}`}>
-                  <div className="flex items-center gap-3 mb-3 p-3 rounded-lg hover:bg-accent transition-colors cursor-pointer">
-                    <div
-                      className="p-2 rounded-lg text-xl"
-                      style={{ backgroundColor: `${woopWithHabit.habit.color}20` }}
-                    >
-                      {woopWithHabit.habit.icon || "🎯"}
+                <Link href={`/habits/${habit.id}`}>
+                  <Card className="p-6 hover:border-purple-300 dark:hover:border-purple-700 transition-all cursor-pointer group">
+                    <div className="flex items-start justify-between mb-4">
+                      <div
+                        className="p-3 rounded-xl text-2xl transition-transform group-hover:scale-110"
+                        style={{ backgroundColor: `${habit.color}20` }}
+                      >
+                        {habit.icon || "🎯"}
+                      </div>
+                      <Sparkles className="w-5 h-5 text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
-                    <div>
-                      <p className="font-medium">{woopWithHabit.habit.name}</p>
-                      <p className="text-xs text-muted-foreground">Klikni pro detail návyku</p>
-                    </div>
-                  </div>
+                    <h3 className="font-semibold text-lg mb-2">{habit.name}</h3>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {habit.description || "Klikněte pro vytvoření WOOP plánu"}
+                    </p>
+                    <Button variant="outline" size="sm" className="w-full">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Vytvořit WOOP
+                    </Button>
+                  </Card>
                 </Link>
-
-                {/* WOOP Card */}
-                <WoopCard woop={woopWithHabit} habitId={woopWithHabit.habit.id} />
               </motion.div>
             ))}
           </div>
         ) : (
           <Card className="p-12 text-center border-2 border-dashed">
-            <Sparkles className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Zatím nemáte žádný WOOP plán</h3>
+            <Target className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Nejdříve vytvořte návyk</h3>
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               WOOP plány se vytvářejí pro konkrétní návyky.
-              Přejděte na detail návyku a vytvořte si první WOOP plán.
+              Začněte tím, že si vytvoříte první návyk.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href="/dashboard/habits">
-                <Button>
-                  <Target className="w-4 h-4 mr-2" />
-                  Zobrazit návyky
-                </Button>
-              </Link>
-              {habits && habits.length > 0 && (
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setSelectedHabitId(habits[0].id)
-                    setWoopWizardOpen(true)
-                  }}
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Vytvořit WOOP pro {habits[0].name}
-                </Button>
-              )}
-            </div>
+            <Link href="/dashboard/habits">
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Vytvořit první návyk
+              </Button>
+            </Link>
           </Card>
         )}
       </motion.div>
