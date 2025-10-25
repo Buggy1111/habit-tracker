@@ -29,6 +29,7 @@ model User {
   habitLogs      HabitLog[]
   identities     Identity[]
   thoughtRecords ThoughtRecord[]
+  weeklyReviews  WeeklyReview[]
 
   @@map("users")
 }
@@ -223,4 +224,52 @@ model ExtinctionBurstEvent {
   @@index([habitId, detectedAt])
   @@index([habitId, addressedAt])
   @@map("extinction_burst_events")
+}
+
+// ============================================
+// WEEKLY REVIEW (Automation Feature)
+// ============================================
+
+model WeeklyReview {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  weekStart     DateTime @db.Date
+  weekEnd       DateTime @db.Date
+
+  // Overall insights
+  completionRate  Int    // 0-100
+  improvement     Int    // -100 to +100
+  insights        Json   // WeeklyInsights object
+
+  // Reflection
+  reflection      String?
+
+  createdAt     DateTime @default(now())
+
+  // Relations
+  difficultyRatings HabitDifficultyLog[]
+
+  @@unique([userId, weekStart])
+  @@index([userId, weekStart])
+  @@map("weekly_reviews")
+}
+
+model HabitDifficultyLog {
+  id              String         @id @default(cuid())
+  habitId         String
+  weeklyReviewId  String?
+  weeklyReview    WeeklyReview?  @relation(fields: [weeklyReviewId], references: [id], onDelete: SetNull)
+
+  weekStart       DateTime @db.Date
+  rating          Int      // 1-5
+  note            String?
+
+  createdAt       DateTime @default(now())
+
+  @@unique([habitId, weekStart])
+  @@index([habitId])
+  @@index([weeklyReviewId])
+  @@map("habit_difficulty_logs")
 }
