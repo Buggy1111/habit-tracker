@@ -4,10 +4,12 @@ import { ArrowRight, Target, Calendar, ListTodo, TrendingUp, Sparkles } from "lu
 import Link from "next/link"
 import { useHabits } from "@/hooks/use-habits"
 import { useIdentities } from "@/hooks/use-identities"
+import { useOnboarding } from "@/hooks/use-onboarding"
 import { useRouter } from "next/navigation"
 import dynamic from "next/dynamic"
 import { Skeleton } from "@/components/ui/skeleton"
 import { motion } from "framer-motion"
+import { WelcomeDialog } from "@/components/onboarding/welcome-dialog"
 
 // Lazy load heavy components
 const DashboardHero = dynamic(
@@ -29,6 +31,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const { data: habits, isLoading } = useHabits()
   const { data: identities } = useIdentities()
+  const { showWelcome, completeOnboarding } = useOnboarding()
 
   // Calculate stats
   const totalHabits = habits?.length || 0
@@ -221,6 +224,9 @@ export default function DashboardPage() {
           })}
         </div>
       </motion.section>
+
+      {/* Welcome Dialog for first-time users */}
+      <WelcomeDialog open={showWelcome} onComplete={completeOnboarding} />
     </div>
   )
 }
