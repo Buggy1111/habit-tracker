@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { ArrowRight, Target, Calendar, ListTodo, TrendingUp, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { useHabits } from "@/hooks/use-habits"
@@ -10,6 +11,7 @@ import dynamic from "next/dynamic"
 import { Skeleton } from "@/components/ui/skeleton"
 import { motion } from "framer-motion"
 import { WelcomeDialog } from "@/components/onboarding/welcome-dialog"
+import { calculateWeeklyInsights, getWeekStart, getWeekEnd } from "@/lib/algorithms/weekly-insights"
 
 // Lazy load heavy components
 const DashboardHero = dynamic(
@@ -49,11 +51,34 @@ const NeuroplasticityCard = dynamic(
   { ssr: false }
 )
 
+const WeeklyReviewPrompt = dynamic(
+  () =>
+    import("@/components/dashboard/weekly-review-prompt").then((mod) => ({
+      default: mod.WeeklyReviewPrompt,
+    })),
+  { ssr: false }
+)
+
+const WeeklyReviewDialog = dynamic(
+  () =>
+    import("@/components/review/weekly-review-dialog").then((mod) => ({
+      default: mod.WeeklyReviewDialog,
+    })),
+  { ssr: false }
+)
+
 export default function DashboardPage() {
   const router = useRouter()
   const { data: habits, isLoading } = useHabits()
   const { data: identities } = useIdentities()
   const { showWelcome, completeOnboarding } = useOnboarding()
+
+  // Weekly Review state
+  const [showWeeklyReviewPrompt, setShowWeeklyReviewPrompt] = useState(false)
+  const [showWeeklyReviewDialog, setShowWeeklyReviewDialog] = useState(false)
+  const [weeklyInsights, setWeeklyInsights] = useState<ReturnType<
+    typeof calculateWeeklyInsights
+  > | null>(null)
 
   // Calculate stats
   const totalHabits = habits?.length || 0
@@ -96,6 +121,37 @@ export default function DashboardPage() {
   const longestStreak = currentStreak
 
   const weeklyCompletionRate = calculateWeeklyRate()
+
+  // Check if weekly review should be shown (every Monday)
+  const shouldShowWeeklyReview = () => {
+    const today = new Date()
+    const dayOfWeek = today.getDay() // 0 = Sunday, 1 = Monday
+    return dayOfWeek === 1 // Show on Mondays
+  }
+
+  // Calculate weekly insights when habits load
+  const prepareWeeklyReview = () => {
+    if (!habits || habits.length === 0) return
+
+    const weekStart = getWeekStart()
+    const weekEnd = getWeekEnd()
+
+    // Flatten all logs from all habits
+    const allLogs = habits.flatMap((habit) =>
+      (habit.logs || []).map((log) => ({ ...log, habitId: habit.id }))
+    )
+
+    const insights = calculateWeeklyInsights(habits, allLogs, weekStart, weekEnd)
+    setWeeklyInsights(insights)
+    setShowWeeklyReviewDialog(true)
+  }
+
+  // Show weekly review prompt if it's Monday and we have habits
+  useEffect(() => {
+    if (!isLoading && habits && habits.length > 0 && shouldShowWeeklyReview()) {
+      setShowWeeklyReviewPrompt(true)
+    }
+  }, [isLoading, habits])
 
   const quickLinks = [
     {
@@ -212,6 +268,21 @@ export default function DashboardPage() {
         </motion.section>
       )}
 
+      {/* Weekly Review Prompt */}
+      {!isLoading && showWeeklyReviewPrompt && (
+        <motion.section
+          className="mb-8 lg:mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <WeeklyReviewPrompt
+            onStartReview={prepareWeeklyReview}
+            onDismiss={() => setShowWeeklyReviewPrompt(false)}
+          />
+        </motion.section>
+      )}
+
       {/* Stats Section - Cards with stagger animation */}
       <motion.section
         className="mb-8 lg:mb-12"
@@ -288,6 +359,19 @@ export default function DashboardPage() {
 
       {/* Welcome Dialog for first-time users */}
       <WelcomeDialog open={showWelcome} onComplete={completeOnboarding} />
+
+      {/* Weekly Review Dialog */}
+      {weeklyInsights && habits && (
+        <WeeklyReviewDialog
+          open={showWeeklyReviewDialog}
+          onClose={() => {
+            setShowWeeklyReviewDialog(false)
+            setShowWeeklyReviewPrompt(false)
+          }}
+          insights={weeklyInsights}
+          habits={habits}
+        />
+      )}
     </div>
   )
 }
