@@ -10,6 +10,7 @@ import {
 } from "@/lib/algorithms/habit-strength"
 import { getNeuroplasticityPhase, daysUntilNextPhase } from "@/lib/algorithms/neuroplasticity-phase"
 import { detectExtinctionBurst } from "@/lib/algorithms/extinction-burst"
+import { analyzeHabitDifficulty } from "@/lib/algorithms/difficulty-adaptation"
 
 const createHabitSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -19,9 +20,9 @@ const createHabitSchema = z.object({
   frequency: z.string().default("daily"),
   goal: z.number().default(1),
   // Implementation Intention (IF-THEN)
-  trigger: z.string().optional(),  // When
-  action: z.string().optional(),   // I will
-  context: z.string().optional(),  // In
+  trigger: z.string().optional(), // When
+  action: z.string().optional(), // I will
+  context: z.string().optional(), // In
 })
 
 // Helper: Calculate days since start
@@ -61,6 +62,19 @@ export async function GET() {
       },
     })
 
+    // Fetch difficulty logs for all habits in a single query
+    const habitIds = habits.map((h) => h.id)
+    const allDifficultyLogs = await prisma.habitDifficultyLog.findMany({
+      where: {
+        habitId: {
+          in: habitIds,
+        },
+      },
+      orderBy: {
+        weekStart: "desc",
+      },
+    })
+
     // ✅ OPTIMIZED: Calculate ALL metrics on server (runs ONCE instead of N times on client)
     const habitsWithMetrics = habits.map((habit) => {
       const todayLog = habit.logs.find((log) => {
@@ -83,6 +97,12 @@ export async function GET() {
       const currentStreak = calculateCurrentStreak(habit.logs)
       const longestStreak = calculateLongestStreak(habit.logs)
 
+      // Get difficulty logs for this habit
+      const habitDifficultyLogs = allDifficultyLogs.filter((log) => log.habitId === habit.id)
+
+      // Analyze if habit needs adaptation (BJ Fogg Behavior Model)
+      const adaptationAnalysis = analyzeHabitDifficulty(habitDifficultyLogs, habit.name)
+
       return {
         ...habit,
         completed: todayLog?.completed || false,
@@ -94,6 +114,9 @@ export async function GET() {
         daysUntilNextPhase: nextPhase,
         extinctionBurst,
         longestStreak,
+        // Difficulty tracking & adaptation coaching
+        difficultyLogs: habitDifficultyLogs,
+        adaptationAnalysis,
         // logs are already included from the query above
       }
     })
@@ -101,10 +124,7 @@ export async function GET() {
     return NextResponse.json(habitsWithMetrics)
   } catch (error) {
     console.error("Error fetching habits:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
 
@@ -130,15 +150,9 @@ export async function POST(req: Request) {
     return NextResponse.json(habit, { status: 201 })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid input", details: error.errors },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: "Invalid input", details: error.errors }, { status: 400 })
     }
     console.error("Error creating habit:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

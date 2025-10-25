@@ -3,6 +3,8 @@ import { toast } from "sonner"
 import { getStrengthLevel } from "@/lib/algorithms/habit-strength"
 import { getNeuroplasticityPhase } from "@/lib/algorithms/neuroplasticity-phase"
 import { detectExtinctionBurst } from "@/lib/algorithms/extinction-burst"
+import { AdaptationRecommendation } from "@/lib/algorithms/difficulty-adaptation"
+import { HabitDifficultyLog } from "@prisma/client"
 
 // Note: All metric calculations (habitStrength, neuroplasticityPhase, etc.) are now done on server
 // Client only imports types for TypeScript
@@ -31,6 +33,9 @@ export interface Habit {
   daysUntilNextPhase?: number | null
   extinctionBurst?: ReturnType<typeof detectExtinctionBurst>
   longestStreak?: number
+  // Difficulty tracking & adaptation
+  difficultyLogs?: HabitDifficultyLog[]
+  adaptationAnalysis?: AdaptationRecommendation
   logs: {
     id: string
     habitId: string
@@ -70,10 +75,12 @@ export interface UpdateHabitInput {
  * Parse habit data from API (convert date strings to Date objects)
  * ✅ OPTIMIZED: Metrics are now pre-computed on server, no client-side calculations!
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseHabit(habit: any): Habit {
   return {
     ...habit,
     startDate: new Date(habit.startDate),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     logs: habit.logs.map((log: any) => ({
       ...log,
       date: new Date(log.date),
@@ -177,9 +184,7 @@ export function useCompleteHabit() {
       const previousHabits = queryClient.getQueryData<Habit[]>(["habits"])
 
       queryClient.setQueryData<Habit[]>(["habits"], (old) =>
-        old?.map((habit) =>
-          habit.id === habitId ? { ...habit, completed: true } : habit
-        )
+        old?.map((habit) => (habit.id === habitId ? { ...habit, completed: true } : habit))
       )
 
       return { previousHabits }

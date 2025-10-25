@@ -43,6 +43,14 @@ const ExtinctionBurstAlert = dynamic(
   { ssr: false }
 )
 
+const AdaptationCoachAlert = dynamic(
+  () =>
+    import("@/components/difficulty/adaptation-coach-alert").then((mod) => ({
+      default: mod.AdaptationCoachAlert,
+    })),
+  { ssr: false }
+)
+
 const NeuroplasticityCard = dynamic(
   () =>
     import("@/components/neuroplasticity/neuroplasticity-card").then((mod) => ({
@@ -87,6 +95,9 @@ export default function DashboardPage() {
 
   // Find habits with extinction burst
   const habitsWithExtinctionBurst = habits?.filter((h) => h.extinctionBurst?.detected) || []
+
+  // Find habits that need adaptation (high difficulty for 3+ weeks)
+  const habitsNeedingAdaptation = habits?.filter((h) => h.adaptationAnalysis?.needsAdaptation) || []
 
   // Find habits to show neuroplasticity coaching for
   // Show for habits that: 1) are active, 2) have neuroplasticity data, 3) are not yet in phase 4
@@ -231,6 +242,35 @@ export default function DashboardPage() {
                 result={habit.extinctionBurst!}
                 habitName={habit.name}
                 onLearnMore={() => router.push(`/habits/${habit.id}`)}
+              />
+            </motion.div>
+          ))}
+        </motion.section>
+      )}
+
+      {/* Adaptation Coach Alerts */}
+      {!isLoading && habitsNeedingAdaptation.length > 0 && (
+        <motion.section
+          className="mb-8 lg:mb-12 space-y-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+        >
+          {habitsNeedingAdaptation.map((habit, index) => (
+            <motion.div
+              key={habit.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+            >
+              <AdaptationCoachAlert
+                recommendation={habit.adaptationAnalysis!}
+                habitName={habit.name}
+                onSimplify={() => router.push(`/habits/${habit.id}?simplify=true`)}
+                onDismiss={() => {
+                  // TODO: Store dismissal in localStorage or DB
+                  console.log("Dismissed adaptation alert for", habit.name)
+                }}
               />
             </motion.div>
           ))}
