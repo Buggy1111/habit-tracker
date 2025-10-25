@@ -23,7 +23,9 @@
       "Bash(npx shadcn@latest add:*)",
       "Bash(cmd.exe /c \"taskkill /F /PID 23036\")",
       "Bash(dir:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []

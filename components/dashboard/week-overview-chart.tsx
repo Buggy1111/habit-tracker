@@ -29,7 +29,7 @@ export function WeekOverviewChart({ habits }: WeekOverviewChartProps) {
 
       // Count completions for this day
       let completed = 0
-      let total = habits.length
+      const total = habits.length
 
       habits.forEach((habit) => {
         const log = habit.logs.find((log) => {
@@ -82,10 +82,10 @@ export function WeekOverviewChart({ habits }: WeekOverviewChartProps) {
                     isToday
                       ? "bg-gradient-to-t from-primary to-blue-500"
                       : day.completionRate >= 80
-                      ? "bg-gradient-to-t from-green-500 to-emerald-500"
-                      : day.completionRate >= 50
-                      ? "bg-gradient-to-t from-orange-500 to-yellow-500"
-                      : "bg-gradient-to-t from-gray-400 to-gray-500"
+                        ? "bg-gradient-to-t from-green-500 to-emerald-500"
+                        : day.completionRate >= 50
+                          ? "bg-gradient-to-t from-orange-500 to-yellow-500"
+                          : "bg-gradient-to-t from-gray-400 to-gray-500"
                   } group-hover:opacity-80`}
                   initial={{ height: 0 }}
                   animate={{ height: `${height}%` }}
@@ -98,9 +98,7 @@ export function WeekOverviewChart({ habits }: WeekOverviewChartProps) {
                       <div className="text-muted-foreground">
                         {day.completed}/{day.total} návyků
                       </div>
-                      <div className="font-medium text-primary">
-                        {day.completionRate}%
-                      </div>
+                      <div className="font-medium text-primary">{day.completionRate}%</div>
                     </div>
                     {/* Arrow */}
                     <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
