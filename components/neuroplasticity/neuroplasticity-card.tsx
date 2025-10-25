@@ -55,7 +55,7 @@ export function NeuroplasticityCard({ daysSinceStart, habitName }: Neuroplastici
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg">Neuroplasticita: Den {daysSinceStart}</h3>
-                  <p className="text-sm text-muted-foreground">N�vyk: {habitName}</p>
+                  <p className="text-sm text-muted-foreground">Návyk: {habitName}</p>
                 </div>
               </div>
               <Button
@@ -65,7 +65,7 @@ export function NeuroplasticityCard({ daysSinceStart, habitName }: Neuroplastici
                 className="gap-2"
               >
                 <Info className="h-4 w-4" />
-                <span className="hidden sm:inline">Zjistit v�ce</span>
+                <span className="hidden sm:inline">Zjistit více</span>
               </Button>
             </div>
 
@@ -84,7 +84,7 @@ export function NeuroplasticityCard({ daysSinceStart, habitName }: Neuroplastici
               {/* Progress */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">F�ze {phase.phase}/4 Progress</span>
+                  <span className="text-muted-foreground">Fáze {phase.phase}/4 Progress</span>
                   <span className="font-medium">{phase.progress}%</span>
                 </div>
                 <Progress
@@ -98,7 +98,7 @@ export function NeuroplasticityCard({ daysSinceStart, habitName }: Neuroplastici
                 />
                 {daysLeft !== null && (
                   <p className="text-xs text-muted-foreground">
-                    {daysLeft} {daysLeft === 1 ? "den" : "dny"} do dala� f�ze
+                    {daysLeft} {daysLeft === 1 ? "den" : "dny"} do další fáze
                   </p>
                 )}
               </div>
