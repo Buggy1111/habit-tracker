@@ -1,9 +1,10 @@
 "use client"
 
 import { StatsOverview } from "@/components/dashboard/stats-overview"
+import { WeekOverviewChart } from "@/components/dashboard/week-overview-chart"
 import { useHabits } from "@/hooks/use-habits"
 import { motion } from "framer-motion"
-import { TrendingUp, Target, Calendar, Award } from "lucide-react"
+import { TrendingUp, Target, Calendar, Award, BarChart3 } from "lucide-react"
 
 export default function AnalyticsPage() {
   const { data: habits, isLoading } = useHabits()
@@ -101,6 +102,36 @@ export default function AnalyticsPage() {
           />
         )}
       </motion.section>
+
+      {/* Week Overview Chart */}
+      {!isLoading && habits && habits.length > 0 && (
+        <motion.section
+          className="mb-8 lg:mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+        >
+          <div className="rounded-2xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-2xl overflow-hidden relative group hover:shadow-primary/10 transition-all duration-500">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+
+            <div className="relative p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-blue-500/20">
+                  <BarChart3 className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Týdenní přehled</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Úspěšnost dokončení za posledních 7 dní
+                  </p>
+                </div>
+              </div>
+
+              <WeekOverviewChart habits={habits} />
+            </div>
+          </div>
+        </motion.section>
+      )}
 
       {/* Additional Analytics */}
       <motion.div
