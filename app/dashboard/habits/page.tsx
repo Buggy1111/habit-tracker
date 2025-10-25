@@ -3,6 +3,7 @@
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { HabitList } from "@/components/habits/habit-list"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useState } from "react"
 import { useHabits } from "@/hooks/use-habits"
 import dynamic from "next/dynamic"
@@ -61,23 +62,35 @@ export default function HabitsPage() {
       >
         <div className="rounded-xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-xl p-6">
           <div className="text-sm text-muted-foreground mb-1">Celkem návyků</div>
-          <div className="text-3xl font-bold bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
-            {totalHabits}
-          </div>
+          {isLoading ? (
+            <Skeleton className="h-9 w-16 mt-1" />
+          ) : (
+            <div className="text-3xl font-bold bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
+              {totalHabits}
+            </div>
+          )}
         </div>
 
         <div className="rounded-xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-xl p-6">
           <div className="text-sm text-muted-foreground mb-1">Aktivní návyky</div>
-          <div className="text-3xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
-            {activeHabits}
-          </div>
+          {isLoading ? (
+            <Skeleton className="h-9 w-16 mt-1" />
+          ) : (
+            <div className="text-3xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
+              {activeHabits}
+            </div>
+          )}
         </div>
 
         <div className="rounded-xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-xl p-6">
           <div className="text-sm text-muted-foreground mb-1">Splněno dnes</div>
-          <div className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-            {completedToday}
-          </div>
+          {isLoading ? (
+            <Skeleton className="h-9 w-16 mt-1" />
+          ) : (
+            <div className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+              {completedToday}
+            </div>
+          )}
         </div>
       </motion.div>
 
@@ -93,23 +106,7 @@ export default function HabitsPage() {
 
           {/* Content */}
           <div className="relative p-6">
-            {!isLoading && totalHabits > 0 ? (
-              <HabitList />
-            ) : (
-              <div className="flex flex-col items-center justify-center p-12">
-                <div className="text-6xl mb-4">🎯</div>
-                <p className="text-lg font-medium text-center mb-2">
-                  Zatím žádné návyky
-                </p>
-                <p className="text-muted-foreground text-center mb-6">
-                  Vytvoř svůj první návyk a začni budovat lepší verzi sebe!
-                </p>
-                <Button onClick={() => setIsAddDialogOpen(true)} size="lg">
-                  <Plus className="mr-2 h-5 w-5" />
-                  Vytvořit první návyk
-                </Button>
-              </div>
-            )}
+            <HabitList />
           </div>
         </div>
       </motion.section>

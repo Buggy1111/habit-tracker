@@ -122,13 +122,11 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {!isLoading && (
-          <DashboardHero
-            completedToday={completedToday}
-            totalHabits={totalHabits}
-            currentStreak={currentStreak}
-          />
-        )}
+        <DashboardHero
+          completedToday={completedToday}
+          totalHabits={totalHabits}
+          currentStreak={currentStreak}
+        />
       </motion.section>
 
       {/* Extinction Burst Alerts */}
@@ -163,14 +161,12 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        {!isLoading && (
-          <StatsOverview
-            totalHabits={totalHabits}
-            completedToday={completedToday}
-            weeklyCompletionRate={weeklyCompletionRate}
-            longestStreak={longestStreak}
-          />
-        )}
+        <StatsOverview
+          totalHabits={totalHabits}
+          completedToday={completedToday}
+          weeklyCompletionRate={weeklyCompletionRate}
+          longestStreak={longestStreak}
+        />
       </motion.section>
 
       {/* Quick Links Section */}
