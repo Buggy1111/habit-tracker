@@ -78,6 +78,7 @@ model Habit {
 
   @@index([userId])
   @@index([userId, isActive])
+  @@index([userId, isActive, createdAt])  // Composite index for main habits query with sorting
   @@index([identityId])
   @@map("habits")
 }

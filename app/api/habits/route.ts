@@ -58,6 +58,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    // ✅ FIXED N+1 QUERY: Fetch ALL logs in a SINGLE query
     const habits = await prisma.habit.findMany({
       where: {
         userId: session.user.id,
@@ -65,14 +66,10 @@ export async function GET() {
       },
       include: {
         logs: {
-          where: {
-            date: {
-              gte: new Date(new Date().setHours(0, 0, 0, 0)),
-            },
-          },
           orderBy: {
             date: "desc",
           },
+          take: 100, // Limit to last 100 logs for performance (covers ~3 months of daily habits)
         },
       },
       orderBy: {
@@ -80,34 +77,27 @@ export async function GET() {
       },
     })
 
-    // Get all logs for streak calculation and calendar
-    const habitsWithAllLogs = await Promise.all(
-      habits.map(async (habit) => {
-        const allLogs = await prisma.habitLog.findMany({
-          where: { habitId: habit.id },
-          orderBy: { date: "desc" },
-        })
-
-        const todayLog = habit.logs.find((log) => {
-          const logDate = new Date(log.date)
-          const today = new Date()
-          return (
-            logDate.getDate() === today.getDate() &&
-            logDate.getMonth() === today.getMonth() &&
-            logDate.getFullYear() === today.getFullYear()
-          )
-        })
-
-        return {
-          ...habit,
-          completed: todayLog?.completed || false,
-          streak: calculateStreak(allLogs),
-          logs: allLogs, // Include all logs for calendar
-        }
+    // Calculate metrics in a single pass (no additional queries)
+    const habitsWithMetrics = habits.map((habit) => {
+      const todayLog = habit.logs.find((log) => {
+        const logDate = new Date(log.date)
+        const today = new Date()
+        return (
+          logDate.getDate() === today.getDate() &&
+          logDate.getMonth() === today.getMonth() &&
+          logDate.getFullYear() === today.getFullYear()
+        )
       })
-    )
 
-    return NextResponse.json(habitsWithAllLogs)
+      return {
+        ...habit,
+        completed: todayLog?.completed || false,
+        streak: calculateStreak(habit.logs),
+        // logs are already included from the query above
+      }
+    })
+
+    return NextResponse.json(habitsWithMetrics)
   } catch (error) {
     console.error("Error fetching habits:", error)
     return NextResponse.json(
