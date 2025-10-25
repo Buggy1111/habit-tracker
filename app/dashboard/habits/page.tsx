@@ -3,20 +3,16 @@
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { HabitList } from "@/components/habits/habit-list"
-import { useState, lazy, Suspense } from "react"
+import { useState } from "react"
 import { useHabits } from "@/hooks/use-habits"
 import dynamic from "next/dynamic"
+import { motion } from "framer-motion"
 
 // Lazy load heavy components
 const AddHabitDialog = dynamic(
   () => import("@/components/habits/add-habit-dialog").then(mod => ({ default: mod.AddHabitDialog })),
   { ssr: false }
 )
-
-// Lazy load framer-motion for animations
-const motion = dynamic(() => import("framer-motion").then(mod => ({ default: mod.motion })), {
-  ssr: false,
-}) as any
 
 export default function HabitsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)

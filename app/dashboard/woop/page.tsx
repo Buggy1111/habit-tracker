@@ -9,17 +9,13 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useHabits } from "@/hooks/use-habits"
 import Link from "next/link"
 import dynamic from "next/dynamic"
+import { motion } from "framer-motion"
 
 // Lazy load wizard dialog
 const WoopWizard = dynamic(
   () => import("@/components/woop/woop-wizard").then(mod => ({ default: mod.WoopWizard })),
   { ssr: false }
 )
-
-// Lazy load framer-motion
-const motion = dynamic(() => import("framer-motion").then(mod => ({ default: mod.motion })), {
-  ssr: false,
-}) as any
 
 export default function WoopPage() {
   const { data: habits, isLoading: habitsLoading } = useHabits()

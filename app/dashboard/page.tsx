@@ -7,6 +7,7 @@ import { useIdentities } from "@/hooks/use-identities"
 import { useRouter } from "next/navigation"
 import dynamic from "next/dynamic"
 import { Skeleton } from "@/components/ui/skeleton"
+import { motion } from "framer-motion"
 
 // Lazy load heavy components
 const DashboardHero = dynamic(
@@ -23,11 +24,6 @@ const ExtinctionBurstAlert = dynamic(
   () => import("@/components/habits/extinction-burst-alert").then(mod => ({ default: mod.ExtinctionBurstAlert })),
   { ssr: false }
 )
-
-// Lazy load framer-motion for animations
-const motion = dynamic(() => import("framer-motion").then(mod => ({ default: mod.motion })), {
-  ssr: false,
-}) as any
 
 export default function DashboardPage() {
   const router = useRouter()

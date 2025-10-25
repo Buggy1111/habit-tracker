@@ -8,7 +8,12 @@
       "Bash(python remove_bg.py)",
       "Read(//c/Users/micha/OneDrive/Plocha/mysl/**)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(cat:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "ask": []
