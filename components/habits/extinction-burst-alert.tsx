@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import type { ExtinctionBurstResult } from "@/lib/algorithms/extinction-burst"
+import { InfoTooltip } from "@/components/ui/info-tooltip"
+import { HELP_CONTENT } from "@/lib/help-content"
 
 interface ExtinctionBurstAlertProps {
   result: ExtinctionBurstResult
@@ -104,9 +106,17 @@ export function ExtinctionBurstAlert({
             </motion.div>
 
             <div className="flex-1 space-y-2">
-              <h3 className={cn("text-lg font-bold", colors.text)}>
-                {result.message}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className={cn("text-lg font-bold", colors.text)}>
+                  {result.message}
+                </h3>
+                <InfoTooltip
+                  title={HELP_CONTENT.extinctionBurst.title}
+                  content={HELP_CONTENT.extinctionBurst.short}
+                  learnMoreLink={HELP_CONTENT.extinctionBurst.learnMoreLink}
+                  side="right"
+                />
+              </div>
               <p className="text-sm text-muted-foreground">
                 Detekováno u návyku: <span className="font-medium">{habitName}</span>
               </p>

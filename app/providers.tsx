@@ -19,9 +19,13 @@ export function Providers({ children }: { children: ReactNode }) {
             refetchOnMount: false, // Don't refetch on mount if data is fresh
             refetchOnReconnect: true, // Refetch when connection is restored
             retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+            // Performance optimizations
+            structuralSharing: true, // Prevent unnecessary re-renders
+            networkMode: 'online', // Only fetch when online
           },
           mutations: {
             retry: 0, // Don't retry mutations automatically
+            networkMode: 'online',
             onError: (error) => {
               // Global error handling can be added here
               console.error('Mutation error:', error)

@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import type { NeuroplasticityPhase } from "@/lib/algorithms/neuroplasticity-phase"
 import { getPhaseColor } from "@/lib/algorithms/neuroplasticity-phase"
+import { InfoTooltip } from "@/components/ui/info-tooltip"
+import { HELP_CONTENT } from "@/lib/help-content"
 
 interface NeuroplasticityTimelineProps {
   phase: NeuroplasticityPhase
@@ -80,6 +82,12 @@ export function NeuroplasticityTimeline({
               <Icon className="h-5 w-5" style={{ color: phaseColor }} />
             </motion.div>
             <span>66-Day Neuroplasticity</span>
+            <InfoTooltip
+              title={HELP_CONTENT.neuroplasticity.title}
+              content={HELP_CONTENT.neuroplasticity.short}
+              learnMoreLink={HELP_CONTENT.neuroplasticity.learnMoreLink}
+              side="right"
+            />
           </CardTitle>
           <Badge
             variant="secondary"

@@ -8,6 +8,13 @@ import { useState } from "react"
 import { useHabits } from "@/hooks/use-habits"
 import dynamic from "next/dynamic"
 import { motion } from "framer-motion"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { HELP_CONTENT } from "@/lib/help-content"
 
 // Lazy load heavy components
 const AddHabitDialog = dynamic(
@@ -40,17 +47,29 @@ export default function HabitsPage() {
             Kompletní seznam tvých návyků ({totalHabits})
           </p>
         </div>
-        <Button
-          onClick={() => setIsAddDialogOpen(true)}
-          size="lg"
-          className="relative overflow-hidden group"
-        >
-          <span className="relative z-10 flex items-center">
-            <Plus className="mr-2 h-5 w-5" />
-            Nový návyk
-          </span>
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/20 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-        </Button>
+        <TooltipProvider>
+          <Tooltip delayDuration={300}>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => setIsAddDialogOpen(true)}
+                size="lg"
+                className="relative overflow-hidden group"
+              >
+                <span className="relative z-10 flex items-center">
+                  <Plus className="mr-2 h-5 w-5" />
+                  Nový návyk
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/20 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-xs">
+              <p className="font-semibold text-sm">{HELP_CONTENT.createHabit.title}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {HELP_CONTENT.createHabit.short}
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </motion.div>
 
       {/* Stats Cards */}
@@ -106,7 +125,7 @@ export default function HabitsPage() {
 
           {/* Content */}
           <div className="relative p-6">
-            <HabitList />
+            <HabitList onCreateHabit={() => setIsAddDialogOpen(true)} />
           </div>
         </div>
       </motion.section>

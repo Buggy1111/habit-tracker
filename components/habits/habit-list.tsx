@@ -1,11 +1,17 @@
 "use client"
 
+import { memo } from "react"
 import { HabitCard } from "./habit-card"
+import { HabitsEmptyState } from "./habits-empty-state"
 import { useHabits } from "@/hooks/use-habits"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
 
-export function HabitList() {
+interface HabitListProps {
+  onCreateHabit?: () => void
+}
+
+export const HabitList = memo(function HabitList({ onCreateHabit }: HabitListProps) {
   const { data: habits, isLoading, error } = useHabits()
 
   // Loading state
@@ -40,7 +46,9 @@ export function HabitList() {
   }
 
   if (habits.length === 0) {
-    return (
+    return onCreateHabit ? (
+      <HabitsEmptyState onCreateHabit={onCreateHabit} />
+    ) : (
       <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
         <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center">
           <h3 className="mt-4 text-lg font-semibold">Zatím žádné návyky</h3>
@@ -59,4 +67,4 @@ export function HabitList() {
       ))}
     </div>
   )
-}
+})

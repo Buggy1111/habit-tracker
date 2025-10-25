@@ -31,6 +31,8 @@ import {
 import { Sparkles, ArrowLeft, ArrowRight, Check, Lightbulb } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { InfoTooltip } from "@/components/ui/info-tooltip"
+import { HELP_CONTENT } from "@/lib/help-content"
 
 interface WoopWizardProps {
   habitId: string
@@ -118,6 +120,12 @@ export function WoopWizard({
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-purple-500" />
             <DialogTitle>WOOP Method</DialogTitle>
+            <InfoTooltip
+              title={HELP_CONTENT.woop.title}
+              content={HELP_CONTENT.woop.short}
+              learnMoreLink={HELP_CONTENT.woop.learnMoreLink}
+              side="right"
+            />
           </div>
           <DialogDescription>
             Wish · Outcome · Obstacle · Plan - Gabriele Oettingen (2x zvýšení aktivity)
@@ -142,6 +150,11 @@ export function WoopWizard({
                   W - Wish
                 </Badge>
                 <h3 className="font-semibold">Co chci dosáhnout?</h3>
+                <InfoTooltip
+                  title={HELP_CONTENT.woopWish.title}
+                  content={HELP_CONTENT.woopWish.short}
+                  side="right"
+                />
               </div>
 
               <p className="text-sm text-muted-foreground">
@@ -257,6 +270,11 @@ export function WoopWizard({
                   O - Outcome
                 </Badge>
                 <h3 className="font-semibold">Jaký bude nejlepší výsledek?</h3>
+                <InfoTooltip
+                  title={HELP_CONTENT.woopOutcome.title}
+                  content={HELP_CONTENT.woopOutcome.short}
+                  side="right"
+                />
               </div>
 
               <p className="text-sm text-muted-foreground">
@@ -291,6 +309,11 @@ export function WoopWizard({
                   O - Obstacle
                 </Badge>
                 <h3 className="font-semibold">Co mi stojí v cestě?</h3>
+                <InfoTooltip
+                  title={HELP_CONTENT.woopObstacle.title}
+                  content={HELP_CONTENT.woopObstacle.short}
+                  side="right"
+                />
               </div>
 
               <p className="text-sm text-muted-foreground">
@@ -325,6 +348,11 @@ export function WoopWizard({
                   P - Plan
                 </Badge>
                 <h3 className="font-semibold">Když nastane překážka, co udělám?</h3>
+                <InfoTooltip
+                  title={HELP_CONTENT.woopPlan.title}
+                  content={HELP_CONTENT.woopPlan.short}
+                  side="right"
+                />
               </div>
 
               <p className="text-sm text-muted-foreground">

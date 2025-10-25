@@ -3,6 +3,8 @@
 import { motion } from "framer-motion"
 import { TrendingUp } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { InfoTooltip } from "@/components/ui/info-tooltip"
+import { HELP_CONTENT } from "@/lib/help-content"
 
 interface HabitStrengthBadgeProps {
   strength: number
@@ -41,8 +43,14 @@ export function HabitStrengthBadge({
           style={{ color: level.color }}
         />
         <div className="flex-1 min-w-0">
-          <div className={cn("font-medium", sizeClasses[size])}>
+          <div className={cn("font-medium flex items-center gap-1", sizeClasses[size])}>
             Síla návyku: {strength}/100
+            <InfoTooltip
+              title={HELP_CONTENT.habitStrength.title}
+              content={HELP_CONTENT.habitStrength.short}
+              learnMoreLink={HELP_CONTENT.habitStrength.learnMoreLink}
+              side="right"
+            />
           </div>
           <div
             className={cn("text-xs text-muted-foreground", {

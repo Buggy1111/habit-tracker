@@ -14,7 +14,16 @@
       "Bash(findstr:*)",
       "Bash(taskkill:*)",
       "Bash(git restore:*)",
-      "Bash(npx prisma migrate dev:*)"
+      "Bash(npx prisma migrate dev:*)",
+      "Bash(npm install:*)",
+      "Bash(npx husky init)",
+      "Bash(npx prisma generate:*)",
+      "Bash(cmd.exe /c \"taskkill /F /IM node.exe\")",
+      "Bash(powershell -Command:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(cmd.exe /c \"taskkill /F /PID 23036\")",
+      "Bash(dir:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []

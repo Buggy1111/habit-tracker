@@ -7,8 +7,16 @@ import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useIdentities } from "@/hooks/use-identities"
 import { IdentityCard } from "@/components/identity/identity-card"
+import { IdentityEmptyState } from "@/components/identity/identity-empty-state"
 import dynamic from "next/dynamic"
 import { motion } from "framer-motion"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { HELP_CONTENT } from "@/lib/help-content"
 
 // Lazy load dialog (only when needed)
 const CreateIdentityDialog = dynamic(
@@ -38,10 +46,22 @@ export default function IdentityPage() {
             Kým se chceš stát? Každý návyk je hlasem pro tvou novou identitu.
           </p>
         </div>
-        <Button onClick={() => setCreateDialogOpen(true)} size="lg">
-          <Plus className="w-5 h-5 mr-2" />
-          Nová identita
-        </Button>
+        <TooltipProvider>
+          <Tooltip delayDuration={300}>
+            <TooltipTrigger asChild>
+              <Button onClick={() => setCreateDialogOpen(true)} size="lg">
+                <Plus className="w-5 h-5 mr-2" />
+                Nová identita
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-xs">
+              <p className="font-semibold text-sm">{HELP_CONTENT.createIdentity.title}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {HELP_CONTENT.createIdentity.short}
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </motion.div>
 
       {/* Info Card */}
@@ -109,18 +129,7 @@ export default function IdentityPage() {
             ))}
           </div>
         ) : (
-          <Card className="p-12 text-center border-2 border-dashed">
-            <Sparkles className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Zatím nemáš žádnou identitu</h3>
-            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Vytvoř si první identitu a propoj s ní své návyky. Změna identity je klíčem k
-              trvalé změně chování.
-            </p>
-            <Button onClick={() => setCreateDialogOpen(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Vytvořit první identitu
-            </Button>
-          </Card>
+          <IdentityEmptyState onCreateIdentity={() => setCreateDialogOpen(true)} />
         )}
       </motion.div>
 

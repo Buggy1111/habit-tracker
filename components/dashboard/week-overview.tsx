@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { TrendingUp } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { InfoTooltip } from "@/components/ui/info-tooltip"
 
 interface WeekOverviewProps {
   habits: {
@@ -69,10 +70,17 @@ export function WeekOverview({ habits }: WeekOverviewProps) {
     <Card>
       <CardHeader className="p-4 sm:p-6">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-            <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-            Týdenní přehled
-          </CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+              Týdenní přehled
+            </CardTitle>
+            <InfoTooltip
+              title="Týdenní přehled"
+              content="Vizualizace vašich posledních 7 dní. Zelené čtverečky = splněno, červené okraje = vynecháno. Sledujte vzory a konzistenci!"
+              side="top"
+            />
+          </div>
           <Badge variant="secondary" className="gap-1 sm:gap-2 text-xs sm:text-sm">
             {weeklyRate}% úspěšnost
           </Badge>

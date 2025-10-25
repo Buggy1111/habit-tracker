@@ -103,7 +103,12 @@ export default function DashboardPage() {
   // Show for habits that: 1) are active, 2) have neuroplasticity data, 3) are not yet in phase 4
   const habitsWithNeuroplasticity =
     habits?.filter(
-      (h) => h.isActive && h.neuroplasticityPhase && h.neuroplasticityPhase.phase < 4
+      (h, index, self) =>
+        h.isActive &&
+        h.neuroplasticityPhase &&
+        h.neuroplasticityPhase.phase < 4 &&
+        // Ensure uniqueness by id
+        self.findIndex(habit => habit.id === h.id) === index
     ) || []
 
   // Calculate weekly completion rate
@@ -285,9 +290,14 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <h2 className="text-2xl font-bold mb-6">Tvůj Neuroplasticity Progress</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold">Tvůj Neuroplasticity Progress</h2>
+            <span className="text-sm text-muted-foreground">
+              {habitsWithNeuroplasticity.length} {habitsWithNeuroplasticity.length === 1 ? 'návyk' : habitsWithNeuroplasticity.length < 5 ? 'návyky' : 'návyků'} v progresu
+            </span>
+          </div>
           <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
-            {habitsWithNeuroplasticity.slice(0, 4).map((habit, index) => {
+            {habitsWithNeuroplasticity.slice(0, 2).map((habit, index) => {
               // Calculate days since start from startDate
               const daysSinceStart = Math.ceil(
                 (new Date().getTime() - new Date(habit.startDate).getTime()) / (1000 * 60 * 60 * 24)

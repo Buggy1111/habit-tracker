@@ -20,6 +20,8 @@ import {
   type ImplementationIntention,
   type IntentionCategory,
 } from "@/lib/constants/implementation-intentions"
+import { InfoTooltip } from "@/components/ui/info-tooltip"
+import { HELP_CONTENT } from "@/lib/help-content"
 
 interface ImplementationIntentionBuilderProps {
   value: ImplementationIntention
@@ -63,7 +65,15 @@ export function ImplementationIntentionBuilder({
       {/* Header with info */}
       <div className="flex items-start justify-between gap-2">
         <div>
-          <Label className="text-base">IF-THEN Implementační záměr</Label>
+          <div className="flex items-center gap-1">
+            <Label className="text-base">IF-THEN Implementační záměr</Label>
+            <InfoTooltip
+              title={HELP_CONTENT.implementationIntentions.title}
+              content={HELP_CONTENT.implementationIntentions.short}
+              learnMoreLink={HELP_CONTENT.implementationIntentions.learnMoreLink}
+              side="right"
+            />
+          </div>
           <p className="text-xs text-muted-foreground mt-1">
             Výzkumy ukazují 2-3x vyšší úspěšnost (effect size d=0.65)
           </p>
@@ -136,9 +146,16 @@ export function ImplementationIntentionBuilder({
         <div className="space-y-3 p-4 rounded-lg border bg-muted/50">
           {/* When */}
           <div className="grid gap-2">
-            <Label htmlFor="when" className="text-sm">
-              1️⃣ Kdy / When <span className="text-destructive">*</span>
-            </Label>
+            <div className="flex items-center gap-1">
+              <Label htmlFor="when" className="text-sm">
+                1️⃣ Kdy / When <span className="text-destructive">*</span>
+              </Label>
+              <InfoTooltip
+                title={HELP_CONTENT.implementationIntentionWhen.title}
+                content={HELP_CONTENT.implementationIntentionWhen.short}
+                side="right"
+              />
+            </div>
             <Input
               id="when"
               placeholder="Když vstanu z postele..."
@@ -152,9 +169,16 @@ export function ImplementationIntentionBuilder({
 
           {/* Action */}
           <div className="grid gap-2">
-            <Label htmlFor="action" className="text-sm">
-              2️⃣ Co udělám / I will <span className="text-destructive">*</span>
-            </Label>
+            <div className="flex items-center gap-1">
+              <Label htmlFor="action" className="text-sm">
+                2️⃣ Co udělám / I will <span className="text-destructive">*</span>
+              </Label>
+              <InfoTooltip
+                title={HELP_CONTENT.implementationIntentionAction.title}
+                content={HELP_CONTENT.implementationIntentionAction.short}
+                side="right"
+              />
+            </div>
             <Input
               id="action"
               placeholder="napiju se sklenici vody..."
@@ -168,9 +192,16 @@ export function ImplementationIntentionBuilder({
 
           {/* Context (Optional) */}
           <div className="grid gap-2">
-            <Label htmlFor="context" className="text-sm">
-              3️⃣ Kde / In (volitelné)
-            </Label>
+            <div className="flex items-center gap-1">
+              <Label htmlFor="context" className="text-sm">
+                3️⃣ Kde / In (volitelné)
+              </Label>
+              <InfoTooltip
+                title={HELP_CONTENT.implementationIntentionContext.title}
+                content={HELP_CONTENT.implementationIntentionContext.short}
+                side="right"
+              />
+            </div>
             <Input
               id="context"
               placeholder="v kuchyni..."

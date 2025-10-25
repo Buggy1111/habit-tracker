@@ -1,9 +1,12 @@
 "use client"
 
+import { memo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Target, TrendingUp, Calendar, Flame } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
+import { InfoTooltip } from "@/components/ui/info-tooltip"
+import { HELP_CONTENT } from "@/lib/help-content"
 
 interface StatsOverviewProps {
   totalHabits: number
@@ -12,7 +15,7 @@ interface StatsOverviewProps {
   longestStreak: number
 }
 
-export function StatsOverview({
+export const StatsOverview = memo(function StatsOverview({
   totalHabits,
   completedToday,
   weeklyCompletionRate,
@@ -26,6 +29,8 @@ export function StatsOverview({
       gradient: "from-blue-500 to-cyan-500",
       iconBg: "bg-gradient-to-br from-blue-500/20 to-cyan-500/20",
       iconColor: "text-blue-600 dark:text-blue-400",
+      helpTitle: HELP_CONTENT.activeHabits.title,
+      helpContent: HELP_CONTENT.activeHabits.short,
     },
     {
       title: "Splněno dnes",
@@ -34,6 +39,8 @@ export function StatsOverview({
       gradient: "from-green-500 to-emerald-500",
       iconBg: "bg-gradient-to-br from-green-500/20 to-emerald-500/20",
       iconColor: "text-green-600 dark:text-green-400",
+      helpTitle: "Splněno dnes",
+      helpContent: "Počet návyků, které jste dnes dokončili. Klikněte na návyk pro označení jako splněný.",
     },
     {
       title: "Úspěšnost (7 dní)",
@@ -42,6 +49,8 @@ export function StatsOverview({
       gradient: "from-purple-500 to-pink-500",
       iconBg: "bg-gradient-to-br from-purple-500/20 to-pink-500/20",
       iconColor: "text-purple-600 dark:text-purple-400",
+      helpTitle: HELP_CONTENT.completionRate.title,
+      helpContent: HELP_CONTENT.completionRate.short,
     },
     {
       title: "Nejdelší série",
@@ -50,6 +59,8 @@ export function StatsOverview({
       gradient: "from-orange-500 to-red-500",
       iconBg: "bg-gradient-to-br from-orange-500/20 to-red-500/20",
       iconColor: "text-orange-600 dark:text-orange-400",
+      helpTitle: HELP_CONTENT.currentStreak.title,
+      helpContent: "Nejvíce po sobě jdoucích dní, kdy jste splnili návyk. Ukazuje vaši konzistenci!",
     },
   ]
 
@@ -62,6 +73,7 @@ export function StatsOverview({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: index * 0.1 }}
           whileHover={{ y: -4, scale: 1.02 }}
+          style={{ willChange: "transform, opacity" }}
         >
           <Card className="relative overflow-hidden border-white/20 bg-gradient-to-br from-card/90 to-card/50 backdrop-blur-xl shadow-xl hover:shadow-2xl transition-all duration-500 group">
             {/* Gradient accent line - animated on hover */}
@@ -75,9 +87,16 @@ export function StatsOverview({
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
 
             <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-1 sm:pb-2 px-4 sm:px-6 pt-4 sm:pt-6">
-              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
-                {stat.title}
-              </CardTitle>
+              <div className="flex items-center gap-1">
+                <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </CardTitle>
+                <InfoTooltip
+                  title={stat.helpTitle}
+                  content={stat.helpContent}
+                  side="top"
+                />
+              </div>
               <motion.div
                 className={cn("p-2 sm:p-2.5 rounded-lg sm:rounded-xl", stat.iconBg)}
                 whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
@@ -104,4 +123,4 @@ export function StatsOverview({
       ))}
     </div>
   )
-}
+})

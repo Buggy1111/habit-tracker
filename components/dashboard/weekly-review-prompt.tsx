@@ -44,21 +44,21 @@ export function WeeklyReviewPrompt({ onStartReview, onDismiss }: WeeklyReviewPro
             <div className="flex-1 space-y-4">
               <div>
                 <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-1">
-                  as na týdenní reflexi! =Ê
+                  Cas na tydenni reflexi!
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Podívejme se na tvoj pokrok tento týden a naplánujme pYíatí.
+                  Podivejme se na tvuj pokrok tento tyden a naplannujme pristi.
                 </p>
               </div>
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-indigo-500" />
-                  <span>PYehled týdne</span>
+                  <span>Prehled tydne</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-indigo-500" />
-                  <span>Hodnocení obtí~nosti</span>
+                  <span>Hodnoceni obtiznosti</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-indigo-500" />
@@ -72,16 +72,17 @@ export function WeeklyReviewPrompt({ onStartReview, onDismiss }: WeeklyReviewPro
                   onClick={onStartReview}
                   className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2"
                 >
-                  Zaít reflexi
+                  Zacit reflexi
                   <ArrowRight className="h-4 w-4" />
                 </Button>
                 <Button variant="outline" onClick={onDismiss} className="border-indigo-300">
-                  PYipomenout pozdji
+                  Pripomenout pozdeji
                 </Button>
               </div>
 
               <p className="text-xs text-muted-foreground">
-                =¡ <strong>Výzkum ukazuje:</strong> Týdenní self-monitoring zvyauje long-term adherenci o 32-56%
+                <strong>Vyzkum ukazuje:</strong> Tydenni self-monitoring zvysuje long-term adherenci
+                o 32-56%
               </p>
             </div>
           </div>

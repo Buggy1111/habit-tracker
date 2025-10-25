@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useCompleteHabit } from "@/hooks/use-habits"
 import { cn } from "@/lib/utils"
+import { InfoTooltip } from "@/components/ui/info-tooltip"
 
 interface TodaysFocusProps {
   habits: {
@@ -37,10 +38,17 @@ export function TodaysFocus({ habits }: TodaysFocusProps) {
     <Card>
       <CardHeader className="p-4 sm:p-6">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-            <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-            Dnešní návyky
-          </CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+              Dnešní návyky
+            </CardTitle>
+            <InfoTooltip
+              title="Dnešní návyky"
+              content="Seznam všech návyků, které si můžete splnit dnes. Klikněte na 'Splnit' pro označení jako dokončený."
+              side="top"
+            />
+          </div>
           <Badge variant="secondary" className="text-xs sm:text-sm">
             {completedHabits.length}/{habits.length}
           </Badge>

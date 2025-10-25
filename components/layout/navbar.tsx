@@ -11,7 +11,12 @@ import {
   Sparkles,
   HelpCircle,
   Moon,
-  Sun
+  Sun,
+  Book,
+  Lightbulb,
+  TrendingUp,
+  Zap,
+  Award
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -22,6 +27,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuGroup,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { LiveClock } from "./live-clock"
@@ -146,10 +154,39 @@ export function Navbar() {
                       <span>{theme === "dark" ? "Světlý režim" : "Tmavý režim"}</span>
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem onClick={() => router.push("/help")}>
-                    <HelpCircle className="mr-2 h-4 w-4" />
-                    <span>Nápověda</span>
-                  </DropdownMenuItem>
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <Book className="mr-2 h-4 w-4" />
+                      <span>Quick Help</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => router.push("/help/getting-started")}>
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        <span>Začínáme</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push("/help/implementation-intentions")}>
+                        <Zap className="mr-2 h-4 w-4" />
+                        <span>IF-THEN plány</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push("/help/habit-strength")}>
+                        <TrendingUp className="mr-2 h-4 w-4" />
+                        <span>Habit Strength</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push("/help/neuroplasticity")}>
+                        <Brain className="mr-2 h-4 w-4" />
+                        <span>66-denní věda</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push("/help/woop")}>
+                        <Award className="mr-2 h-4 w-4" />
+                        <span>WOOP metoda</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => router.push("/help")}>
+                        <HelpCircle className="mr-2 h-4 w-4" />
+                        <span>Vše o nápovědě</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
                 </DropdownMenuGroup>
 
                 <DropdownMenuSeparator />

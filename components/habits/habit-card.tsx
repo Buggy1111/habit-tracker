@@ -5,6 +5,12 @@ import { useRouter } from "next/navigation"
 import { Check, Flame, MoreVertical, Target, Sparkles, Brain, TrendingUp, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import {
   Card,
   CardContent,
   CardDescription,
@@ -31,6 +37,8 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { useCompleteHabit, useDeleteHabit, type Habit } from "@/hooks/use-habits"
 import { EditHabitDialog } from "./edit-habit-dialog"
+import { InfoTooltip } from "@/components/ui/info-tooltip"
+import { HELP_CONTENT } from "@/lib/help-content"
 
 interface HabitCardProps {
   habit: Habit
@@ -153,6 +161,12 @@ export const HabitCard = memo(function HabitCard({ habit }: HabitCardProps) {
             <span className="text-xs sm:text-sm lg:text-base font-medium">
               {habit.streak} {habit.streak === 1 ? 'den' : habit.streak < 5 ? 'dny' : 'dní'}
             </span>
+            <InfoTooltip
+              title={HELP_CONTENT.currentStreak.title}
+              content={HELP_CONTENT.currentStreak.short}
+              side="top"
+              className="ml-1"
+            />
           </div>
           <Badge variant={habit.completed ? "default" : "outline"} className="text-xs sm:text-sm">
             {habit.completed ? "Hotovo" : "Čeká"}
@@ -166,7 +180,15 @@ export const HabitCard = memo(function HabitCard({ habit }: HabitCardProps) {
             <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
               <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" style={{ color: habit.strengthLevel.color }} />
               <div className="min-w-0 flex-1">
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Síla</p>
+                <div className="flex items-center gap-1">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">Síla</p>
+                  <InfoTooltip
+                    title={HELP_CONTENT.habitStrength.title}
+                    content={HELP_CONTENT.habitStrength.short}
+                    learnMoreLink={HELP_CONTENT.habitStrength.learnMoreLink}
+                    side="top"
+                  />
+                </div>
                 <p className="text-xs sm:text-sm font-semibold truncate" style={{ color: habit.strengthLevel.color }}>
                   {habit.habitStrength}/100
                 </p>
@@ -179,7 +201,15 @@ export const HabitCard = memo(function HabitCard({ habit }: HabitCardProps) {
             <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20">
               <Brain className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0 text-purple-500" />
               <div className="min-w-0 flex-1">
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Fáze</p>
+                <div className="flex items-center gap-1">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">Fáze</p>
+                  <InfoTooltip
+                    title={HELP_CONTENT.neuroplasticity.title}
+                    content={HELP_CONTENT.neuroplasticity.short}
+                    learnMoreLink={HELP_CONTENT.neuroplasticity.learnMoreLink}
+                    side="top"
+                  />
+                </div>
                 <p className="text-xs sm:text-sm font-semibold text-purple-600 dark:text-purple-400 truncate">
                   {habit.neuroplasticityPhase.phase}/4
                 </p>
@@ -200,27 +230,41 @@ export const HabitCard = memo(function HabitCard({ habit }: HabitCardProps) {
 
         <Progress value={habit.completed ? 100 : 0} className="h-2 sm:h-2.5" />
 
-        <Button
-          className="w-full text-xs sm:text-sm lg:text-base"
-          size="default"
-          variant={habit.completed ? "outline" : "default"}
-          onClick={handleComplete}
-          disabled={habit.completed || isPending}
-        >
-          {habit.completed ? (
-            <>
-              <Check className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-              Dokončeno dnes
-            </>
-          ) : isPending ? (
-            <>Označuji...</>
-          ) : (
-            <>
-              <Check className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-              Označit jako hotové
-            </>
-          )}
-        </Button>
+        <TooltipProvider>
+          <Tooltip delayDuration={300}>
+            <TooltipTrigger asChild>
+              <Button
+                className="w-full text-xs sm:text-sm lg:text-base"
+                size="default"
+                variant={habit.completed ? "outline" : "default"}
+                onClick={handleComplete}
+                disabled={habit.completed || isPending}
+              >
+                {habit.completed ? (
+                  <>
+                    <Check className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    Dokončeno dnes
+                  </>
+                ) : isPending ? (
+                  <>Označuji...</>
+                ) : (
+                  <>
+                    <Check className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    Označit jako hotové
+                  </>
+                )}
+              </Button>
+            </TooltipTrigger>
+            {!habit.completed && (
+              <TooltipContent side="top" className="max-w-xs">
+                <p className="font-semibold text-sm">{HELP_CONTENT.completeHabit.title}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {HELP_CONTENT.completeHabit.short}
+                </p>
+              </TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
       </CardContent>
 
       <EditHabitDialog

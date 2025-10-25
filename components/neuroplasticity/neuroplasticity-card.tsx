@@ -54,8 +54,8 @@ export function NeuroplasticityCard({ daysSinceStart, habitName }: Neuroplastici
                   <PhaseIcon className="h-6 w-6" style={{ color: phaseColor }} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">Neuroplasticita: Den {daysSinceStart}</h3>
-                  <p className="text-sm text-muted-foreground">Návyk: {habitName}</p>
+                  <h3 className="font-semibold text-lg">{habitName}</h3>
+                  <p className="text-sm text-muted-foreground">Den {daysSinceStart} • Neuroplasticita</p>
                 </div>
               </div>
               <Button

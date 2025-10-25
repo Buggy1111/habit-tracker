@@ -1,77 +1,86 @@
 "use client"
 
-import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { useState, useEffect } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Brain, Target, Sparkles, ArrowRight } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
+import { Brain, Sparkles, Target, TrendingUp, CheckCircle2, ArrowRight, ArrowLeft } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useRouter } from "next/navigation"
 
-interface WelcomeDialogProps {
-  open: boolean
-  onComplete: () => void
-}
+const WELCOME_SEEN_KEY = "habit-tracker-welcome-seen"
 
-export function WelcomeDialog({ open, onComplete }: WelcomeDialogProps) {
-  const [step, setStep] = useState(0)
+export function WelcomeDialog() {
+  const [open, setOpen] = useState(false)
+  const [step, setStep] = useState(1)
+  const router = useRouter()
+  const totalSteps = 4
 
-  const steps = [
-    {
-      icon: Sparkles,
-      title: "Vítej v Habit Trackeru!",
-      description: "Aplikace pro budování návyků založená na vědě a neuroplasticitě mozku.",
-      highlight: "Žádné pseudovědecké kejkle - jen ověřené metody!",
-    },
-    {
-      icon: Brain,
-      title: "Proč věda?",
-      description: "Každá funkce v této aplikaci je podložená výzkumem. Používáme:",
-      bullets: [
-        "Implementation Intentions (Gollwitzer, 1999)",
-        "66-denní neuroplasticitu (Lally et al., 2010)",
-        "WOOP metodu (Gabriele Oettingen)",
-        "Habit Strength algoritmus (Loop)",
-        "CBT techniky (Aaron Beck)",
-      ],
-    },
-    {
-      icon: Target,
-      title: "Jak začít?",
-      description: "Vytvoř svůj první návyk a začni budovat lepší verzi sebe!",
-      bullets: [
-        "Zvol si návyk, který chceš budovat",
-        "Přidej IF-THEN pravidlo (kdy a kde to budeš dělat)",
-        "Každý den si jej odškrtni",
-        "Sleduj svůj pokrok a neuroplastické fáze",
-      ],
-    },
-  ]
+  useEffect(() => {
+    const hasSeenWelcome = localStorage.getItem(WELCOME_SEEN_KEY)
+    if (!hasSeenWelcome) {
+      setTimeout(() => setOpen(true), 1000)
+    }
+  }, [])
 
-  const currentStep = steps[step]
-  const Icon = currentStep.icon
+  const handleClose = () => {
+    localStorage.setItem(WELCOME_SEEN_KEY, "true")
+    setOpen(false)
+  }
 
   const handleNext = () => {
-    if (step < steps.length - 1) {
+    if (step < totalSteps) {
       setStep(step + 1)
     } else {
-      onComplete()
+      handleClose()
+      router.push("/dashboard/habits")
+    }
+  }
+
+  const handlePrevious = () => {
+    if (step > 1) {
+      setStep(step - 1)
     }
   }
 
   const handleSkip = () => {
-    onComplete()
+    handleClose()
   }
 
+  const progress = (step / totalSteps) * 100
+
   return (
-    <Dialog open={open} onOpenChange={() => {}}>
-      <DialogContent className="sm:max-w-[600px]" showCloseButton={false}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-3 text-2xl">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-blue-500/20">
-              <Icon className="h-7 w-7 text-primary" />
-            </div>
-            {currentStep.title}
+          <DialogTitle className="text-xl sm:text-2xl md:text-3xl">
+            {step === 1 && "Vítej v Science-Based Habit Trackeru! 👋"}
+            {step === 2 && "Proč jsme jiní? 🧠"}
+            {step === 3 && "Jak začít? 🚀"}
+            {step === 4 && "Jsi připraven? 💪"}
           </DialogTitle>
+          <DialogDescription className="text-sm sm:text-base">
+            {step === 1 && "Aplikace založená na vědeckém výzkumu, která ti skutečně pomůže změnit návyky"}
+            {step === 2 && "Každá funkce má vědecký základ - žádná motivační kecy"}
+            {step === 3 && "3 jednoduché kroky k tvé první změně"}
+            {step === 4 && "Vytvoříme tvůj první návyk společně"}
+          </DialogDescription>
         </DialogHeader>
+
+        <div className="space-y-2">
+          <div className="flex justify-between text-xs sm:text-sm text-muted-foreground">
+            <span>Krok {step} z {totalSteps}</span>
+            <span>{Math.round(progress)}%</span>
+          </div>
+          <Progress value={progress} className="h-2" />
+        </div>
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -80,72 +89,226 @@ export function WelcomeDialog({ open, onComplete }: WelcomeDialogProps) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="space-y-6 py-6"
+            className="space-y-3 sm:space-y-4 py-3 sm:py-4"
           >
-            <p className="text-base text-muted-foreground leading-relaxed">
-              {currentStep.description}
-            </p>
-
-            {currentStep.highlight && (
-              <div className="p-4 rounded-lg bg-gradient-to-br from-primary/10 to-blue-500/10 border border-primary/20">
-                <p className="text-sm font-medium text-foreground">
-                  {currentStep.highlight}
-                </p>
+            {step === 1 && (
+              <div className="space-y-3 sm:space-y-4">
+                <Card className="bg-gradient-to-br from-primary/10 to-blue-500/10 border-primary/20">
+                  <CardContent className="p-4 sm:p-6 space-y-4">
+                    <div className="text-center">
+                      <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">🎯</div>
+                      <h3 className="text-lg sm:text-xl font-semibold mb-2">Nejsme další "motivační" app</h3>
+                      <p className="text-sm sm:text-base text-muted-foreground">
+                        Používáme metody, které jsou <strong>vědecky prokázané</strong>:
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mt-4">
+                      <div className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-card">
+                        <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-xs sm:text-sm">IF-THEN plány</p>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">+65% úspěšnost</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-card">
+                        <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-xs sm:text-sm">66denní neuroplasticita</p>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">Vědecký základ</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-card">
+                        <Target className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-xs sm:text-sm">WOOP metoda</p>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">2x vyšší šance</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-card">
+                        <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-xs sm:text-sm">Habit Strength Score</p>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">Ne jen streak!</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             )}
 
-            {currentStep.bullets && (
-              <ul className="space-y-3">
-                {currentStep.bullets.map((bullet, index) => (
-                  <motion.li
-                    key={index}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-start gap-3"
-                  >
-                    <div className="mt-1 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground">{bullet}</span>
-                  </motion.li>
-                ))}
-              </ul>
+            {step === 2 && (
+              <div className="space-y-3 sm:space-y-4">
+                <div className="text-center mb-3 sm:mb-4">
+                  <div className="text-4xl sm:text-6xl mb-2">🔬</div>
+                  <p className="text-sm sm:text-base text-muted-foreground">Každá funkce má publikovaný research</p>
+                </div>
+                <div className="space-y-2 sm:space-y-3">
+                  <Card>
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex items-start gap-2 sm:gap-3">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-yellow-500/10 flex items-center justify-center flex-shrink-0">
+                          <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-sm sm:text-base mb-1">Implementation Intentions</h4>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-2">
+                            Místo "Budu cvičit" → "Když se vrátím z práce, udělám 10 kliků"
+                          </p>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground italic">
+                            📚 Gollwitzer (1999), effect size d=0.65
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex items-start gap-2 sm:gap-3">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                          <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-sm sm:text-base mb-1">66denní neuroplasticita</h4>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-2">
+                            Tvůj mozek potřebuje průměrně 66 dní na vytvoření automatického návyku
+                          </p>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground italic">
+                            📚 Lally et al. (2010)
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
+
+            {step === 3 && (
+              <div className="space-y-3 sm:space-y-4">
+                <div className="text-center mb-3 sm:mb-4">
+                  <div className="text-4xl sm:text-6xl mb-2">🚀</div>
+                  <p className="text-base sm:text-lg font-semibold">3 kroky k úspěchu</p>
+                </div>
+                <div className="space-y-2 sm:space-y-3">
+                  <Card className="border-l-4 border-l-blue-500">
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex gap-2 sm:gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm">
+                          1
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-semibold text-sm sm:text-base mb-1">Vytvoř první návyk</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
+                            Začni s JEDNOU věcí. Ne 10 návyků najednou!
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-l-4 border-l-yellow-500">
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex gap-2 sm:gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-yellow-500 text-white flex items-center justify-center font-bold text-sm">
+                          2
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-semibold text-sm sm:text-base mb-1">Nastav IF-THEN plán</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
+                            "Když [situace], pak [akce]" - +65% úspěšnost!
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-l-4 border-l-green-500">
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex gap-2 sm:gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm">
+                          3
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-semibold text-sm sm:text-base mb-1">Buď trpělivý</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
+                            Trvá 66 dní než se návyk stane automatickým
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
+
+            {step === 4 && (
+              <div className="space-y-3 sm:space-y-4">
+                <div className="text-center mb-3 sm:mb-4">
+                  <div className="text-4xl sm:text-6xl mb-2">💪</div>
+                  <p className="text-lg sm:text-xl font-semibold mb-2">Jsi připraven začít?</p>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    Teď vytvoříme tvůj první návyk s IF-THEN plánem
+                  </p>
+                </div>
+
+                <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border-green-200 dark:border-green-800">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 dark:text-green-400" />
+                        <p className="font-medium text-sm sm:text-base">Co tě čeká:</p>
+                      </div>
+                      <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground ml-6 sm:ml-7">
+                        <li>✅ Formulář pro vytvoření návyku</li>
+                        <li>✅ IF-THEN builder s šablonami</li>
+                        <li>✅ Automatické sledování pokroku</li>
+                        <li>✅ Vědecky podložené metriky</li>
+                        <li>✅ (i) ikonky s nápovědou všude</li>
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-muted/50">
+                  <CardContent className="p-3 sm:p-4 text-xs sm:text-sm">
+                    <p className="font-medium mb-2">💡 Tip na start:</p>
+                    <p className="text-muted-foreground">
+                      Nevíš co začít? Zkus: "Když vstanu, vypiju sklenici vody v kuchyni" nebo "Když si lehnu, přečtu 5 stran knihy". Malé kroky = velké změny!
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
             )}
           </motion.div>
         </AnimatePresence>
 
-        {/* Progress Dots */}
-        <div className="flex justify-center gap-2 py-4">
-          {steps.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setStep(index)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                index === step
-                  ? "w-8 bg-primary"
-                  : "w-2 bg-muted hover:bg-muted-foreground/50"
-              }`}
-              aria-label={`Krok ${index + 1}`}
-            />
-          ))}
-        </div>
-
-        {/* Actions */}
-        <div className="flex justify-between items-center pt-4 border-t">
-          <Button variant="ghost" onClick={handleSkip}>
-            Přeskočit
-          </Button>
-
-          <div className="flex gap-2">
-            {step > 0 && (
-              <Button variant="outline" onClick={() => setStep(step - 1)}>
+        <div className="flex flex-col sm:flex-row items-center justify-between pt-4 border-t gap-3">
+          <div className="flex gap-2 w-full sm:w-auto">
+            {step > 1 && (
+              <Button variant="outline" onClick={handlePrevious} size="sm" className="flex-1 sm:flex-none">
+                <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Zpět
               </Button>
             )}
-            <Button onClick={handleNext} className="gap-2">
-              {step === steps.length - 1 ? "Začít!" : "Další"}
-              <ArrowRight className="h-4 w-4" />
+            <Button variant="ghost" onClick={handleSkip} size="sm" className="flex-1 sm:flex-none">
+              Přeskočit
             </Button>
           </div>
+          <Button onClick={handleNext} size="default" className="w-full sm:w-auto">
+            {step === totalSteps ? (
+              <>
+                Vytvořit první návyk
+                <Target className="w-4 h-4 ml-2" />
+              </>
+            ) : (
+              <>
+                Další
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </>
+            )}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
