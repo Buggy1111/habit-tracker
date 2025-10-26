@@ -34,6 +34,7 @@ async function fetchWoopPlans(habitId: string): Promise<WoopPlan[]> {
     throw new Error("Failed to fetch WOOP plans")
   }
   const data = await res.json()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return data.map((woop: any) => ({
     ...woop,
     createdAt: new Date(woop.createdAt),
@@ -42,10 +43,7 @@ async function fetchWoopPlans(habitId: string): Promise<WoopPlan[]> {
 }
 
 // Create new WOOP plan
-async function createWoopPlan(
-  habitId: string,
-  data: CreateWoopInput
-): Promise<WoopPlan> {
+async function createWoopPlan(habitId: string, data: CreateWoopInput): Promise<WoopPlan> {
   const res = await fetch(`/api/habits/${habitId}/woop`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -75,10 +73,7 @@ async function updateWoopPlan(
 }
 
 // Delete WOOP plan
-async function deleteWoopPlan(
-  habitId: string,
-  woopId: string
-): Promise<void> {
+async function deleteWoopPlan(habitId: string, woopId: string): Promise<void> {
   const res = await fetch(`/api/habits/${habitId}/woop/${woopId}`, {
     method: "DELETE",
   })
@@ -117,8 +112,7 @@ export function useUpdateWoop(habitId: string, woopId: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: UpdateWoopInput) =>
-      updateWoopPlan(habitId, woopId, data),
+    mutationFn: (data: UpdateWoopInput) => updateWoopPlan(habitId, woopId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["woop", habitId] })
       toast.success("WOOP plan updated successfully!")

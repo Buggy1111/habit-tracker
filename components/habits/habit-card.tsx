@@ -188,7 +188,7 @@ export const HabitCard = memo(function HabitCard({ habit }: HabitCardProps) {
             <div
               className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20"
               role="status"
-              aria-label={`Síla návyku: ${habit.habitStrength} ze 100, úroveň ${habit.strengthLevel.label}`}
+              aria-label={`Síla návyku: ${habit.habitStrength} ze 100, úroveň ${habit.strengthLevel.level}`}
             >
               <TrendingUp
                 className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"

@@ -44,10 +44,12 @@ async function fetchIdentities(): Promise<Identity[]> {
     throw new Error("Failed to fetch identities")
   }
   const data = await res.json()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return data.map((identity: any) => ({
     ...identity,
     createdAt: new Date(identity.createdAt),
     updatedAt: new Date(identity.updatedAt),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     milestones: identity.milestones.map((m: any) => ({
       ...m,
       createdAt: new Date(m.createdAt),
@@ -70,10 +72,7 @@ async function createIdentity(data: CreateIdentityInput): Promise<Identity> {
 }
 
 // Update identity
-async function updateIdentity(
-  identityId: string,
-  data: UpdateIdentityInput
-): Promise<Identity> {
+async function updateIdentity(identityId: string, data: UpdateIdentityInput): Promise<Identity> {
   const res = await fetch(`/api/identities/${identityId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },

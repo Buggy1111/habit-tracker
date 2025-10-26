@@ -51,6 +51,6 @@ export interface ApiResponse<T> {
   message?: string
 }
 
-export interface HabitsResponse extends ApiResponse<Habit[]> {}
-export interface HabitResponse extends ApiResponse<Habit> {}
-export interface HabitLogResponse extends ApiResponse<HabitLog> {}
+export type HabitsResponse = ApiResponse<Habit[]>
+export type HabitResponse = ApiResponse<Habit>
+export type HabitLogResponse = ApiResponse<HabitLog>
