@@ -1,28 +1,16 @@
-import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
 import { apiLogger } from "@/lib/logger"
+import { verifyHabitOwnership } from "@/lib/auth-helpers"
 
 export async function POST(req: Request, { params }: { params: Promise<{ habitId: string }> }) {
   try {
-    const session = await auth()
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
     const { habitId } = await params
 
-    // Verify habit belongs to user
-    const habit = await prisma.habit.findFirst({
-      where: {
-        id: habitId,
-        userId: session.user.id,
-      },
-    })
-
-    if (!habit) {
-      return NextResponse.json({ error: "Habit not found" }, { status: 404 })
+    // Verify ownership
+    const verification = await verifyHabitOwnership(habitId)
+    if (!verification.success) {
+      return verification.error
     }
 
     // Get today's date (start of day)
@@ -34,7 +22,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ habitId
       where: {
         habitId_userId_date: {
           habitId,
-          userId: session.user.id,
+          userId: verification.userId!,
           date: today,
         },
       },
@@ -43,7 +31,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ habitId
       },
       create: {
         habitId,
-        userId: session.user.id,
+        userId: verification.userId!,
         date: today,
         completed: true,
       },

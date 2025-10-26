@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 import { apiLogger } from "@/lib/logger"
+import { verifyHabitOwnership } from "@/lib/auth-helpers"
 
 const updateWoopSchema = z.object({
   wish: z.string().min(1, "Wish is required").optional(),
@@ -17,29 +17,12 @@ export async function PATCH(
   { params }: { params: Promise<{ habitId: string; woopId: string }> }
 ) {
   try {
-    const session = await auth()
-
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    })
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 })
-    }
-
     const { habitId, woopId } = await params
 
-    // Verify habit belongs to user
-    const habit = await prisma.habit.findUnique({
-      where: { id: habitId },
-    })
-
-    if (!habit || habit.userId !== user.id) {
-      return NextResponse.json({ error: "Habit not found" }, { status: 404 })
+    // Verify ownership
+    const verification = await verifyHabitOwnership(habitId)
+    if (!verification.success) {
+      return verification.error
     }
 
     // Verify WOOP plan exists and belongs to this habit
@@ -80,29 +63,12 @@ export async function DELETE(
   { params }: { params: Promise<{ habitId: string; woopId: string }> }
 ) {
   try {
-    const session = await auth()
-
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    })
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 })
-    }
-
     const { habitId, woopId } = await params
 
-    // Verify habit belongs to user
-    const habit = await prisma.habit.findUnique({
-      where: { id: habitId },
-    })
-
-    if (!habit || habit.userId !== user.id) {
-      return NextResponse.json({ error: "Habit not found" }, { status: 404 })
+    // Verify ownership
+    const verification = await verifyHabitOwnership(habitId)
+    if (!verification.success) {
+      return verification.error
     }
 
     // Verify WOOP plan exists and belongs to this habit

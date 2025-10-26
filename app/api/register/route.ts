@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { z } from "zod"
+import { checkAuthRateLimit, getClientIp } from "@/lib/rate-limit"
+import { apiLogger } from "@/lib/logger"
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -11,6 +13,28 @@ const registerSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    // Apply rate limiting
+    const ip = getClientIp(req)
+    const rateLimitResult = await checkAuthRateLimit(ip)
+
+    if (!rateLimitResult.success) {
+      apiLogger.warn(`Rate limit exceeded for registration from IP: ${ip}`)
+      return NextResponse.json(
+        {
+          error: "Too many registration attempts. Please try again later.",
+          retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
+        },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": "5",
+            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+            "X-RateLimit-Reset": new Date(rateLimitResult.reset).toISOString(),
+          },
+        }
+      )
+    }
+
     const body = await req.json()
     const { email, password, name } = registerSchema.parse(body)
 

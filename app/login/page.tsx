@@ -29,6 +29,26 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
+      // Use rate-limited login endpoint
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const data = await response.json()
+
+      if (response.status === 429) {
+        toast.error(`Příliš mnoho pokusů. Zkuste to znovu za ${data.retryAfter || 60} sekund.`)
+        return
+      }
+
+      if (!response.ok) {
+        toast.error(data.error || "Neplatné přihlašovací údaje")
+        return
+      }
+
+      // If login successful, use NextAuth signIn to create session
       const result = await signIn("credentials", {
         email,
         password,

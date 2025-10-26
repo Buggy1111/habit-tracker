@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server"
-import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 import { apiLogger } from "@/lib/logger"
+import { verifyHabitOwnership } from "@/lib/auth-helpers"
 
 const updateHabitSchema = z.object({
   name: z.string().min(1, "Name is required").optional(),
@@ -19,24 +19,12 @@ const updateHabitSchema = z.object({
 // DELETE /api/habits/[habitId] - Soft delete (archive) habit
 export async function DELETE(req: Request, { params }: { params: Promise<{ habitId: string }> }) {
   try {
-    const session = await auth()
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
     const { habitId } = await params
 
-    // Verify habit belongs to user
-    const habit = await prisma.habit.findFirst({
-      where: {
-        id: habitId,
-        userId: session.user.id,
-      },
-    })
-
-    if (!habit) {
-      return NextResponse.json({ error: "Habit not found" }, { status: 404 })
+    // Verify ownership
+    const verification = await verifyHabitOwnership(habitId)
+    if (!verification.success) {
+      return verification.error
     }
 
     // Soft delete - set isActive to false
@@ -55,26 +43,14 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ habit
 // PATCH /api/habits/[habitId] - Update habit
 export async function PATCH(req: Request, { params }: { params: Promise<{ habitId: string }> }) {
   try {
-    const session = await auth()
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
     const { habitId } = await params
     const body = await req.json()
     const validatedData = updateHabitSchema.parse(body)
 
-    // Verify habit belongs to user
-    const habit = await prisma.habit.findFirst({
-      where: {
-        id: habitId,
-        userId: session.user.id,
-      },
-    })
-
-    if (!habit) {
-      return NextResponse.json({ error: "Habit not found" }, { status: 404 })
+    // Verify ownership
+    const verification = await verifyHabitOwnership(habitId)
+    if (!verification.success) {
+      return verification.error
     }
 
     // Update habit
