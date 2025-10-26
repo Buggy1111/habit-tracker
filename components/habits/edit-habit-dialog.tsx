@@ -104,9 +104,7 @@ export function EditHabitDialog({ open, onOpenChange, habit }: EditHabitDialogPr
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Upravit návyk</DialogTitle>
-            <DialogDescription>
-              Uprav svůj návyk. Změny se projeví okamžitě.
-            </DialogDescription>
+            <DialogDescription>Uprav svůj návyk. Změny se projeví okamžitě.</DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
@@ -117,7 +115,6 @@ export function EditHabitDialog({ open, onOpenChange, habit }: EditHabitDialogPr
                 placeholder="např. Ranní cvičení"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                autoFocus
               />
             </div>
 
@@ -155,8 +152,7 @@ export function EditHabitDialog({ open, onOpenChange, habit }: EditHabitDialogPr
                     className="h-8 w-8 rounded-full border-2 transition-all hover:scale-110"
                     style={{
                       backgroundColor: color,
-                      borderColor:
-                        selectedColor === color ? color : "transparent",
+                      borderColor: selectedColor === color ? color : "transparent",
                       opacity: selectedColor === color ? 1 : 0.5,
                     }}
                     onClick={() => setSelectedColor(color)}
@@ -167,11 +163,7 @@ export function EditHabitDialog({ open, onOpenChange, habit }: EditHabitDialogPr
           </div>
 
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Zrušit
             </Button>
             <Button type="submit" disabled={isPending}>

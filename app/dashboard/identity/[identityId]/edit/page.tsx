@@ -69,9 +69,7 @@ export default function EditIdentityPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-2">Identita nenalezena</h1>
-          <p className="text-muted-foreground mb-4">
-            Tato identita neexistuje nebo byla smazána.
-          </p>
+          <p className="text-muted-foreground mb-4">Tato identita neexistuje nebo byla smazána.</p>
           <Button onClick={() => router.push("/dashboard/identity")}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Zpět na identity
@@ -119,11 +117,7 @@ export default function EditIdentityPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Button
-            variant="ghost"
-            onClick={() => router.back()}
-            className="gap-2"
-          >
+          <Button variant="ghost" onClick={() => router.back()} className="gap-2">
             <ArrowLeft className="h-4 w-4" />
             Zpět
           </Button>
@@ -154,11 +148,8 @@ export default function EditIdentityPage() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
-                  autoFocus
                 />
-                <p className="text-xs text-muted-foreground">
-                  Místo "Chci běhat" → "Jsem běžec"
-                </p>
+                <p className="text-xs text-muted-foreground">Místo "Chci běhat" → "Jsem běžec"</p>
               </div>
 
               {/* Description */}
@@ -179,8 +170,8 @@ export default function EditIdentityPage() {
                   <span className="font-semibold text-purple-600 dark:text-purple-400">
                     🧠 Věda:
                   </span>{" "}
-                  Identity-based habits jsou účinnější než outcome-based. Místo "Chci zhubnout"
-                  → "Jsem zdravý člověk". Každý habit je hlasem pro novou identitu.
+                  Identity-based habits jsou účinnější než outcome-based. Místo "Chci zhubnout" →
+                  "Jsem zdravý člověk". Každý habit je hlasem pro novou identitu.
                 </p>
               </div>
 

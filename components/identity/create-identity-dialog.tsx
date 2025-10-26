@@ -29,10 +29,7 @@ const identityExamples = [
   "Jsem disciplinovaný sportovec",
 ]
 
-export function CreateIdentityDialog({
-  open,
-  onOpenChange,
-}: CreateIdentityDialogProps) {
+export function CreateIdentityDialog({ open, onOpenChange }: CreateIdentityDialogProps) {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const { mutate: createIdentity, isPending } = useCreateIdentity()
@@ -88,11 +85,8 @@ export function CreateIdentityDialog({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              autoFocus
             />
-            <p className="text-xs text-muted-foreground">
-              Místo "Chci běhat" → "Jsem běžec"
-            </p>
+            <p className="text-xs text-muted-foreground">Místo "Chci běhat" → "Jsem běžec"</p>
           </div>
 
           {/* Examples */}
@@ -129,11 +123,9 @@ export function CreateIdentityDialog({
           {/* Science Note */}
           <div className="rounded-lg bg-purple-500/10 border border-purple-500/20 p-4">
             <p className="text-xs text-muted-foreground">
-              <span className="font-semibold text-purple-600 dark:text-purple-400">
-                🧠 Věda:
-              </span>{" "}
-              Identity-based habits jsou účinnější než outcome-based. Místo "Chci zhubnout"
-              → "Jsem zdravý člověk". Každý habit je hlasem pro novou identitu.
+              <span className="font-semibold text-purple-600 dark:text-purple-400">🧠 Věda:</span>{" "}
+              Identity-based habits jsou účinnější než outcome-based. Místo "Chci zhubnout" → "Jsem
+              zdravý člověk". Každý habit je hlasem pro novou identitu.
             </p>
           </div>
 

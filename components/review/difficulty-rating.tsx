@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 
 interface DifficultyRatingProps {
   habitName: string
@@ -63,8 +64,9 @@ export function DifficultyRating({ habitName, habitColor, onRate }: DifficultyRa
       {/* Optional note */}
       {selectedRating && (
         <div className="space-y-2">
-          <label className="text-sm font-medium">Poznámka (volitelné)</label>
+          <Label htmlFor="difficulty-note">Poznámka (volitelné)</Label>
           <Textarea
+            id="difficulty-note"
             placeholder="Co ti pomohlo nebo co bylo těžké?"
             value={note}
             onChange={(e) => setNote(e.target.value)}

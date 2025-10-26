@@ -29,11 +29,7 @@ const milestoneExamples = [
   "Rok konzistence",
 ]
 
-export function AddMilestoneDialog({
-  open,
-  onOpenChange,
-  identityId,
-}: AddMilestoneDialogProps) {
+export function AddMilestoneDialog({ open, onOpenChange, identityId }: AddMilestoneDialogProps) {
   const [title, setTitle] = useState("")
   const { mutate: createMilestone, isPending } = useCreateMilestone()
 
@@ -89,7 +85,6 @@ export function AddMilestoneDialog({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              autoFocus
             />
             <p className="text-xs text-muted-foreground">
               Konkrétní, měřitelný cíl k oslavě pokroku
@@ -118,11 +113,9 @@ export function AddMilestoneDialog({
           {/* Science Note */}
           <div className="rounded-lg bg-yellow-500/10 border border-yellow-500/20 p-4">
             <p className="text-xs text-muted-foreground">
-              <span className="font-semibold text-yellow-600 dark:text-yellow-400">
-                🏆 Tip:
-              </span>{" "}
-              Milníky ti pomáhají oslavit pokrok a udržet motivaci. Nezaměřuj se
-              jen na konečný cíl - malé vítězství po cestě jsou důležité!
+              <span className="font-semibold text-yellow-600 dark:text-yellow-400">🏆 Tip:</span>{" "}
+              Milníky ti pomáhají oslavit pokrok a udržet motivaci. Nezaměřuj se jen na konečný cíl
+              - malé vítězství po cestě jsou důležité!
             </p>
           </div>
 

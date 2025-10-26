@@ -1,6 +1,16 @@
 import { Metadata } from "next"
 import Link from "next/link"
-import { ArrowLeft, Lightbulb, CheckCircle2, Zap, Brain, Award, TrendingUp, Users, AlertTriangle } from "lucide-react"
+import {
+  ArrowLeft,
+  Lightbulb,
+  CheckCircle2,
+  Zap,
+  Brain,
+  Award,
+  TrendingUp,
+  Users,
+  AlertTriangle,
+} from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -28,9 +38,7 @@ export default function GettingStartedHelpPage() {
             <div className="w-12 h-12 rounded-lg bg-cyan-500/10 flex items-center justify-center">
               <Lightbulb className="h-6 w-6 text-cyan-500" />
             </div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              Začínáme
-            </h1>
+            <h1 className="text-3xl font-bold tracking-tight">Začínáme</h1>
           </div>
           <p className="text-muted-foreground text-lg">
             Kompletní průvodce jak efektivně používat vědecky podložený tracker návyků
@@ -44,8 +52,8 @@ export default function GettingStartedHelpPage() {
           <AlertDescription>
             Tato aplikace není jako ostatní trackery. Používáme{" "}
             <strong className="text-foreground">vědecky prokázané metody</strong> z výzkumu
-            behaviorální psychologie, neuroplasticity a kognitivní vědy. Žádné pseudovědy,
-            jen skutečné metody, které fungují!
+            behaviorální psychologie, neuroplasticity a kognitivní vědy. Žádné pseudovědy, jen
+            skutečné metody, které fungují!
           </AlertDescription>
         </Alert>
 
@@ -101,14 +109,19 @@ export default function GettingStartedHelpPage() {
                 <h3 className="font-bold">1. IF-THEN Implementační záměry</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-2">
-                <strong>Co to je:</strong> Specifické plány ve formátu "Když [situace], pak [akce] v [místě]"
+                <strong>Co to je:</strong> Specifické plány ve formátu "Když [situace], pak [akce] v
+                [místě]"
               </p>
               <p className="text-sm text-muted-foreground mb-2">
                 <strong>Proč to funguje:</strong> Výzkum Gollwitzera ukázal 65% vyšší úspěšnost!
                 Mozek si vytvoří automatické spojení mezi situací a akcí.
               </p>
               <Link href="/help/implementation-intentions">
-                <Button variant="link" size="sm" className="p-0 h-auto text-yellow-600 dark:text-yellow-400">
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="p-0 h-auto text-yellow-600 dark:text-yellow-400"
+                >
                   Zjistit více →
                 </Button>
               </Link>
@@ -121,14 +134,19 @@ export default function GettingStartedHelpPage() {
                 <h3 className="font-bold">2. Habit Strength Score</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-2">
-                <strong>Co to je:</strong> Chytrý algoritmus hodnocení síly návyku (0-100), ne jen streak
+                <strong>Co to je:</strong> Chytrý algoritmus hodnocení síly návyku (0-100), ne jen
+                streak
               </p>
               <p className="text-sm text-muted-foreground mb-2">
-                <strong>Proč to funguje:</strong> Váží nedávné splnění více a odpouští příležitostná selhání.
-                Jeden vynechaný den neničí pokrok!
+                <strong>Proč to funguje:</strong> Váží nedávné splnění více a odpouští příležitostná
+                selhání. Jeden vynechaný den neničí pokrok!
               </p>
               <Link href="/help/habit-strength">
-                <Button variant="link" size="sm" className="p-0 h-auto text-green-600 dark:text-green-400">
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="p-0 h-auto text-green-600 dark:text-green-400"
+                >
                   Zjistit více →
                 </Button>
               </Link>
@@ -141,14 +159,19 @@ export default function GettingStartedHelpPage() {
                 <h3 className="font-bold">3. 66denní Neuroplastická Timeline</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-2">
-                <strong>Co to je:</strong> Sledování 4 fází vytváření návyku v mozku (dny 1-21, 22-42, 43-66, 67+)
+                <strong>Co to je:</strong> Sledování 4 fází vytváření návyku v mozku (dny 1-21,
+                22-42, 43-66, 67+)
               </p>
               <p className="text-sm text-muted-foreground mb-2">
-                <strong>Proč to funguje:</strong> Pochopíte, PROČ je to těžké na začátku a PROČ se to zlepšuje.
-                Výzkum Lally: průměr 66 dní k automatizaci.
+                <strong>Proč to funguje:</strong> Pochopíte, PROČ je to těžké na začátku a PROČ se
+                to zlepšuje. Výzkum Lally: průměr 66 dní k automatizaci.
               </p>
               <Link href="/help/neuroplasticity">
-                <Button variant="link" size="sm" className="p-0 h-auto text-purple-600 dark:text-purple-400">
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="p-0 h-auto text-purple-600 dark:text-purple-400"
+                >
                   Zjistit více →
                 </Button>
               </Link>
@@ -161,14 +184,19 @@ export default function GettingStartedHelpPage() {
                 <h3 className="font-bold">4. WOOP Metoda</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-2">
-                <strong>Co to je:</strong> 4kroková strategie (Wish, Outcome, Obstacle, Plan) pro překonání překážek
+                <strong>Co to je:</strong> 4kroková strategie (Wish, Outcome, Obstacle, Plan) pro
+                překonání překážek
               </p>
               <p className="text-sm text-muted-foreground mb-2">
-                <strong>Proč to funguje:</strong> Výzkum Oettingen: 2x vyšší úspěšnost než samotné pozitivní myšlení!
-                Mentální kontrast připravuje na reálné překážky.
+                <strong>Proč to funguje:</strong> Výzkum Oettingen: 2x vyšší úspěšnost než samotné
+                pozitivní myšlení! Mentální kontrast připravuje na reálné překážky.
               </p>
               <Link href="/help/woop">
-                <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 dark:text-blue-400">
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="p-0 h-auto text-blue-600 dark:text-blue-400"
+                >
                   Zjistit více →
                 </Button>
               </Link>
@@ -184,11 +212,15 @@ export default function GettingStartedHelpPage() {
                 <strong>Co to je:</strong> Automatická detekce náhlého poklesu po silné sérii
               </p>
               <p className="text-sm text-muted-foreground mb-2">
-                <strong>Proč to funguje:</strong> 24-36% lidí zažívá extinction burst. Aplikace vás upozorní:
-                "TOTO JE NORMÁLNÍ!" a pomůže překonat.
+                <strong>Proč to funguje:</strong> 24-36% lidí zažívá extinction burst. Aplikace vás
+                upozorní: "TOTO JE NORMÁLNÍ!" a pomůže překonat.
               </p>
               <Link href="/help/extinction-burst">
-                <Button variant="link" size="sm" className="p-0 h-auto text-orange-600 dark:text-orange-400">
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="p-0 h-auto text-orange-600 dark:text-orange-400"
+                >
                   Zjistit více →
                 </Button>
               </Link>
@@ -204,11 +236,15 @@ export default function GettingStartedHelpPage() {
                 <strong>Co to je:</strong> Propojení návyků s tím, kým JSTE, ne jen co DĚLÁTE
               </p>
               <p className="text-sm text-muted-foreground mb-2">
-                <strong>Proč to funguje:</strong> James Clear: "Nejvyšší forma intrinsické motivace."
-                "Jsem běžec" → běžci prostě běhají!
+                <strong>Proč to funguje:</strong> James Clear: "Nejvyšší forma intrinsické
+                motivace." "Jsem běžec" → běžci prostě běhají!
               </p>
               <Link href="/help/identity">
-                <Button variant="link" size="sm" className="p-0 h-auto text-pink-600 dark:text-pink-400">
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="p-0 h-auto text-pink-600 dark:text-pink-400"
+                >
                   Zjistit více →
                 </Button>
               </Link>
@@ -257,9 +293,15 @@ export default function GettingStartedHelpPage() {
                     Toto je klíč k úspěchu! Vyplňte tři pole:
                   </p>
                   <ul className="text-sm text-muted-foreground list-disc list-inside ml-2">
-                    <li><strong>Kdy:</strong> "Když se vzbudím v 7:00"</li>
-                    <li><strong>Co udělám:</strong> "Vypiju sklenici vody"</li>
-                    <li><strong>Kde:</strong> "V kuchyni"</li>
+                    <li>
+                      <strong>Kdy:</strong> "Když se vzbudím v 7:00"
+                    </li>
+                    <li>
+                      <strong>Co udělám:</strong> "Vypiju sklenici vody"
+                    </li>
+                    <li>
+                      <strong>Kde:</strong> "V kuchyni"
+                    </li>
                   </ul>
                   <p className="text-sm text-cyan-600 dark:text-cyan-400 mt-2">
                     💡 Nebo použijte připravené šablony kliknutím na "Šablony"
@@ -286,7 +328,8 @@ export default function GettingStartedHelpPage() {
                 <div>
                   <strong>Sledujte pokrok</strong>
                   <p className="text-sm text-muted-foreground">
-                    Habit Strength Score, Neuroplastická fáze, série - vše se aktualizuje automaticky!
+                    Habit Strength Score, Neuroplastická fáze, série - vše se aktualizuje
+                    automaticky!
                   </p>
                 </div>
               </div>
@@ -317,15 +360,15 @@ export default function GettingStartedHelpPage() {
             <div className="flex items-start gap-2">
               <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
               <div>
-                <strong>Začněte SMĚŠNĚ malým cílem:</strong> "2 minuty cvičení" je lepší než
-                "hodina v posilovně". Později zvýšíte.
+                <strong>Začněte SMĚŠNĚ malým cílem:</strong> "2 minuty cvičení" je lepší než "hodina
+                v posilovně". Později zvýšíte.
               </div>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
               <div>
-                <strong>Sledujte Habit Strength, ne jen streak:</strong> Habit Strength je
-                přesnější a odpouštějící. Jeden vynechaný den není konec!
+                <strong>Sledujte Habit Strength, ne jen streak:</strong> Habit Strength je přesnější
+                a odpouštějící. Jeden vynechaný den není konec!
               </div>
             </div>
             <div className="flex items-start gap-2">
@@ -345,8 +388,8 @@ export default function GettingStartedHelpPage() {
             <div className="flex items-start gap-2">
               <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
               <div>
-                <strong>Propojte návyky s identitou:</strong> "Jsem běžec" funguje lépe než
-                "Chci běhat". Identity-based habits mají vyšší dlouhodobou úspěšnost.
+                <strong>Propojte návyky s identitou:</strong> "Jsem běžec" funguje lépe než "Chci
+                běhat". Identity-based habits mají vyšší dlouhodobou úspěšnost.
               </div>
             </div>
             <div className="flex items-start gap-2">
@@ -371,7 +414,8 @@ export default function GettingStartedHelpPage() {
                 <strong>Chyba 1: Příliš mnoho návyků najednou</strong>
               </div>
               <p className="text-sm text-muted-foreground ml-6">
-                <strong>Řešení:</strong> Začněte s 1-3 max. Willpower je omezený! Po 66 dnech přidejte další.
+                <strong>Řešení:</strong> Začněte s 1-3 max. Willpower je omezený! Po 66 dnech
+                přidejte další.
               </p>
             </div>
             <div>
@@ -380,7 +424,8 @@ export default function GettingStartedHelpPage() {
                 <strong>Chyba 2: Vágní návyk bez IF-THEN</strong>
               </div>
               <p className="text-sm text-muted-foreground ml-6">
-                <strong>Řešení:</strong> "Budu cvičit" → "Když se vrátím z práce v 17:00, udělám 10 kliků v obýváku"
+                <strong>Řešení:</strong> "Budu cvičit" → "Když se vrátím z práce v 17:00, udělám 10
+                kliků v obýváku"
               </p>
             </div>
             <div>
@@ -399,8 +444,8 @@ export default function GettingStartedHelpPage() {
                 <strong>Chyba 4: Vzdát to po prvním vynechání</strong>
               </div>
               <p className="text-sm text-muted-foreground ml-6">
-                <strong>Řešení:</strong> Jeden vynechaný den není konec! Habit Strength je odpouštějící.
-                Vraťte se zpět hned následující den.
+                <strong>Řešení:</strong> Jeden vynechaný den není konec! Habit Strength je
+                odpouštějící. Vraťte se zpět hned následující den.
               </p>
             </div>
             <div>
@@ -424,44 +469,44 @@ export default function GettingStartedHelpPage() {
           <CardContent>
             <div className="space-y-2 text-sm">
               <div className="flex items-start gap-2">
-                <input type="checkbox" className="mt-1" />
-                <label>
+                <input type="checkbox" id="checklist-1" className="mt-1" />
+                <label htmlFor="checklist-1">
                   <strong>Den 1:</strong> Vytvořit první návyk s IF-THEN plánem
                 </label>
               </div>
               <div className="flex items-start gap-2">
-                <input type="checkbox" className="mt-1" />
-                <label>
+                <input type="checkbox" id="checklist-2" className="mt-1" />
+                <label htmlFor="checklist-2">
                   <strong>Den 1:</strong> Prozkoumat Habit Strength Score - co znamená
                 </label>
               </div>
               <div className="flex items-start gap-2">
-                <input type="checkbox" className="mt-1" />
-                <label>
+                <input type="checkbox" id="checklist-3" className="mt-1" />
+                <label htmlFor="checklist-3">
                   <strong>Den 1:</strong> Přečíst o 66denní neuroplastické timeline
                 </label>
               </div>
               <div className="flex items-start gap-2">
-                <input type="checkbox" className="mt-1" />
-                <label>
+                <input type="checkbox" id="checklist-4" className="mt-1" />
+                <label htmlFor="checklist-4">
                   <strong>Den 2-7:</strong> Splnit návyk každý den (budování momentum!)
                 </label>
               </div>
               <div className="flex items-start gap-2">
-                <input type="checkbox" className="mt-1" />
-                <label>
+                <input type="checkbox" id="checklist-5" className="mt-1" />
+                <label htmlFor="checklist-5">
                   <strong>Den 3:</strong> Vytvořit identitu a propojit s návykem
                 </label>
               </div>
               <div className="flex items-start gap-2">
-                <input type="checkbox" className="mt-1" />
-                <label>
+                <input type="checkbox" id="checklist-6" className="mt-1" />
+                <label htmlFor="checklist-6">
                   <strong>Den 5:</strong> Pokud je to těžké, vytvořit WOOP plán
                 </label>
               </div>
               <div className="flex items-start gap-2">
-                <input type="checkbox" className="mt-1" />
-                <label>
+                <input type="checkbox" id="checklist-7" className="mt-1" />
+                <label htmlFor="checklist-7">
                   <strong>Den 7:</strong> Oslavit první týden! První milník! 🎉
                 </label>
               </div>
@@ -532,15 +577,19 @@ export default function GettingStartedHelpPage() {
                 <strong>Nápověda:</strong> Každá funkce má (i) ikonu pro rychlou nápovědu
               </li>
               <li>
-                <strong>Help centrum:</strong> Návrat na <Link href="/help" className="text-primary hover:underline">stránku nápovědy</Link>
+                <strong>Help centrum:</strong> Návrat na{" "}
+                <Link href="/help" className="text-primary hover:underline">
+                  stránku nápovědy
+                </Link>
               </li>
               <li>
                 <strong>Výzkum:</strong> Každá funkce má citace na vědecké studie
               </li>
             </ul>
             <p className="text-sm mt-4">
-              💡 <strong>Tip:</strong> Tato aplikace je postavená na skutečné vědě. Pokud něco nefunguje,
-              je to často proto, že jsme nenašli dostatečný výzkum pro danou funkci. Žádné pseudovědy!
+              💡 <strong>Tip:</strong> Tato aplikace je postavená na skutečné vědě. Pokud něco
+              nefunguje, je to často proto, že jsme nenašli dostatečný výzkum pro danou funkci.
+              Žádné pseudovědy!
             </p>
           </CardContent>
         </Card>
@@ -554,8 +603,8 @@ export default function GettingStartedHelpPage() {
             <div className="flex items-start gap-2">
               <CheckCircle2 className="h-5 w-5 text-cyan-500 flex-shrink-0 mt-0.5" />
               <div>
-                <strong>Upřímnost nad hype:</strong> Žádné pseudovědy, žádné manifestace.
-                Jen transparentní mechanismy a výzkumné citace.
+                <strong>Upřímnost nad hype:</strong> Žádné pseudovědy, žádné manifestace. Jen
+                transparentní mechanismy a výzkumné citace.
               </div>
             </div>
             <div className="flex items-start gap-2">

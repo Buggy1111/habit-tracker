@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Label } from "@/components/ui/label"
 import { LayoutGrid, Calendar } from "lucide-react"
 
 type CalendarView = "compact" | "detailed"
@@ -164,14 +165,17 @@ export default function WeekPage() {
                   <div className="space-y-6">
                     {/* Habit Selector */}
                     <div className="flex items-center gap-4">
-                      <label className="text-sm font-medium text-muted-foreground">
+                      <Label
+                        id="habit-selector-label"
+                        className="text-sm font-medium text-muted-foreground"
+                      >
                         Vybraný návyk:
-                      </label>
+                      </Label>
                       <Select
                         value={selectedHabitId || undefined}
                         onValueChange={setSelectedHabitId}
                       >
-                        <SelectTrigger className="w-[280px]">
+                        <SelectTrigger className="w-[280px]" aria-labelledby="habit-selector-label">
                           <SelectValue placeholder="Vyber návyk" />
                         </SelectTrigger>
                         <SelectContent>
