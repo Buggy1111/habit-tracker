@@ -3,8 +3,7 @@
 import { motion } from "framer-motion"
 import { TrendingUp } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { InfoTooltip } from "@/components/ui/info-tooltip"
-import { HELP_CONTENT } from "@/lib/help-content"
+import { ScienceTooltip } from "@/components/common/info-tooltip"
 
 interface HabitStrengthBadgeProps {
   strength: number
@@ -45,10 +44,10 @@ export function HabitStrengthBadge({
         <div className="flex-1 min-w-0">
           <div className={cn("font-medium flex items-center gap-1", sizeClasses[size])}>
             Síla návyku: {strength}/100
-            <InfoTooltip
-              title={HELP_CONTENT.habitStrength.title}
-              content={HELP_CONTENT.habitStrength.short}
-              learnMoreLink={HELP_CONTENT.habitStrength.learnMoreLink}
+            <ScienceTooltip
+              title="Habit Strength Score"
+              description="Nejedná se o pouhou sérii! Používáme Loop-inspired algoritmus s exponenciálním útlubem (30denní poločas rozpadu). Nedávná splnění mají větší váhu, občasné vynechání nezničí váš pokrok."
+              research="Založeno na Loop Habit Tracker a Lally 66-day study"
               side="right"
             />
           </div>

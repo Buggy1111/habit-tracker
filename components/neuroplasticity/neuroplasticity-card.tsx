@@ -12,6 +12,7 @@ import {
 } from "@/lib/algorithms/neuroplasticity-phase"
 import { PhaseInsightDialog } from "./phase-insight-dialog"
 import { motion } from "framer-motion"
+import { ScienceTooltip } from "@/components/common/info-tooltip"
 
 interface NeuroplasticityCardProps {
   daysSinceStart: number
@@ -54,8 +55,18 @@ export function NeuroplasticityCard({ daysSinceStart, habitName }: Neuroplastici
                   <PhaseIcon className="h-6 w-6" style={{ color: phaseColor }} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">{habitName}</h3>
-                  <p className="text-sm text-muted-foreground">Den {daysSinceStart} • Neuroplasticita</p>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-lg">{habitName}</h3>
+                    <ScienceTooltip
+                      title="66denní Neuroplasticita"
+                      description="Váš mozek potřebuje průměrně 66 dní (rozmezí 18-254) na vytvoření automatického návyku. Nejste líní, jen potřebujete čas!"
+                      research="Lally et al. (2010)"
+                      side="right"
+                    />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Den {daysSinceStart} • Neuroplasticita
+                  </p>
                 </div>
               </div>
               <Button

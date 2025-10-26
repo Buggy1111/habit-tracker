@@ -20,8 +20,7 @@ import {
   type ImplementationIntention,
   type IntentionCategory,
 } from "@/lib/constants/implementation-intentions"
-import { InfoTooltip } from "@/components/ui/info-tooltip"
-import { HELP_CONTENT } from "@/lib/help-content"
+import { ScienceTooltip } from "@/components/common/info-tooltip"
 
 interface ImplementationIntentionBuilderProps {
   value: ImplementationIntention
@@ -42,7 +41,7 @@ export function ImplementationIntentionBuilder({
       ? INTENTION_TEMPLATES
       : INTENTION_TEMPLATES.filter((t) => t.category === selectedCategory)
 
-  const handleTemplateSelect = (template: typeof INTENTION_TEMPLATES[0]) => {
+  const handleTemplateSelect = (template: (typeof INTENTION_TEMPLATES)[0]) => {
     onChange({
       when: template.when,
       action: template.action,
@@ -65,12 +64,12 @@ export function ImplementationIntentionBuilder({
       {/* Header with info */}
       <div className="flex items-start justify-between gap-2">
         <div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <Label className="text-base">IF-THEN Implementační záměr</Label>
-            <InfoTooltip
-              title={HELP_CONTENT.implementationIntentions.title}
-              content={HELP_CONTENT.implementationIntentions.short}
-              learnMoreLink={HELP_CONTENT.implementationIntentions.learnMoreLink}
+            <ScienceTooltip
+              title="Implementation Intentions"
+              description="Konkrétní IF-THEN plány zvyšují úspěšnost o 65%! 'Když X, pak Y' je silnější než 'Budu dělat X'."
+              research="Gollwitzer (1999), effect size d=0.65"
               side="right"
             />
           </div>
@@ -146,16 +145,9 @@ export function ImplementationIntentionBuilder({
         <div className="space-y-3 p-4 rounded-lg border bg-muted/50">
           {/* When */}
           <div className="grid gap-2">
-            <div className="flex items-center gap-1">
-              <Label htmlFor="when" className="text-sm">
-                1️⃣ Kdy / When <span className="text-destructive">*</span>
-              </Label>
-              <InfoTooltip
-                title={HELP_CONTENT.implementationIntentionWhen.title}
-                content={HELP_CONTENT.implementationIntentionWhen.short}
-                side="right"
-              />
-            </div>
+            <Label htmlFor="when" className="text-sm">
+              1️⃣ Kdy / When <span className="text-destructive">*</span>
+            </Label>
             <Input
               id="when"
               placeholder="Když vstanu z postele..."
@@ -169,48 +161,30 @@ export function ImplementationIntentionBuilder({
 
           {/* Action */}
           <div className="grid gap-2">
-            <div className="flex items-center gap-1">
-              <Label htmlFor="action" className="text-sm">
-                2️⃣ Co udělám / I will <span className="text-destructive">*</span>
-              </Label>
-              <InfoTooltip
-                title={HELP_CONTENT.implementationIntentionAction.title}
-                content={HELP_CONTENT.implementationIntentionAction.short}
-                side="right"
-              />
-            </div>
+            <Label htmlFor="action" className="text-sm">
+              2️⃣ Co udělám / I will <span className="text-destructive">*</span>
+            </Label>
             <Input
               id="action"
               placeholder="napiju se sklenici vody..."
               value={value.action}
               onChange={(e) => onChange({ ...value, action: e.target.value })}
             />
-            <p className="text-xs text-muted-foreground">
-              Jakou konkrétní akci provedeš?
-            </p>
+            <p className="text-xs text-muted-foreground">Jakou konkrétní akci provedeš?</p>
           </div>
 
           {/* Context (Optional) */}
           <div className="grid gap-2">
-            <div className="flex items-center gap-1">
-              <Label htmlFor="context" className="text-sm">
-                3️⃣ Kde / In (volitelné)
-              </Label>
-              <InfoTooltip
-                title={HELP_CONTENT.implementationIntentionContext.title}
-                content={HELP_CONTENT.implementationIntentionContext.short}
-                side="right"
-              />
-            </div>
+            <Label htmlFor="context" className="text-sm">
+              3️⃣ Kde / In (volitelné)
+            </Label>
             <Input
               id="context"
               placeholder="v kuchyni..."
               value={value.context || ""}
               onChange={(e) => onChange({ ...value, context: e.target.value })}
             />
-            <p className="text-xs text-muted-foreground">
-              Kde nebo v jakém kontextu?
-            </p>
+            <p className="text-xs text-muted-foreground">Kde nebo v jakém kontextu?</p>
           </div>
         </div>
       )}
@@ -221,9 +195,7 @@ export function ImplementationIntentionBuilder({
           <div className="flex items-start gap-2">
             <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-primary mb-1">
-                Tvůj implementační záměr:
-              </p>
+              <p className="text-sm font-medium text-primary mb-1">Tvůj implementační záměr:</p>
               <p className="text-sm">{previewText || "..."}</p>
             </div>
           </div>
@@ -232,9 +204,8 @@ export function ImplementationIntentionBuilder({
 
       {/* Educational Note */}
       <div className="text-xs text-muted-foreground bg-muted/30 p-3 rounded-lg">
-        <strong>💡 Proč to funguje:</strong> Když propojíš konkrétní situaci s akcí,
-        tvůj mozek vytvoří automatický trigger. Nemusíš spoléhat na willpower - mozek
-        to udělá za tebe!
+        <strong>💡 Proč to funguje:</strong> Když propojíš konkrétní situaci s akcí, tvůj mozek
+        vytvoří automatický trigger. Nemusíš spoléhat na willpower - mozek to udělá za tebe!
       </div>
     </div>
   )

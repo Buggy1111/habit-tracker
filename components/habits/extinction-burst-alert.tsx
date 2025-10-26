@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import type { ExtinctionBurstResult } from "@/lib/algorithms/extinction-burst"
-import { InfoTooltip } from "@/components/ui/info-tooltip"
-import { HELP_CONTENT } from "@/lib/help-content"
+import { ScienceTooltip } from "@/components/common/info-tooltip"
 
 interface ExtinctionBurstAlertProps {
   result: ExtinctionBurstResult
@@ -107,13 +106,11 @@ export function ExtinctionBurstAlert({
 
             <div className="flex-1 space-y-2">
               <div className="flex items-center gap-2">
-                <h3 className={cn("text-lg font-bold", colors.text)}>
-                  {result.message}
-                </h3>
-                <InfoTooltip
-                  title={HELP_CONTENT.extinctionBurst.title}
-                  content={HELP_CONTENT.extinctionBurst.short}
-                  learnMoreLink={HELP_CONTENT.extinctionBurst.learnMoreLink}
+                <h3 className={cn("text-lg font-bold", colors.text)}>{result.message}</h3>
+                <ScienceTooltip
+                  title="Extinction Burst"
+                  description="24-36% lidí zažívá dočasný pokles po dobrém začátku. Je to NORMÁLNÍ! Váš mozek se brání změně. Vytrvejte!"
+                  research="Behavioral psychology"
                   side="right"
                 />
               </div>
@@ -125,21 +122,15 @@ export function ExtinctionBurstAlert({
               <div className="flex gap-4 text-sm">
                 <div>
                   <span className="text-muted-foreground">Před 2 týdny:</span>{" "}
-                  <span className="font-semibold text-green-600">
-                    {result.previousRate}%
-                  </span>
+                  <span className="font-semibold text-green-600">{result.previousRate}%</span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Poslední 2 týdny:</span>{" "}
-                  <span className={cn("font-semibold", colors.text)}>
-                    {result.recentRate}%
-                  </span>
+                  <span className={cn("font-semibold", colors.text)}>{result.recentRate}%</span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Pokles:</span>{" "}
-                  <span className={cn("font-semibold", colors.text)}>
-                    -{result.drop}%
-                  </span>
+                  <span className={cn("font-semibold", colors.text)}>-{result.drop}%</span>
                 </div>
               </div>
             </div>
@@ -165,7 +156,8 @@ export function ExtinctionBurstAlert({
                 <p className="text-sm font-medium">Výzkum ukazuje:</p>
                 <p className="text-xs text-muted-foreground">
                   24-36% lidí zažívá "extinction burst" - dočasné zhoršení před trvalým zlepšením.
-                  Ti kdo tímto projdou a nevzdají se, mají 3x vyšší úspěšnost v dlouhodobém udržení návyku!
+                  Ti kdo tímto projdou a nevzdají se, mají 3x vyšší úspěšnost v dlouhodobém udržení
+                  návyku!
                 </p>
               </div>
             </div>
@@ -174,23 +166,13 @@ export function ExtinctionBurstAlert({
           {/* Actions */}
           <div className="flex gap-3 pt-2">
             {onLearnMore && (
-              <Button
-                variant="default"
-                size="sm"
-                onClick={onLearnMore}
-                className="flex-1"
-              >
+              <Button variant="default" size="sm" onClick={onLearnMore} className="flex-1">
                 <Lightbulb className="mr-2 h-4 w-4" />
                 Zjistit více
               </Button>
             )}
             {onDismiss && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onDismiss}
-                className="flex-1"
-              >
+              <Button variant="outline" size="sm" onClick={onDismiss} className="flex-1">
                 Rozumím
               </Button>
             )}
