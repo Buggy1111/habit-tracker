@@ -17,7 +17,7 @@ import {
   User,
   HelpCircle,
   Moon,
-  Sun
+  Sun,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -43,51 +43,53 @@ const sidebarItems = [
     title: "Přehled",
     href: "/dashboard",
     icon: LayoutDashboard,
-    description: "Hlavní dashboard"
+    description: "Hlavní dashboard",
   },
   {
     title: "Dnes",
     href: "/dashboard/today",
     icon: Target,
-    description: "Dnešní úkoly"
+    description: "Dnešní úkoly",
   },
   {
     title: "Týden",
     href: "/dashboard/week",
     icon: Calendar,
-    description: "Týdenní přehled"
+    description: "Týdenní přehled",
   },
   {
     title: "Návyky",
     href: "/dashboard/habits",
     icon: ListTodo,
-    description: "Všechny návyky"
+    description: "Všechny návyky",
   },
   {
     title: "Identita",
     href: "/dashboard/identity",
     icon: Sparkles,
-    description: "Kým se chci stát"
+    description: "Kým se chci stát",
   },
   {
     title: "WOOP Metoda",
     href: "/dashboard/woop",
     icon: Sparkles,
-    description: "Plánování cílů"
+    description: "Plánování cílů",
   },
   {
     title: "Statistiky",
     href: "/dashboard/analytics",
     icon: BarChart3,
-    description: "Pokročilé statistiky"
-  }
+    description: "Pokročilé statistiky",
+  },
+  {
+    title: "Nastavení",
+    href: "/dashboard/settings",
+    icon: Settings,
+    description: "Účet a preference",
+  },
 ]
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const { data: session } = useSession()
@@ -102,7 +104,7 @@ export default function DashboardLayout({
   const handleSignOut = async () => {
     await signOut({
       callbackUrl: "/login",
-      redirect: true
+      redirect: true,
     })
   }
 
@@ -127,7 +129,7 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-background via-primary/5 via-30% to-background relative overflow-hidden">
-        {/* Animated background blobs - GPU accelerated */}
+      {/* Animated background blobs - GPU accelerated */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl"
@@ -165,11 +167,7 @@ export default function DashboardLayout({
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="bg-card/80 backdrop-blur-xl border-white/20 shadow-xl"
         >
-          {isSidebarOpen ? (
-            <X className="h-5 w-5" />
-          ) : (
-            <Menu className="h-5 w-5" />
-          )}
+          {isSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
       </div>
 
@@ -190,7 +188,10 @@ export default function DashboardLayout({
             <div className="mb-6">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="w-full justify-start gap-3 h-auto p-3 hover:bg-primary/10">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-3 h-auto p-3 hover:bg-primary/10"
+                  >
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={session?.user?.image || undefined} alt={userName} />
                       <AvatarFallback className="bg-primary/10 text-primary font-semibold">
@@ -209,9 +210,7 @@ export default function DashboardLayout({
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">{userName}</p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        {userEmail}
-                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">{userEmail}</p>
                     </div>
                   </DropdownMenuLabel>
 
@@ -223,7 +222,9 @@ export default function DashboardLayout({
                       <span>Nastavení</span>
                     </DropdownMenuItem>
                     {mounted && (
-                      <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+                      <DropdownMenuItem
+                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                      >
                         {theme === "dark" ? (
                           <Sun className="mr-2 h-4 w-4" />
                         ) : (
@@ -256,9 +257,7 @@ export default function DashboardLayout({
               <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
                 Habit Tracker
               </h1>
-              <p className="text-xs text-muted-foreground mt-1">
-                Science-based změna návyků
-              </p>
+              <p className="text-xs text-muted-foreground mt-1">Science-based změna návyků</p>
             </div>
 
             {/* Navigation */}
@@ -291,16 +290,15 @@ export default function DashboardLayout({
                         />
                       )}
 
-                      <Icon className={cn(
-                        "h-5 w-5 transition-transform duration-300 group-hover/item:scale-110",
-                        isActive && "text-primary"
-                      )} />
+                      <Icon
+                        className={cn(
+                          "h-5 w-5 transition-transform duration-300 group-hover/item:scale-110",
+                          isActive && "text-primary"
+                        )}
+                      />
 
                       <div className="flex-1">
-                        <div className={cn(
-                          "text-sm font-medium",
-                          isActive && "text-primary"
-                        )}>
+                        <div className={cn("text-sm font-medium", isActive && "text-primary")}>
                           {item.title}
                         </div>
                         {!isActive && (
@@ -351,7 +349,10 @@ export default function DashboardLayout({
                 <div className="mb-6">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start gap-3 h-auto p-3 hover:bg-primary/10">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start gap-3 h-auto p-3 hover:bg-primary/10"
+                      >
                         <Avatar className="h-10 w-10">
                           <AvatarImage src={session?.user?.image || undefined} alt={userName} />
                           <AvatarFallback className="bg-primary/10 text-primary font-semibold">
@@ -359,7 +360,9 @@ export default function DashboardLayout({
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col items-start text-left flex-1 min-w-0">
-                          <p className="text-sm font-medium leading-none truncate w-full">{userName}</p>
+                          <p className="text-sm font-medium leading-none truncate w-full">
+                            {userName}
+                          </p>
                           <p className="text-xs text-muted-foreground truncate w-full mt-1">
                             {userEmail}
                           </p>
@@ -370,9 +373,7 @@ export default function DashboardLayout({
                       <DropdownMenuLabel className="font-normal">
                         <div className="flex flex-col space-y-1">
                           <p className="text-sm font-medium leading-none">{userName}</p>
-                          <p className="text-xs leading-none text-muted-foreground">
-                            {userEmail}
-                          </p>
+                          <p className="text-xs leading-none text-muted-foreground">{userEmail}</p>
                         </div>
                       </DropdownMenuLabel>
 
@@ -384,7 +385,9 @@ export default function DashboardLayout({
                           <span>Nastavení</span>
                         </DropdownMenuItem>
                         {mounted && (
-                          <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+                          <DropdownMenuItem
+                            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                          >
                             {theme === "dark" ? (
                               <Sun className="mr-2 h-4 w-4" />
                             ) : (
@@ -417,9 +420,7 @@ export default function DashboardLayout({
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
                     Habit Tracker
                   </h1>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Science-based změna návyků
-                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">Science-based změna návyků</p>
                 </div>
 
                 {/* Navigation */}
@@ -447,16 +448,10 @@ export default function DashboardLayout({
                             <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-blue-500 rounded-r-full" />
                           )}
 
-                          <Icon className={cn(
-                            "h-5 w-5",
-                            isActive && "text-primary"
-                          )} />
+                          <Icon className={cn("h-5 w-5", isActive && "text-primary")} />
 
                           <div className="flex-1">
-                            <div className={cn(
-                              "text-sm font-medium",
-                              isActive && "text-primary"
-                            )}>
+                            <div className={cn("text-sm font-medium", isActive && "text-primary")}>
                               {item.title}
                             </div>
                           </div>
@@ -479,9 +474,7 @@ export default function DashboardLayout({
       )}
 
       {/* Main content */}
-      <main className="lg:ml-64 xl:ml-72 relative">
-        {children}
-      </main>
+      <main className="lg:ml-64 xl:ml-72 relative">{children}</main>
 
       {/* Floating Help Button */}
       <FloatingHelpButton />
