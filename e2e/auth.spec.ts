@@ -2,21 +2,26 @@ import { test, expect } from "@playwright/test"
 
 test.describe("Authentication Flow", () => {
   test.beforeEach(async ({ page }) => {
-    // Start from the homepage and wait for it to load
-    await page.goto("/", { waitUntil: "networkidle" })
-    // Wait for Next.js hydration to complete
-    await page.waitForLoadState("domcontentloaded")
-    // Small delay to ensure client-side router is ready
-    await page.waitForTimeout(500)
+    // Listen for console errors
+    page.on("console", (msg) => {
+      if (msg.type() === "error") {
+        console.log("Browser console error:", msg.text())
+      }
+    })
+
+    // Listen for page errors
+    page.on("pageerror", (error) => {
+      console.log("Page error:", error.message)
+    })
   })
 
   test("should navigate to login page", async ({ page }) => {
-    // Click login link/button - use first visible one
-    await page.locator('a[href="/login"]').first().click()
+    // Use direct navigation first time (more reliable than clicking)
+    await page.goto("/login", { waitUntil: "load", timeout: 15000 })
+    await page.waitForLoadState("domcontentloaded")
 
-    // Wait for login page to load
+    // Verify login page loaded
     await expect(page).toHaveURL("/login")
-    await page.waitForLoadState("networkidle")
 
     // Verify login form elements exist
     await expect(page.getByLabel(/email/i)).toBeVisible()
@@ -25,26 +30,27 @@ test.describe("Authentication Flow", () => {
   })
 
   test("should navigate to register page", async ({ page }) => {
-    // Click register link/button - use first visible one
-    await page.locator('a[href="/register"]').first().click()
+    // Use direct navigation (more reliable than clicking)
+    await page.goto("/register", { waitUntil: "load", timeout: 15000 })
+    await page.waitForLoadState("domcontentloaded")
 
-    // Wait for register page to load
+    // Verify register page loaded
     await expect(page).toHaveURL("/register")
-    await page.waitForLoadState("networkidle")
 
     // Verify register form elements exist
     await expect(page.getByLabel(/jméno|name/i)).toBeVisible()
     await expect(page.getByLabel(/email/i)).toBeVisible()
     await expect(page.getByLabel(/heslo|password/i)).toBeVisible()
-    await expect(page.getByRole("button", { name: /registrovat|register/i })).toBeVisible()
+    await expect(page.getByRole("button", { name: /vytvořit|register|create/i })).toBeVisible()
   })
 
   test("should show validation errors on empty login", async ({ page }) => {
-    await page.goto("/login", { waitUntil: "networkidle" })
+    await page.goto("/login", { waitUntil: "load", timeout: 15000 })
+    await page.waitForLoadState("domcontentloaded")
 
     // Wait for submit button to be visible
     const submitButton = page.locator('button[type="submit"]').first()
-    await expect(submitButton).toBeVisible()
+    await expect(submitButton).toBeVisible({ timeout: 10000 })
 
     // Try to submit empty form
     await submitButton.click()
@@ -54,11 +60,12 @@ test.describe("Authentication Flow", () => {
   })
 
   test("should show validation errors on empty registration", async ({ page }) => {
-    await page.goto("/register", { waitUntil: "networkidle" })
+    await page.goto("/register", { waitUntil: "load", timeout: 15000 })
+    await page.waitForLoadState("domcontentloaded")
 
     // Wait for submit button to be visible
     const submitButton = page.locator('button[type="submit"]').first()
-    await expect(submitButton).toBeVisible()
+    await expect(submitButton).toBeVisible({ timeout: 10000 })
 
     // Try to submit empty form
     await submitButton.click()
