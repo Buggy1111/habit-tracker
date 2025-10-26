@@ -38,9 +38,7 @@ export interface ExtinctionBurstResult {
  * @param logs - Array of habit completion logs (must be sorted by date)
  * @returns Detection result with severity and support messages
  */
-export function detectExtinctionBurst(
-  logs: HabitLog[]
-): ExtinctionBurstResult {
+export function detectExtinctionBurst(logs: HabitLog[]): ExtinctionBurstResult {
   // Need at least 28 days of data
   if (logs.length < 28) {
     return {
@@ -55,19 +53,15 @@ export function detectExtinctionBurst(
   }
 
   // Get last 28 days
-  const sortedLogs = [...logs]
-    .sort((a, b) => b.date.getTime() - a.date.getTime())
-    .slice(0, 28)
+  const sortedLogs = [...logs].sort((a, b) => b.date.getTime() - a.date.getTime()).slice(0, 28)
 
   // Split into two periods: recent 14 days vs previous 14 days
   const recent14 = sortedLogs.slice(0, 14)
   const previous14 = sortedLogs.slice(14, 28)
 
   // Calculate completion rates
-  const recentRate =
-    recent14.filter((log) => log.completed).length / recent14.length
-  const previousRate =
-    previous14.filter((log) => log.completed).length / previous14.length
+  const recentRate = recent14.filter((log) => log.completed).length / recent14.length
+  const previousRate = previous14.filter((log) => log.completed).length / previous14.length
 
   // Calculate drop
   const drop = previousRate - recentRate
@@ -209,6 +203,10 @@ export function calculateRiskScore(logs: HabitLog[]): number {
   if (previousRate < 0.5) return 0 // Wasn't doing well anyway
 
   const drop = previousRate - recentRate
+
+  // If improving (negative drop), no risk
+  if (drop <= 0) return 0
+
   const riskScore = drop * 100
 
   return Math.min(Math.round(riskScore), 100)
