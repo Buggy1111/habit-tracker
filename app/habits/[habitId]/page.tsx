@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { HabitStrengthBadge } from "@/components/habits/habit-strength-badge"
 import { NeuroplasticityTimeline } from "@/components/habits/neuroplasticity-timeline"
 import { ExtinctionBurstAlert } from "@/components/habits/extinction-burst-alert"
+import { HabitCalendarView } from "@/components/habits/habit-calendar-view"
 import { WoopWizard } from "@/components/woop/woop-wizard"
 import { WoopCard } from "@/components/woop/woop-card"
 import { useHabits, useDeleteHabit } from "@/hooks/use-habits"
@@ -54,9 +55,7 @@ export default function HabitDetailPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-2">Návyk nenalezen</h1>
-          <p className="text-muted-foreground mb-4">
-            Tento návyk neexistuje nebo byl smazán.
-          </p>
+          <p className="text-muted-foreground mb-4">Tento návyk neexistuje nebo byl smazán.</p>
           <Button onClick={() => router.push("/dashboard/habits")}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Zpět na návyky
@@ -104,11 +103,7 @@ export default function HabitDetailPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Button
-            variant="ghost"
-            onClick={() => router.back()}
-            className="gap-2"
-          >
+          <Button variant="ghost" onClick={() => router.back()} className="gap-2">
             <ArrowLeft className="h-4 w-4" />
             Zpět
           </Button>
@@ -153,17 +148,23 @@ export default function HabitDetailPage() {
 
             <div className="flex-1 space-y-2">
               <h1 className="text-3xl font-bold">{habit.name}</h1>
-              {habit.description && (
-                <p className="text-muted-foreground">{habit.description}</p>
-              )}
+              {habit.description && <p className="text-muted-foreground">{habit.description}</p>}
 
               {/* Implementation Intention */}
               {(habit.trigger || habit.action) && (
                 <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
                   <p className="text-sm font-medium mb-1">📋 IF-THEN Plán:</p>
                   <p className="text-sm">
-                    {habit.trigger && <span>Když <strong>{habit.trigger}</strong></span>}
-                    {habit.action && <span>, budu <strong>{habit.action}</strong></span>}
+                    {habit.trigger && (
+                      <span>
+                        Když <strong>{habit.trigger}</strong>
+                      </span>
+                    )}
+                    {habit.action && (
+                      <span>
+                        , budu <strong>{habit.action}</strong>
+                      </span>
+                    )}
                     {habit.context && <span> ({habit.context})</span>}
                   </p>
                 </div>
@@ -224,7 +225,8 @@ export default function HabitDetailPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">Nejdelší série</p>
                   <p className="text-2xl font-bold text-purple-500">
-                    {habit.longestStreak} {habit.longestStreak === 1 ? "den" : habit.longestStreak! < 5 ? "dny" : "dní"}
+                    {habit.longestStreak}{" "}
+                    {habit.longestStreak === 1 ? "den" : habit.longestStreak! < 5 ? "dny" : "dní"}
                   </p>
                 </div>
               </div>
@@ -247,20 +249,18 @@ export default function HabitDetailPage() {
           )}
         </div>
 
-        {/* Stats & Logs (TODO: Add calendar view) */}
+        {/* Calendar View */}
         <motion.div
-          className="rounded-2xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-xl p-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
         >
-          <h2 className="text-xl font-bold mb-4">Historie</h2>
-          <p className="text-muted-foreground text-sm">
-            Celkem záznamů: {habit.logs.length}
-          </p>
-          <p className="text-xs text-muted-foreground mt-2">
-            Kalendář s historií bude přidán v další verzi
-          </p>
+          <HabitCalendarView
+            habitId={habit.id}
+            habitName={habit.name}
+            habitColor={habit.color || "#6366f1"}
+            logs={habit.logs}
+          />
         </motion.div>
 
         {/* WOOP Plans Section */}
@@ -282,8 +282,8 @@ export default function HabitDetailPage() {
           </div>
 
           <p className="text-sm text-muted-foreground">
-            WOOP (Wish, Outcome, Obstacle, Plan) - Vědecká metoda pro dosažení cílů.
-            Research: 2x vyšší úspěšnost vs. pozitivní vizualizace.
+            WOOP (Wish, Outcome, Obstacle, Plan) - Vědecká metoda pro dosažení cílů. Research: 2x
+            vyšší úspěšnost vs. pozitivní vizualizace.
           </p>
 
           {woopLoading ? (

@@ -8,17 +8,13 @@ import { useState } from "react"
 import { useHabits } from "@/hooks/use-habits"
 import dynamic from "next/dynamic"
 import { motion } from "framer-motion"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { HELP_CONTENT } from "@/lib/help-content"
 
 // Lazy load heavy components
 const AddHabitDialog = dynamic(
-  () => import("@/components/habits/add-habit-dialog").then(mod => ({ default: mod.AddHabitDialog })),
+  () =>
+    import("@/components/habits/add-habit-dialog").then((mod) => ({ default: mod.AddHabitDialog })),
   { ssr: false }
 )
 
@@ -28,7 +24,7 @@ export default function HabitsPage() {
 
   const totalHabits = habits?.length || 0
   const completedToday = habits?.filter((h) => h.completed).length || 0
-  const activeHabits = habits?.filter((h) => !h.archived).length || 0
+  const activeHabits = habits?.filter((h) => h.isActive).length || 0
 
   return (
     <div className="relative mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
@@ -64,9 +60,7 @@ export default function HabitsPage() {
             </TooltipTrigger>
             <TooltipContent side="bottom" className="max-w-xs">
               <p className="font-semibold text-sm">{HELP_CONTENT.createHabit.title}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {HELP_CONTENT.createHabit.short}
-              </p>
+              <p className="text-xs text-muted-foreground mt-1">{HELP_CONTENT.createHabit.short}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -130,10 +124,7 @@ export default function HabitsPage() {
         </div>
       </motion.section>
 
-      <AddHabitDialog
-        open={isAddDialogOpen}
-        onOpenChange={setIsAddDialogOpen}
-      />
+      <AddHabitDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
     </div>
   )
 }

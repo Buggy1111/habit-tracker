@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { apiLogger } from "@/lib/logger"
 
 // DELETE /api/thought-records/[recordId] - Delete thought record
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { recordId: string } }
+  { params }: { params: Promise<{ recordId: string }> }
 ) {
   try {
     const session = await auth()
@@ -22,7 +23,7 @@ export async function DELETE(
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    const { recordId } = params
+    const { recordId } = await params
 
     // Verify record belongs to user
     const existingRecord = await prisma.thoughtRecord.findUnique({
@@ -30,10 +31,7 @@ export async function DELETE(
     })
 
     if (!existingRecord || existingRecord.userId !== user.id) {
-      return NextResponse.json(
-        { error: "Thought record not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Thought record not found" }, { status: 404 })
     }
 
     await prisma.thoughtRecord.delete({
@@ -42,10 +40,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Error deleting thought record:", error)
-    return NextResponse.json(
-      { error: "Failed to delete thought record" },
-      { status: 500 }
-    )
+    apiLogger.error("Error deleting thought record:", error)
+    return NextResponse.json({ error: "Failed to delete thought record" }, { status: 500 })
   }
 }

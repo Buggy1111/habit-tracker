@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
+import { logger } from "@/lib/logger"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -42,7 +43,7 @@ export default function LoginPage() {
         router.refresh()
       }
     } catch (error) {
-      console.error(error)
+      logger.error(error)
       toast.error("Něco se pokazilo")
     } finally {
       setIsLoading(false)
@@ -58,18 +59,14 @@ export default function LoginPage() {
             <Brain className="h-10 w-10 text-primary" />
             <span className="text-2xl font-bold">Habit Tracker</span>
           </Link>
-          <p className="text-sm text-muted-foreground">
-            Vítej zpět! Přihlas se do svého účtu
-          </p>
+          <p className="text-sm text-muted-foreground">Vítej zpět! Přihlas se do svého účtu</p>
         </div>
 
         {/* Login Form */}
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Přihlášení</CardTitle>
-            <CardDescription>
-              Zadej své přihlašovací údaje
-            </CardDescription>
+            <CardDescription>Zadej své přihlašovací údaje</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -101,12 +98,7 @@ export default function LoginPage() {
                 />
               </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                size="lg"
-                disabled={isLoading}
-              >
+              <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
                 {isLoading ? (
                   "Přihlašuji..."
                 ) : (
@@ -120,19 +112,13 @@ export default function LoginPage() {
 
             <div className="mt-6 text-center text-sm">
               <span className="text-muted-foreground">Nemáš účet? </span>
-              <Link
-                href="/register"
-                className="font-medium text-primary hover:underline"
-              >
+              <Link href="/register" className="font-medium text-primary hover:underline">
                 Zaregistruj se
               </Link>
             </div>
 
             <div className="mt-4 text-center text-sm">
-              <Link
-                href="/"
-                className="text-muted-foreground hover:text-primary"
-              >
+              <Link href="/" className="text-muted-foreground hover:text-primary">
                 ← Zpět na hlavní stránku
               </Link>
             </div>
@@ -145,8 +131,12 @@ export default function LoginPage() {
             <CardTitle className="text-sm">Demo účet</CardTitle>
           </CardHeader>
           <CardContent className="space-y-1 text-xs text-muted-foreground">
-            <p>Email: <span className="font-mono">demo@habittracker.cz</span></p>
-            <p>Heslo: <span className="font-mono">demo123</span></p>
+            <p>
+              Email: <span className="font-mono">demo@habittracker.cz</span>
+            </p>
+            <p>
+              Heslo: <span className="font-mono">demo123</span>
+            </p>
           </CardContent>
         </Card>
       </div>

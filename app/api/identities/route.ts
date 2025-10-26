@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { apiLogger } from "@/lib/logger"
 
 // GET /api/identities - Fetch all identities for current user
 export async function GET() {
@@ -8,10 +9,7 @@ export async function GET() {
     const session = await auth()
 
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const user = await prisma.user.findUnique({
@@ -19,10 +17,7 @@ export async function GET() {
     })
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
     const identities = await prisma.identity.findMany({
@@ -45,11 +40,8 @@ export async function GET() {
 
     return NextResponse.json(identities)
   } catch (error) {
-    console.error("Error fetching identities:", error)
-    return NextResponse.json(
-      { error: "Failed to fetch identities" },
-      { status: 500 }
-    )
+    apiLogger.error("Error fetching identities:", error)
+    return NextResponse.json({ error: "Failed to fetch identities" }, { status: 500 })
   }
 }
 
@@ -59,10 +51,7 @@ export async function POST(request: NextRequest) {
     const session = await auth()
 
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const user = await prisma.user.findUnique({
@@ -70,20 +59,14 @@ export async function POST(request: NextRequest) {
     })
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
     const body = await request.json()
     const { title, description } = body
 
     if (!title || title.trim() === "") {
-      return NextResponse.json(
-        { error: "Title is required" },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: "Title is required" }, { status: 400 })
     }
 
     const identity = await prisma.identity.create({
@@ -100,10 +83,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(identity, { status: 201 })
   } catch (error) {
-    console.error("Error creating identity:", error)
-    return NextResponse.json(
-      { error: "Failed to create identity" },
-      { status: 500 }
-    )
+    apiLogger.error("Error creating identity:", error)
+    return NextResponse.json({ error: "Failed to create identity" }, { status: 500 })
   }
 }

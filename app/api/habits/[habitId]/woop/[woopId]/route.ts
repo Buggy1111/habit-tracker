@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
+import { apiLogger } from "@/lib/logger"
 
 const updateWoopSchema = z.object({
   wish: z.string().min(1, "Wish is required").optional(),
@@ -47,10 +48,7 @@ export async function PATCH(
     })
 
     if (!existingWoop || existingWoop.habitId !== habitId) {
-      return NextResponse.json(
-        { error: "WOOP plan not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "WOOP plan not found" }, { status: 404 })
     }
 
     const body = await request.json()
@@ -66,16 +64,13 @@ export async function PATCH(
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: "Validation error", details: error.errors },
+        { error: "Validation error", details: error.issues },
         { status: 400 }
       )
     }
 
-    console.error("Error updating WOOP plan:", error)
-    return NextResponse.json(
-      { error: "Failed to update WOOP plan" },
-      { status: 500 }
-    )
+    apiLogger.error("Error updating WOOP plan:", error)
+    return NextResponse.json({ error: "Failed to update WOOP plan" }, { status: 500 })
   }
 }
 
@@ -116,10 +111,7 @@ export async function DELETE(
     })
 
     if (!existingWoop || existingWoop.habitId !== habitId) {
-      return NextResponse.json(
-        { error: "WOOP plan not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "WOOP plan not found" }, { status: 404 })
     }
 
     // Delete WOOP plan
@@ -129,10 +121,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Error deleting WOOP plan:", error)
-    return NextResponse.json(
-      { error: "Failed to delete WOOP plan" },
-      { status: 500 }
-    )
+    apiLogger.error("Error deleting WOOP plan:", error)
+    return NextResponse.json({ error: "Failed to delete WOOP plan" }, { status: 500 })
   }
 }

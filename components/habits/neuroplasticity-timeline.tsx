@@ -47,11 +47,7 @@ export function NeuroplasticityTimeline({
         className="absolute top-0 left-0 right-0 h-1"
         style={{ backgroundColor: phaseColor }}
         animate={{
-          boxShadow: [
-            `0 0 10px ${phaseColor}`,
-            `0 0 20px ${phaseColor}`,
-            `0 0 10px ${phaseColor}`,
-          ],
+          boxShadow: [`0 0 10px ${phaseColor}`, `0 0 20px ${phaseColor}`, `0 0 10px ${phaseColor}`],
         }}
         transition={{
           duration: 2,
@@ -107,12 +103,8 @@ export function NeuroplasticityTimeline({
         <div className="flex items-center gap-3">
           <span className="text-3xl">{phase.emoji}</span>
           <div className="flex-1">
-            <h4 className="font-semibold text-sm sm:text-base">
-              {phase.title}
-            </h4>
-            <p className="text-xs text-muted-foreground">
-              {phase.description}
-            </p>
+            <h4 className="font-semibold text-sm sm:text-base">{phase.title}</h4>
+            <p className="text-xs text-muted-foreground">{phase.description}</p>
           </div>
         </div>
 
@@ -146,7 +138,8 @@ export function NeuroplasticityTimeline({
           </div>
           {daysUntilNext !== null && (
             <p className="text-xs text-muted-foreground text-center">
-              {daysUntilNext} {daysUntilNext === 1 ? "den" : daysUntilNext < 5 ? "dny" : "dní"} do další fáze
+              {daysUntilNext} {daysUntilNext === 1 ? "den" : daysUntilNext < 5 ? "dny" : "dní"} do
+              další fáze
             </p>
           )}
         </div>
@@ -165,11 +158,13 @@ export function NeuroplasticityTimeline({
                     "w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold transition-all",
                     isActive && "ring-2 ring-offset-2"
                   )}
-                  style={{
-                    backgroundColor: isPast || isActive ? phColor : `${phColor}20`,
-                    color: isPast || isActive ? "white" : phColor,
-                    ringColor: isActive ? phColor : "transparent",
-                  }}
+                  style={
+                    {
+                      backgroundColor: isPast || isActive ? phColor : `${phColor}20`,
+                      color: isPast || isActive ? "white" : phColor,
+                      "--tw-ring-color": isActive ? phColor : "transparent",
+                    } as React.CSSProperties
+                  }
                   animate={
                     isActive
                       ? {

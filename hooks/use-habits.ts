@@ -57,6 +57,7 @@ export interface CreateHabitInput {
   trigger?: string
   action?: string
   context?: string
+  identityId?: string
 }
 
 export interface UpdateHabitInput {

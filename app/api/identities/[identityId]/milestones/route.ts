@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { apiLogger } from "@/lib/logger"
 
 // GET /api/identities/[identityId]/milestones - Get all milestones for identity
 export async function GET(
   request: NextRequest,
-  { params }: { params: { identityId: string } }
+  { params }: { params: Promise<{ identityId: string }> }
 ) {
   try {
     const session = await auth()
@@ -22,7 +23,7 @@ export async function GET(
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    const { identityId } = params
+    const { identityId } = await params
 
     // Verify identity belongs to user
     const identity = await prisma.identity.findUnique({
@@ -40,18 +41,15 @@ export async function GET(
 
     return NextResponse.json(milestones)
   } catch (error) {
-    console.error("Error fetching milestones:", error)
-    return NextResponse.json(
-      { error: "Failed to fetch milestones" },
-      { status: 500 }
-    )
+    apiLogger.error("Error fetching milestones:", error)
+    return NextResponse.json({ error: "Failed to fetch milestones" }, { status: 500 })
   }
 }
 
 // POST /api/identities/[identityId]/milestones - Create new milestone
 export async function POST(
   request: NextRequest,
-  { params }: { params: { identityId: string } }
+  { params }: { params: Promise<{ identityId: string }> }
 ) {
   try {
     const session = await auth()
@@ -68,15 +66,12 @@ export async function POST(
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    const { identityId } = params
+    const { identityId } = await params
     const body = await request.json()
     const { title } = body
 
     if (!title || title.trim() === "") {
-      return NextResponse.json(
-        { error: "Title is required" },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: "Title is required" }, { status: 400 })
     }
 
     // Verify identity belongs to user
@@ -97,10 +92,7 @@ export async function POST(
 
     return NextResponse.json(milestone, { status: 201 })
   } catch (error) {
-    console.error("Error creating milestone:", error)
-    return NextResponse.json(
-      { error: "Failed to create milestone" },
-      { status: 500 }
-    )
+    apiLogger.error("Error creating milestone:", error)
+    return NextResponse.json({ error: "Failed to create milestone" }, { status: 500 })
   }
 }

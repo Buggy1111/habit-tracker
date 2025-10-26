@@ -12,6 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { motion } from "framer-motion"
 import { WelcomeDialog } from "@/components/onboarding/welcome-dialog"
 import { calculateWeeklyInsights, getWeekStart, getWeekEnd } from "@/lib/algorithms/weekly-insights"
+import { Habit } from "@prisma/client"
+import { logger } from "@/lib/logger"
 
 // Lazy load heavy components
 const DashboardHero = dynamic(
@@ -108,7 +110,7 @@ export default function DashboardPage() {
         h.neuroplasticityPhase &&
         h.neuroplasticityPhase.phase < 4 &&
         // Ensure uniqueness by id
-        self.findIndex(habit => habit.id === h.id) === index
+        self.findIndex((habit) => habit.id === h.id) === index
     ) || []
 
   // Calculate weekly completion rate
@@ -157,7 +159,12 @@ export default function DashboardPage() {
       (habit.logs || []).map((log) => ({ ...log, habitId: habit.id }))
     )
 
-    const insights = calculateWeeklyInsights(habits, allLogs, weekStart, weekEnd)
+    const insights = calculateWeeklyInsights(
+      habits as unknown as Habit[],
+      allLogs,
+      weekStart,
+      weekEnd
+    )
     setWeeklyInsights(insights)
     setShowWeeklyReviewDialog(true)
   }
@@ -274,7 +281,7 @@ export default function DashboardPage() {
                 onSimplify={() => router.push(`/habits/${habit.id}?simplify=true`)}
                 onDismiss={() => {
                   // TODO: Store dismissal in localStorage or DB
-                  console.log("Dismissed adaptation alert for", habit.name)
+                  logger.info("Dismissed adaptation alert for", habit.name)
                 }}
               />
             </motion.div>
@@ -293,7 +300,13 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Tvůj Neuroplasticity Progress</h2>
             <span className="text-sm text-muted-foreground">
-              {habitsWithNeuroplasticity.length} {habitsWithNeuroplasticity.length === 1 ? 'návyk' : habitsWithNeuroplasticity.length < 5 ? 'návyky' : 'návyků'} v progresu
+              {habitsWithNeuroplasticity.length}{" "}
+              {habitsWithNeuroplasticity.length === 1
+                ? "návyk"
+                : habitsWithNeuroplasticity.length < 5
+                  ? "návyky"
+                  : "návyků"}{" "}
+              v progresu
             </span>
           </div>
           <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
@@ -419,7 +432,7 @@ export default function DashboardPage() {
             setShowWeeklyReviewPrompt(false)
           }}
           insights={weeklyInsights}
-          habits={habits}
+          habits={habits as unknown as Habit[]}
         />
       )}
     </div>

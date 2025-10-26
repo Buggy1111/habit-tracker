@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
+import { apiLogger } from "@/lib/logger"
 
 const createWoopSchema = z.object({
   wish: z.string().min(1, "Wish is required"),
@@ -49,11 +50,8 @@ export async function GET(
 
     return NextResponse.json(woopPlans)
   } catch (error) {
-    console.error("Error fetching WOOP plans:", error)
-    return NextResponse.json(
-      { error: "Failed to fetch WOOP plans" },
-      { status: 500 }
-    )
+    apiLogger.error("Error fetching WOOP plans:", error)
+    return NextResponse.json({ error: "Failed to fetch WOOP plans" }, { status: 500 })
   }
 }
 
@@ -103,15 +101,12 @@ export async function POST(
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: "Validation error", details: error.errors },
+        { error: "Validation error", details: error.issues },
         { status: 400 }
       )
     }
 
-    console.error("Error creating WOOP plan:", error)
-    return NextResponse.json(
-      { error: "Failed to create WOOP plan" },
-      { status: 500 }
-    )
+    apiLogger.error("Error creating WOOP plan:", error)
+    return NextResponse.json({ error: "Failed to create WOOP plan" }, { status: 500 })
   }
 }

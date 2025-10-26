@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/app/api/auth/[...nextauth]/auth-options"
-import prisma from "@/lib/prisma"
+import { auth } from "@/lib/auth"
+import { prisma } from "@/lib/prisma"
+import { apiLogger } from "@/lib/logger"
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ habitId: string }> }) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -37,7 +37,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ hab
 
     return NextResponse.json(difficultyLogs)
   } catch (error) {
-    console.error("Error fetching difficulty logs:", error)
+    apiLogger.error("Error fetching difficulty logs:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

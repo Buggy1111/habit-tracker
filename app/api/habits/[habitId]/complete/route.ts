@@ -1,11 +1,9 @@
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
+import { apiLogger } from "@/lib/logger"
 
-export async function POST(
-  req: Request,
-  { params }: { params: Promise<{ habitId: string }> }
-) {
+export async function POST(req: Request, { params }: { params: Promise<{ habitId: string }> }) {
   try {
     const session = await auth()
 
@@ -53,10 +51,7 @@ export async function POST(
 
     return NextResponse.json(log)
   } catch (error) {
-    console.error("Error completing habit:", error)
-    return NextResponse.json(
-      { error: "Failed to complete habit" },
-      { status: 500 }
-    )
+    apiLogger.error("Error completing habit:", error)
+    return NextResponse.json({ error: "Failed to complete habit" }, { status: 500 })
   }
 }

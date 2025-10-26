@@ -4,6 +4,7 @@ import React, { Component, ReactNode } from "react"
 import { AlertTriangle, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { logger } from "@/lib/logger"
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -40,7 +41,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log error details for debugging
-    console.error("Error caught by boundary:", error, errorInfo)
+    logger.error("Error caught by boundary:", error, errorInfo)
 
     // Call custom error handler if provided
     this.props.onError?.(error, errorInfo)
@@ -72,9 +73,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             </div>
 
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-destructive">
-                Něco se pokazilo
-              </h2>
+              <h2 className="text-2xl font-bold text-destructive">Něco se pokazilo</h2>
               <p className="text-muted-foreground max-w-md">
                 Omlouváme se, ale došlo k neočekávané chybě. Zkuste prosím obnovit stránku.
               </p>
@@ -103,10 +102,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 Zkusit znovu
               </Button>
 
-              <Button
-                onClick={() => window.location.reload()}
-                className="flex items-center gap-2"
-              >
+              <Button onClick={() => window.location.reload()} className="flex items-center gap-2">
                 Obnovit stránku
               </Button>
             </div>

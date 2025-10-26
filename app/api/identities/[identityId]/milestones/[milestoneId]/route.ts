@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { apiLogger } from "@/lib/logger"
 
 // PATCH /api/identities/[identityId]/milestones/[milestoneId] - Toggle milestone achievement
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { identityId: string; milestoneId: string } }
+  { params }: { params: Promise<{ identityId: string; milestoneId: string }> }
 ) {
   try {
     const session = await auth()
@@ -22,7 +23,7 @@ export async function PATCH(
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    const { identityId, milestoneId } = params
+    const { identityId, milestoneId } = await params
     const body = await request.json()
     const { achieved } = body
 
@@ -54,18 +55,15 @@ export async function PATCH(
 
     return NextResponse.json(milestone)
   } catch (error) {
-    console.error("Error updating milestone:", error)
-    return NextResponse.json(
-      { error: "Failed to update milestone" },
-      { status: 500 }
-    )
+    apiLogger.error("Error updating milestone:", error)
+    return NextResponse.json({ error: "Failed to update milestone" }, { status: 500 })
   }
 }
 
 // DELETE /api/identities/[identityId]/milestones/[milestoneId] - Delete milestone
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { identityId: string; milestoneId: string } }
+  { params }: { params: Promise<{ identityId: string; milestoneId: string }> }
 ) {
   try {
     const session = await auth()
@@ -82,7 +80,7 @@ export async function DELETE(
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    const { identityId, milestoneId } = params
+    const { identityId, milestoneId } = await params
 
     // Verify identity belongs to user
     const identity = await prisma.identity.findUnique({
@@ -108,10 +106,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Error deleting milestone:", error)
-    return NextResponse.json(
-      { error: "Failed to delete milestone" },
-      { status: 500 }
-    )
+    apiLogger.error("Error deleting milestone:", error)
+    return NextResponse.json({ error: "Failed to delete milestone" }, { status: 500 })
   }
 }

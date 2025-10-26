@@ -1,22 +1,23 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/app/api/auth/[...nextauth]/auth-options"
-import prisma from "@/lib/prisma"
+import { auth } from "@/lib/auth"
+import { prisma } from "@/lib/prisma"
+import { apiLogger } from "@/lib/logger"
 
-export async function POST(req: NextRequest, { params }: { params: { habitId: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ habitId: string }> }) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const { habitId } = await params
     const { selfCompassionNote } = await req.json()
 
     // Verify habit belongs to user
     const habit = await prisma.habit.findFirst({
       where: {
-        id: params.habitId,
+        id: habitId,
         userId: session.user.id,
       },
     })
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest, { params }: { params: { habitId: st
     // Mark the most recent extinction burst as addressed
     await prisma.extinctionBurstEvent.updateMany({
       where: {
-        habitId: params.habitId,
+        habitId: habitId,
         addressedAt: null,
       },
       data: {
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest, { params }: { params: { habitId: st
       await prisma.thoughtRecord.create({
         data: {
           userId: session.user.id,
-          habitId: params.habitId,
+          habitId: habitId,
           adversity: "Extinction burst - pokles v úspěšnosti návyku",
           belief: "Automatická myšlenka během extinction burst",
           consequence: "Pocity frustrace nebo selhání",
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest, { params }: { params: { habitId: st
       message: "Recovery flow completed",
     })
   } catch (error) {
-    console.error("Error in recovery flow:", error)
+    apiLogger.error("Error in recovery flow:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

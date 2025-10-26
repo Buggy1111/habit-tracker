@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes"
 import { SessionProvider } from "next-auth/react"
 import { useState, type ReactNode } from "react"
 import { ErrorBoundary } from "@/components/common/error-boundary"
+import { logger } from "@/lib/logger"
 
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -21,14 +22,14 @@ export function Providers({ children }: { children: ReactNode }) {
             retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
             // Performance optimizations
             structuralSharing: true, // Prevent unnecessary re-renders
-            networkMode: 'online', // Only fetch when online
+            networkMode: "online", // Only fetch when online
           },
           mutations: {
             retry: 0, // Don't retry mutations automatically
-            networkMode: 'online',
+            networkMode: "online",
             onError: (error) => {
               // Global error handling can be added here
-              console.error('Mutation error:', error)
+              logger.error("Mutation error:", error)
             },
           },
         },

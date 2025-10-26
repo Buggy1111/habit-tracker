@@ -11,6 +11,7 @@ import {
 import { getNeuroplasticityPhase, daysUntilNextPhase } from "@/lib/algorithms/neuroplasticity-phase"
 import { detectExtinctionBurst } from "@/lib/algorithms/extinction-burst"
 import { analyzeHabitDifficulty } from "@/lib/algorithms/difficulty-adaptation"
+import { apiLogger } from "@/lib/logger"
 
 const createHabitSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -123,7 +124,7 @@ export async function GET() {
 
     return NextResponse.json(habitsWithMetrics)
   } catch (error) {
-    console.error("Error fetching habits:", error)
+    apiLogger.error("Error fetching habits:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -150,9 +151,9 @@ export async function POST(req: Request) {
     return NextResponse.json(habit, { status: 201 })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: "Invalid input", details: error.errors }, { status: 400 })
+      return NextResponse.json({ error: "Invalid input", details: error.issues }, { status: 400 })
     }
-    console.error("Error creating habit:", error)
+    apiLogger.error("Error creating habit:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

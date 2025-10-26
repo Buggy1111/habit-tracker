@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
+import { apiLogger } from "@/lib/logger"
 
 const updateHabitSchema = z.object({
   name: z.string().min(1, "Name is required").optional(),
@@ -16,10 +17,7 @@ const updateHabitSchema = z.object({
 })
 
 // DELETE /api/habits/[habitId] - Soft delete (archive) habit
-export async function DELETE(
-  req: Request,
-  { params }: { params: Promise<{ habitId: string }> }
-) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ habitId: string }> }) {
   try {
     const session = await auth()
 
@@ -49,19 +47,13 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Error deleting habit:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
+    apiLogger.error("Error deleting habit:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
 
 // PATCH /api/habits/[habitId] - Update habit
-export async function PATCH(
-  req: Request,
-  { params }: { params: Promise<{ habitId: string }> }
-) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ habitId: string }> }) {
   try {
     const session = await auth()
 
@@ -94,15 +86,9 @@ export async function PATCH(
     return NextResponse.json(updatedHabit)
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid input", details: error.errors },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: "Invalid input", details: error.issues }, { status: 400 })
     }
-    console.error("Error updating habit:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
+    apiLogger.error("Error updating habit:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

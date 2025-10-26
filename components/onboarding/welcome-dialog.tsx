@@ -11,28 +11,49 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { Brain, Sparkles, Target, TrendingUp, CheckCircle2, ArrowRight, ArrowLeft } from "lucide-react"
+import {
+  Brain,
+  Sparkles,
+  Target,
+  TrendingUp,
+  CheckCircle2,
+  ArrowRight,
+  ArrowLeft,
+} from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter } from "next/navigation"
 
 const WELCOME_SEEN_KEY = "habit-tracker-welcome-seen"
 
-export function WelcomeDialog() {
-  const [open, setOpen] = useState(false)
+interface WelcomeDialogProps {
+  open?: boolean
+  onComplete?: () => void
+}
+
+export function WelcomeDialog({ open: controlledOpen, onComplete }: WelcomeDialogProps = {}) {
+  const [internalOpen, setInternalOpen] = useState(false)
   const [step, setStep] = useState(1)
   const router = useRouter()
   const totalSteps = 4
 
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen
+
   useEffect(() => {
-    const hasSeenWelcome = localStorage.getItem(WELCOME_SEEN_KEY)
-    if (!hasSeenWelcome) {
-      setTimeout(() => setOpen(true), 1000)
+    if (controlledOpen === undefined) {
+      const hasSeenWelcome = localStorage.getItem(WELCOME_SEEN_KEY)
+      if (!hasSeenWelcome) {
+        setTimeout(() => setInternalOpen(true), 1000)
+      }
     }
-  }, [])
+  }, [controlledOpen])
 
   const handleClose = () => {
     localStorage.setItem(WELCOME_SEEN_KEY, "true")
-    setOpen(false)
+    if (controlledOpen !== undefined && onComplete) {
+      onComplete()
+    } else {
+      setInternalOpen(false)
+    }
   }
 
   const handleNext = () => {
@@ -54,10 +75,18 @@ export function WelcomeDialog() {
     handleClose()
   }
 
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
+      handleClose()
+    } else if (controlledOpen === undefined) {
+      setInternalOpen(newOpen)
+    }
+  }
+
   const progress = (step / totalSteps) * 100
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl sm:text-2xl md:text-3xl">
@@ -67,7 +96,8 @@ export function WelcomeDialog() {
             {step === 4 && "Jsi připraven? 💪"}
           </DialogTitle>
           <DialogDescription className="text-sm sm:text-base">
-            {step === 1 && "Aplikace založená na vědeckém výzkumu, která ti skutečně pomůže změnit návyky"}
+            {step === 1 &&
+              "Aplikace založená na vědeckém výzkumu, která ti skutečně pomůže změnit návyky"}
             {step === 2 && "Každá funkce má vědecký základ - žádná motivační kecy"}
             {step === 3 && "3 jednoduché kroky k tvé první změně"}
             {step === 4 && "Vytvoříme tvůj první návyk společně"}
@@ -76,7 +106,9 @@ export function WelcomeDialog() {
 
         <div className="space-y-2">
           <div className="flex justify-between text-xs sm:text-sm text-muted-foreground">
-            <span>Krok {step} z {totalSteps}</span>
+            <span>
+              Krok {step} z {totalSteps}
+            </span>
             <span>{Math.round(progress)}%</span>
           </div>
           <Progress value={progress} className="h-2" />
@@ -97,7 +129,9 @@ export function WelcomeDialog() {
                   <CardContent className="p-4 sm:p-6 space-y-4">
                     <div className="text-center">
                       <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">🎯</div>
-                      <h3 className="text-lg sm:text-xl font-semibold mb-2">Nejsme další "motivační" app</h3>
+                      <h3 className="text-lg sm:text-xl font-semibold mb-2">
+                        Nejsme další "motivační" app
+                      </h3>
                       <p className="text-sm sm:text-base text-muted-foreground">
                         Používáme metody, které jsou <strong>vědecky prokázané</strong>:
                       </p>
@@ -107,28 +141,36 @@ export function WelcomeDialog() {
                         <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500 flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-medium text-xs sm:text-sm">IF-THEN plány</p>
-                          <p className="text-[10px] sm:text-xs text-muted-foreground">+65% úspěšnost</p>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">
+                            +65% úspěšnost
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-card">
                         <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500 flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-medium text-xs sm:text-sm">66denní neuroplasticita</p>
-                          <p className="text-[10px] sm:text-xs text-muted-foreground">Vědecký základ</p>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">
+                            Vědecký základ
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-card">
                         <Target className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-medium text-xs sm:text-sm">WOOP metoda</p>
-                          <p className="text-[10px] sm:text-xs text-muted-foreground">2x vyšší šance</p>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">
+                            2x vyšší šance
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-card">
                         <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500 flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-medium text-xs sm:text-sm">Habit Strength Score</p>
-                          <p className="text-[10px] sm:text-xs text-muted-foreground">Ne jen streak!</p>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">
+                            Ne jen streak!
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -141,7 +183,9 @@ export function WelcomeDialog() {
               <div className="space-y-3 sm:space-y-4">
                 <div className="text-center mb-3 sm:mb-4">
                   <div className="text-4xl sm:text-6xl mb-2">🔬</div>
-                  <p className="text-sm sm:text-base text-muted-foreground">Každá funkce má publikovaný research</p>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    Každá funkce má publikovaný research
+                  </p>
                 </div>
                 <div className="space-y-2 sm:space-y-3">
                   <Card>
@@ -151,7 +195,9 @@ export function WelcomeDialog() {
                           <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-sm sm:text-base mb-1">Implementation Intentions</h4>
+                          <h4 className="font-semibold text-sm sm:text-base mb-1">
+                            Implementation Intentions
+                          </h4>
                           <p className="text-xs sm:text-sm text-muted-foreground mb-2">
                             Místo "Budu cvičit" → "Když se vrátím z práce, udělám 10 kliků"
                           </p>
@@ -170,7 +216,9 @@ export function WelcomeDialog() {
                           <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-sm sm:text-base mb-1">66denní neuroplasticita</h4>
+                          <h4 className="font-semibold text-sm sm:text-base mb-1">
+                            66denní neuroplasticita
+                          </h4>
                           <p className="text-xs sm:text-sm text-muted-foreground mb-2">
                             Tvůj mozek potřebuje průměrně 66 dní na vytvoření automatického návyku
                           </p>
@@ -199,7 +247,9 @@ export function WelcomeDialog() {
                           1
                         </div>
                         <div className="flex-1">
-                          <p className="font-semibold text-sm sm:text-base mb-1">Vytvoř první návyk</p>
+                          <p className="font-semibold text-sm sm:text-base mb-1">
+                            Vytvoř první návyk
+                          </p>
                           <p className="text-xs sm:text-sm text-muted-foreground">
                             Začni s JEDNOU věcí. Ne 10 návyků najednou!
                           </p>
@@ -215,7 +265,9 @@ export function WelcomeDialog() {
                           2
                         </div>
                         <div className="flex-1">
-                          <p className="font-semibold text-sm sm:text-base mb-1">Nastav IF-THEN plán</p>
+                          <p className="font-semibold text-sm sm:text-base mb-1">
+                            Nastav IF-THEN plán
+                          </p>
                           <p className="text-xs sm:text-sm text-muted-foreground">
                             "Když [situace], pak [akce]" - +65% úspěšnost!
                           </p>
@@ -275,7 +327,8 @@ export function WelcomeDialog() {
                   <CardContent className="p-3 sm:p-4 text-xs sm:text-sm">
                     <p className="font-medium mb-2">💡 Tip na start:</p>
                     <p className="text-muted-foreground">
-                      Nevíš co začít? Zkus: "Když vstanu, vypiju sklenici vody v kuchyni" nebo "Když si lehnu, přečtu 5 stran knihy". Malé kroky = velké změny!
+                      Nevíš co začít? Zkus: "Když vstanu, vypiju sklenici vody v kuchyni" nebo "Když
+                      si lehnu, přečtu 5 stran knihy". Malé kroky = velké změny!
                     </p>
                   </CardContent>
                 </Card>
@@ -287,7 +340,12 @@ export function WelcomeDialog() {
         <div className="flex flex-col sm:flex-row items-center justify-between pt-4 border-t gap-3">
           <div className="flex gap-2 w-full sm:w-auto">
             {step > 1 && (
-              <Button variant="outline" onClick={handlePrevious} size="sm" className="flex-1 sm:flex-none">
+              <Button
+                variant="outline"
+                onClick={handlePrevious}
+                size="sm"
+                className="flex-1 sm:flex-none"
+              >
                 <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Zpět
               </Button>

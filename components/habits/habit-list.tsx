@@ -45,7 +45,7 @@ export const HabitList = memo(function HabitList({ onCreateHabit }: HabitListPro
     )
   }
 
-  if (habits.length === 0) {
+  if (!habits || habits.length === 0) {
     return onCreateHabit ? (
       <HabitsEmptyState onCreateHabit={onCreateHabit} />
     ) : (

@@ -11,6 +11,7 @@ import { WeeklyInsightsCard } from "./weekly-insights-card"
 import { DifficultyRating } from "./difficulty-rating"
 import { Habit } from "@prisma/client"
 import { toast } from "sonner"
+import { logger } from "@/lib/logger"
 
 interface WeeklyReviewDialogProps {
   open: boolean
@@ -89,7 +90,7 @@ export function WeeklyReviewDialog({ open, onClose, insights, habits }: WeeklyRe
       setCurrentHabitIndex(0)
       setReflection("")
     } catch (error) {
-      console.error("Error saving review:", error)
+      logger.error("Error saving review:", error)
       toast.error("Chyba při ukládání reflexe")
     } finally {
       setIsSubmitting(false)

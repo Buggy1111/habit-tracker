@@ -1,0 +1,190 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Dark blue background gradient -->
+    <linearGradient id="darkBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1929;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a2332;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Copper/Orange gradient for left hemisphere -->
+    <linearGradient id="copper" x1="30%" y1="20%" x2="70%" y2="80%">
+      <stop offset="0%" style="stop-color:#ff9966;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#ff8c5a;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#e87348;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d46142;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Darker copper for shadows -->
+    <linearGradient id="copperDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d46142;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b34e35;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Blue gradient for right hemisphere -->
+    <linearGradient id="blueHemi" x1="30%" y1="20%" x2="70%" y2="80%">
+      <stop offset="0%" style="stop-color:#5599dd;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#4488cc;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#3377bb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2266aa;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Darker blue for shadows -->
+    <linearGradient id="blueDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2266aa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a5588;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Highlights -->
+    <radialGradient id="highlight" cx="40%" cy="30%" r="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Shadow under brain -->
+    <radialGradient id="shadow" cx="50%" cy="80%" r="60%">
+      <stop offset="0%" style="stop-color:#000000;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="512" height="512" fill="url(#darkBg)" />
+
+  <!-- Shadow under brain -->
+  <ellipse cx="256" cy="420" rx="140" ry="25" fill="url(#shadow)" />
+
+  <!-- Main brain group -->
+  <g transform="translate(256, 250)">
+
+    <!-- LEFT HEMISPHERE (COPPER/ORANGE) -->
+    <g>
+      <!-- Main left hemisphere shape -->
+      <path d="M -115 -5
+               C -125 -25 -120 -55 -95 -75
+               C -70 -95 -40 -95 -15 -85
+               C -10 -82 -8 -78 -8 -73
+               L -8 75
+               C -8 80 -10 84 -15 87
+               C -40 97 -70 95 -95 80
+               C -120 65 -125 35 -120 5
+               C -118 10 -116 2 -115 -5 Z"
+            fill="url(#copper)"
+            stroke="#b34e35"
+            stroke-width="2"/>
+
+      <!-- Detailed gyri (brain folds) - left hemisphere -->
+      <!-- Top section -->
+      <path d="M -95 -70 Q -85 -60 -75 -70 T -55 -70 T -35 -70 T -20 -68"
+            fill="url(#copperDark)" opacity="0.6"/>
+      <path d="M -100 -55 Q -90 -45 -80 -55 T -60 -55 T -40 -55 T -25 -53"
+            fill="url(#copperDark)" opacity="0.5"/>
+
+      <!-- Middle-upper section -->
+      <path d="M -105 -35 Q -95 -25 -85 -35 T -65 -35 T -45 -35 T -30 -33"
+            fill="url(#copperDark)" opacity="0.6"/>
+      <path d="M -105 -15 Q -95 -5 -85 -15 T -65 -15 T -45 -15 T -30 -13"
+            fill="url(#copperDark)" opacity="0.5"/>
+
+      <!-- Middle section -->
+      <path d="M -105 5 Q -95 15 -85 5 T -65 5 T -45 5 T -30 7"
+            fill="url(#copperDark)" opacity="0.6"/>
+      <path d="M -105 25 Q -95 35 -85 25 T -65 25 T -45 25 T -30 27"
+            fill="url(#copperDark)" opacity="0.5"/>
+
+      <!-- Lower section -->
+      <path d="M -100 45 Q -90 55 -80 45 T -60 45 T -40 45 T -25 47"
+            fill="url(#copperDark)" opacity="0.6"/>
+      <path d="M -95 65 Q -85 73 -75 65 T -55 65 T -35 65"
+            fill="url(#copperDark)" opacity="0.5"/>
+
+      <!-- Additional depth lines -->
+      <g stroke="#b34e35" stroke-width="1.5" fill="none" opacity="0.4">
+        <path d="M -90 -65 C -80 -58 -70 -65 -60 -58"/>
+        <path d="M -92 -50 C -82 -43 -72 -50 -62 -43"/>
+        <path d="M -95 -30 C -85 -23 -75 -30 -65 -23"/>
+        <path d="M -95 -10 C -85 -3 -75 -10 -65 -3"/>
+        <path d="M -95 10 C -85 17 -75 10 -65 17"/>
+        <path d="M -95 30 C -85 37 -75 30 -65 37"/>
+        <path d="M -92 50 C -82 57 -72 50 -62 57"/>
+      </g>
+
+      <!-- Highlights on copper hemisphere -->
+      <ellipse cx="-55" cy="-45" rx="30" ry="20" fill="#ff9966" opacity="0.5"/>
+      <ellipse cx="-60" cy="-10" rx="25" ry="15" fill="#ff9966" opacity="0.4"/>
+      <ellipse cx="-55" cy="25" rx="22" ry="13" fill="#ff9966" opacity="0.3"/>
+    </g>
+
+    <!-- RIGHT HEMISPHERE (BLUE) -->
+    <g>
+      <!-- Main right hemisphere shape -->
+      <path d="M 115 -5
+               C 125 -25 120 -55 95 -75
+               C 70 -95 40 -95 15 -85
+               C 10 -82 8 -78 8 -73
+               L 8 75
+               C 8 80 10 84 15 87
+               C 40 97 70 95 95 80
+               C 120 65 125 35 120 5
+               C 118 10 116 2 115 -5 Z"
+            fill="url(#blueHemi)"
+            stroke="#1a5588"
+            stroke-width="2"/>
+
+      <!-- Detailed gyri (brain folds) - right hemisphere -->
+      <!-- Top section -->
+      <path d="M 95 -70 Q 85 -60 75 -70 T 55 -70 T 35 -70 T 20 -68"
+            fill="url(#blueDark)" opacity="0.6"/>
+      <path d="M 100 -55 Q 90 -45 80 -55 T 60 -55 T 40 -55 T 25 -53"
+            fill="url(#blueDark)" opacity="0.5"/>
+
+      <!-- Middle-upper section -->
+      <path d="M 105 -35 Q 95 -25 85 -35 T 65 -35 T 45 -35 T 30 -33"
+            fill="url(#blueDark)" opacity="0.6"/>
+      <path d="M 105 -15 Q 95 -5 85 -15 T 65 -15 T 45 -15 T 30 -13"
+            fill="url(#blueDark)" opacity="0.5"/>
+
+      <!-- Middle section -->
+      <path d="M 105 5 Q 95 15 85 5 T 65 5 T 45 5 T 30 7"
+            fill="url(#blueDark)" opacity="0.6"/>
+      <path d="M 105 25 Q 95 35 85 25 T 65 25 T 45 25 T 30 27"
+            fill="url(#blueDark)" opacity="0.5"/>
+
+      <!-- Lower section -->
+      <path d="M 100 45 Q 90 55 80 45 T 60 45 T 40 45 T 25 47"
+            fill="url(#blueDark)" opacity="0.6"/>
+      <path d="M 95 65 Q 85 73 75 65 T 55 65 T 35 65"
+            fill="url(#blueDark)" opacity="0.5"/>
+
+      <!-- Additional depth lines -->
+      <g stroke="#1a5588" stroke-width="1.5" fill="none" opacity="0.4">
+        <path d="M 90 -65 C 80 -58 70 -65 60 -58"/>
+        <path d="M 92 -50 C 82 -43 72 -50 62 -43"/>
+        <path d="M 95 -30 C 85 -23 75 -30 65 -23"/>
+        <path d="M 95 -10 C 85 -3 75 -10 65 -3"/>
+        <path d="M 95 10 C 85 17 75 10 65 17"/>
+        <path d="M 95 30 C 85 37 75 30 65 37"/>
+        <path d="M 92 50 C 82 57 72 50 62 57"/>
+      </g>
+
+      <!-- Highlights on blue hemisphere -->
+      <ellipse cx="55" cy="-45" rx="30" ry="20" fill="#5599dd" opacity="0.5"/>
+      <ellipse cx="60" cy="-10" rx="25" ry="15" fill="#5599dd" opacity="0.4"/>
+      <ellipse cx="55" cy="25" rx="22" ry="13" fill="#5599dd" opacity="0.3"/>
+    </g>
+
+    <!-- Corpus callosum (center connection) -->
+    <ellipse cx="0" cy="10" rx="10" ry="80" fill="#886644" opacity="0.7"/>
+
+    <!-- Brain stem -->
+    <g>
+      <ellipse cx="0" cy="90" rx="25" ry="15" fill="#775533" opacity="0.8"/>
+      <path d="M -20 85 L -15 115 L 15 115 L 20 85 Z" fill="#664422" opacity="0.7"/>
+      <!-- Stem details -->
+      <ellipse cx="0" cy="100" rx="15" ry="8" fill="#553311" opacity="0.6"/>
+    </g>
+
+    <!-- Overall highlight on top -->
+    <ellipse cx="-30" cy="-40" rx="70" ry="35" fill="url(#highlight)" />
+    <ellipse cx="30" cy="-40" rx="70" ry="35" fill="url(#highlight)" />
+  </g>
+</svg>

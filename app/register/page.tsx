@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
+import { logger } from "@/lib/logger"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -59,7 +60,7 @@ export default function RegisterPage() {
       toast.success("Účet vytvořen! Můžeš se přihlásit")
       router.push("/login")
     } catch (error) {
-      console.error(error)
+      logger.error(error)
       toast.error("Něco se pokazilo")
     } finally {
       setIsLoading(false)
@@ -84,9 +85,7 @@ export default function RegisterPage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Registrace</CardTitle>
-            <CardDescription>
-              Vytvoř si nový účet zdarma
-            </CardDescription>
+            <CardDescription>Vytvoř si nový účet zdarma</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -145,12 +144,7 @@ export default function RegisterPage() {
                 />
               </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                size="lg"
-                disabled={isLoading}
-              >
+              <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
                 {isLoading ? (
                   "Vytvářím účet..."
                 ) : (
@@ -164,19 +158,13 @@ export default function RegisterPage() {
 
             <div className="mt-6 text-center text-sm">
               <span className="text-muted-foreground">Už máš účet? </span>
-              <Link
-                href="/login"
-                className="font-medium text-primary hover:underline"
-              >
+              <Link href="/login" className="font-medium text-primary hover:underline">
                 Přihlas se
               </Link>
             </div>
 
             <div className="mt-4 text-center text-sm">
-              <Link
-                href="/"
-                className="text-muted-foreground hover:text-primary"
-              >
+              <Link href="/" className="text-muted-foreground hover:text-primary">
                 ← Zpět na hlavní stránku
               </Link>
             </div>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { apiLogger } from "@/lib/logger"
 
 // GET /api/thought-records - Get all thought records for current user
 export async function GET() {
@@ -36,11 +37,8 @@ export async function GET() {
 
     return NextResponse.json(thoughtRecords)
   } catch (error) {
-    console.error("Error fetching thought records:", error)
-    return NextResponse.json(
-      { error: "Failed to fetch thought records" },
-      { status: 500 }
-    )
+    apiLogger.error("Error fetching thought records:", error)
+    return NextResponse.json({ error: "Failed to fetch thought records" }, { status: 500 })
   }
 }
 
@@ -108,10 +106,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(thoughtRecord, { status: 201 })
   } catch (error) {
-    console.error("Error creating thought record:", error)
-    return NextResponse.json(
-      { error: "Failed to create thought record" },
-      { status: 500 }
-    )
+    apiLogger.error("Error creating thought record:", error)
+    return NextResponse.json({ error: "Failed to create thought record" }, { status: 500 })
   }
 }
