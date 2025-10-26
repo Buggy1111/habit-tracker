@@ -81,12 +81,6 @@ const sidebarItems = [
     icon: BarChart3,
     description: "Pokročilé statistiky",
   },
-  {
-    title: "Nastavení",
-    href: "/dashboard/settings",
-    icon: Settings,
-    description: "Účet a preference",
-  },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -217,7 +211,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <DropdownMenuSeparator />
 
                   <DropdownMenuGroup>
-                    <DropdownMenuItem onClick={() => router.push("/settings")}>
+                    <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Nastavení</span>
                     </DropdownMenuItem>
@@ -380,7 +374,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       <DropdownMenuSeparator />
 
                       <DropdownMenuGroup>
-                        <DropdownMenuItem onClick={() => router.push("/settings")}>
+                        <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>
                           <Settings className="mr-2 h-4 w-4" />
                           <span>Nastavení</span>
                         </DropdownMenuItem>
