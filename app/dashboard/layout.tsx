@@ -37,6 +37,7 @@ import { useTheme } from "next-themes"
 import { useState, useEffect } from "react"
 import { FloatingHelpButton } from "@/components/common/floating-help-button"
 import { WelcomeDialog } from "@/components/onboarding/welcome-dialog"
+import { SkipToContent } from "@/components/common/skip-to-content"
 
 const sidebarItems = [
   {
@@ -123,6 +124,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-background via-primary/5 via-30% to-background relative overflow-hidden">
+      {/* Skip to content link for screen readers */}
+      <SkipToContent />
+
       {/* Animated background blobs - GPU accelerated */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -468,7 +472,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       )}
 
       {/* Main content */}
-      <main className="lg:ml-64 xl:ml-72 relative">{children}</main>
+      <main id="main-content" className="lg:ml-64 xl:ml-72 relative">
+        {children}
+      </main>
 
       {/* Floating Help Button */}
       <FloatingHelpButton />
