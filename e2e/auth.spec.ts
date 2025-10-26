@@ -4,6 +4,10 @@ test.describe("Authentication Flow", () => {
   test.beforeEach(async ({ page }) => {
     // Start from the homepage and wait for it to load
     await page.goto("/", { waitUntil: "networkidle" })
+    // Wait for Next.js hydration to complete
+    await page.waitForLoadState("domcontentloaded")
+    // Small delay to ensure client-side router is ready
+    await page.waitForTimeout(500)
   })
 
   test("should navigate to login page", async ({ page }) => {

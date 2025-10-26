@@ -65,23 +65,18 @@ export default function Home() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mt-4">
-            <Link href="/register">
-              <Button
-                size="lg"
-                className="gap-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 text-white shadow-2xl shadow-purple-500/50 border-0 text-lg px-10 py-7"
-              >
-                <Sparkles className="h-5 w-5" />
-                Začít zdarma
-              </Button>
+            <Link
+              href="/register"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 text-white shadow-2xl shadow-purple-500/50 border-0 text-lg px-10 py-7 h-auto rounded-md"
+            >
+              <Sparkles className="h-5 w-5" />
+              Začít zdarma
             </Link>
-            <Link href="/login">
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-white/10 hover:bg-white/20 text-white border-2 border-purple-400/60 hover:border-purple-300 backdrop-blur-sm text-lg px-10 py-7"
-              >
-                Přihlásit se
-              </Button>
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all bg-white/10 hover:bg-white/20 text-white border-2 border-purple-400/60 hover:border-purple-300 backdrop-blur-sm text-lg px-10 py-7 h-auto rounded-md"
+            >
+              Přihlásit se
             </Link>
           </div>
 
@@ -270,13 +265,11 @@ export default function Home() {
                 <CheckCircle className="h-5 w-5 text-green-400" />
                 <span>Habit Strength Score</span>
               </div>
-              <Link href="/register" className="block mt-6">
-                <Button
-                  variant="outline"
-                  className="w-full border-slate-600 hover:border-slate-500"
-                >
-                  Začít zdarma
-                </Button>
+              <Link
+                href="/register"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 w-full border-slate-600 hover:border-slate-500 mt-6 h-9 px-4 py-2 rounded-md"
+              >
+                Začít zdarma
               </Link>
             </CardContent>
           </Card>
@@ -326,10 +319,11 @@ export default function Home() {
                 <CheckCircle className="h-5 w-5 text-green-400" />
                 <span>Pokročilá analytika</span>
               </div>
-              <Link href="/register" className="block mt-6">
-                <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500">
-                  Začít Premium
-                </Button>
+              <Link
+                href="/register"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 mt-6 h-9 px-4 py-2 rounded-md text-white"
+              >
+                Začít Premium
               </Link>
             </CardContent>
           </Card>
@@ -349,24 +343,19 @@ export default function Home() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col sm:flex-row gap-4 justify-center relative pb-12">
-            <Link href="/register">
-              <Button
-                size="lg"
-                className="gap-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 text-white shadow-xl shadow-purple-500/30 border-0 text-lg px-10"
-              >
-                <Sparkles className="h-5 w-5" />
-                Začít zdarma
-                <ArrowRight className="h-5 w-5" />
-              </Button>
+            <Link
+              href="/register"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 text-white shadow-xl shadow-purple-500/30 border-0 text-lg px-10 h-10 rounded-md"
+            >
+              <Sparkles className="h-5 w-5" />
+              Začít zdarma
+              <ArrowRight className="h-5 w-5" />
             </Link>
-            <Link href="/login">
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-white/10 hover:bg-white/20 text-white border-2 border-slate-600 hover:border-slate-500 backdrop-blur-sm text-lg px-10"
-              >
-                Mám už účet
-              </Button>
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all bg-white/10 hover:bg-white/20 text-white border-2 border-slate-600 hover:border-slate-500 backdrop-blur-sm text-lg px-10 h-10 rounded-md"
+            >
+              Mám už účet
             </Link>
           </CardContent>
         </Card>
