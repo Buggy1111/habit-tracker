@@ -1,4 +1,3 @@
-import { auth } from "@/lib/auth"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
@@ -10,7 +9,11 @@ const authRoutes = ["/login", "/register"]
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
-  const session = await auth()
+
+  // Get session from cookie (Edge-compatible way)
+  const sessionToken =
+    request.cookies.get("authjs.session-token") ||
+    request.cookies.get("__Secure-authjs.session-token")
 
   // Check if the route is protected
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
@@ -19,14 +22,14 @@ export async function middleware(request: NextRequest) {
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route))
 
   // Redirect to login if accessing protected route without session
-  if (isProtectedRoute && !session) {
+  if (isProtectedRoute && !sessionToken) {
     const loginUrl = new URL("/login", request.url)
     loginUrl.searchParams.set("callbackUrl", pathname)
     return NextResponse.redirect(loginUrl)
   }
 
   // Redirect to dashboard if accessing auth routes with active session
-  if (isAuthRoute && session) {
+  if (isAuthRoute && sessionToken) {
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 

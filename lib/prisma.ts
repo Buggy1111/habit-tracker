@@ -1,3 +1,4 @@
+import "server-only"
 import { PrismaClient } from "@prisma/client"
 import { dbLogger } from "./logger"
 
@@ -28,11 +29,12 @@ async function disconnect() {
   }
 }
 
-if (typeof window === "undefined") {
-  process.on("beforeExit", disconnect)
-  process.on("SIGTERM", disconnect)
-  process.on("SIGINT", disconnect)
-  process.on("exit", disconnect)
-}
+// DISABLED: process.on not supported in Edge Runtime (middleware)
+// if (typeof window === "undefined") {
+//   process.on("beforeExit", disconnect)
+//   process.on("SIGTERM", disconnect)
+//   process.on("SIGINT", disconnect)
+//   process.on("exit", disconnect)
+// }
 
 export { disconnect }
