@@ -61,7 +61,7 @@ export function WelcomeDialog({ open: controlledOpen, onComplete }: WelcomeDialo
       setStep(step + 1)
     } else {
       handleClose()
-      router.push("/dashboard/habits")
+      // Tutorial will be triggered by parent component
     }
   }
 

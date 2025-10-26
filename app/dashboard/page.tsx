@@ -11,6 +11,7 @@ import dynamic from "next/dynamic"
 import { Skeleton } from "@/components/ui/skeleton"
 import { motion } from "framer-motion"
 import { WelcomeDialog } from "@/components/onboarding/welcome-dialog"
+import { FirstHabitTutorial } from "@/components/onboarding/first-habit-tutorial"
 import { calculateWeeklyInsights, getWeekStart, getWeekEnd } from "@/lib/algorithms/weekly-insights"
 import { Habit } from "@prisma/client"
 import { logger } from "@/lib/logger"
@@ -82,6 +83,9 @@ export default function DashboardPage() {
   const { data: habits, isLoading } = useHabits()
   const { data: identities } = useIdentities()
   const { showWelcome, completeOnboarding } = useOnboarding()
+
+  // Onboarding state
+  const [showTutorial, setShowTutorial] = useState(false)
 
   // Weekly Review state
   const [showWeeklyReviewPrompt, setShowWeeklyReviewPrompt] = useState(false)
@@ -421,7 +425,16 @@ export default function DashboardPage() {
       </motion.section>
 
       {/* Welcome Dialog for first-time users */}
-      <WelcomeDialog open={showWelcome} onComplete={completeOnboarding} />
+      <WelcomeDialog
+        open={showWelcome}
+        onComplete={() => {
+          completeOnboarding()
+          setShowTutorial(true)
+        }}
+      />
+
+      {/* First Habit Tutorial after welcome */}
+      <FirstHabitTutorial open={showTutorial} onClose={() => setShowTutorial(false)} />
 
       {/* Weekly Review Dialog */}
       {weeklyInsights && habits && (
