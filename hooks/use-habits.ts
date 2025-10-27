@@ -5,6 +5,7 @@ import { getNeuroplasticityPhase } from "@/lib/algorithms/neuroplasticity-phase"
 import { detectExtinctionBurst } from "@/lib/algorithms/extinction-burst"
 import { AdaptationRecommendation } from "@/lib/algorithms/difficulty-adaptation"
 import { HabitDifficultyLog } from "@prisma/client"
+import { getErrorMessage, getRetryDelay } from "@/lib/utils/error-handler"
 
 // Note: All metric calculations (habitStrength, neuroplasticityPhase, etc.) are now done on server
 // Client only imports types for TypeScript
@@ -95,7 +96,9 @@ function parseHabit(habit: any): Habit {
 async function fetchHabits(): Promise<Habit[]> {
   const res = await fetch("/api/habits")
   if (!res.ok) {
-    throw new Error("Failed to fetch habits")
+    const error = new Error("Failed to fetch habits")
+    ;(error as { status?: number }).status = res.status
+    throw error
   }
   const data = await res.json()
   // Just parse dates, all metrics are already computed on server
@@ -110,7 +113,9 @@ async function createHabit(data: CreateHabitInput): Promise<Habit> {
     body: JSON.stringify(data),
   })
   if (!res.ok) {
-    throw new Error("Failed to create habit")
+    const error = new Error("Failed to create habit")
+    ;(error as { status?: number }).status = res.status
+    throw error
   }
   return res.json()
 }
@@ -121,7 +126,9 @@ async function completeHabit(habitId: string): Promise<void> {
     method: "POST",
   })
   if (!res.ok) {
-    throw new Error("Failed to complete habit")
+    const error = new Error("Failed to complete habit")
+    ;(error as { status?: number }).status = res.status
+    throw error
   }
 }
 
@@ -133,7 +140,9 @@ async function updateHabit(habitId: string, data: UpdateHabitInput): Promise<Hab
     body: JSON.stringify(data),
   })
   if (!res.ok) {
-    throw new Error("Failed to update habit")
+    const error = new Error("Failed to update habit")
+    ;(error as { status?: number }).status = res.status
+    throw error
   }
   return res.json()
 }
@@ -144,15 +153,19 @@ async function deleteHabit(habitId: string): Promise<void> {
     method: "DELETE",
   })
   if (!res.ok) {
-    throw new Error("Failed to delete habit")
+    const error = new Error("Failed to delete habit")
+    ;(error as { status?: number }).status = res.status
+    throw error
   }
 }
 
-// Hook: Fetch all habits
+// Hook: Fetch all habits with retry logic
 export function useHabits() {
   return useQuery({
     queryKey: ["habits"],
     queryFn: fetchHabits,
+    retry: 2, // Retry failed requests 2 times
+    retryDelay: getRetryDelay, // Exponential backoff
   })
 }
 
@@ -167,7 +180,7 @@ export function useCreateHabit() {
       toast.success("Návyk byl úspěšně vytvořen!")
     },
     onError: (error: Error) => {
-      toast.error("Nepodařilo se vytvořit návyk: " + error.message)
+      toast.error(getErrorMessage(error))
     },
   })
 }
@@ -197,7 +210,7 @@ export function useCompleteHabit() {
     onError: (error: Error, _habitId, context) => {
       // Rollback on error
       queryClient.setQueryData(["habits"], context?.previousHabits)
-      toast.error("Nepodařilo se označit návyk: " + error.message)
+      toast.error(getErrorMessage(error))
     },
   })
 }
@@ -214,7 +227,7 @@ export function useUpdateHabit() {
       toast.success("Návyk byl úspěšně upraven!")
     },
     onError: (error: Error) => {
-      toast.error("Nepodařilo se upravit návyk: " + error.message)
+      toast.error(getErrorMessage(error))
     },
   })
 }
@@ -244,7 +257,7 @@ export function useDeleteHabit() {
     onError: (error: Error, _habitId, context) => {
       // Rollback on error
       queryClient.setQueryData(["habits"], context?.previousHabits)
-      toast.error("Nepodařilo se smazat návyk: " + error.message)
+      toast.error(getErrorMessage(error))
     },
   })
 }

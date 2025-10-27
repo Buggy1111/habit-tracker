@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { getErrorMessage, getRetryDelay } from "@/lib/utils/error-handler"
 
 // Types
 export interface Identity {
@@ -41,7 +42,9 @@ export interface UpdateIdentityInput {
 async function fetchIdentities(): Promise<Identity[]> {
   const res = await fetch("/api/identities")
   if (!res.ok) {
-    throw new Error("Failed to fetch identities")
+    const error = new Error("Failed to fetch identities")
+    ;(error as { status?: number }).status = res.status
+    throw error
   }
   const data = await res.json()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,7 +69,9 @@ async function createIdentity(data: CreateIdentityInput): Promise<Identity> {
     body: JSON.stringify(data),
   })
   if (!res.ok) {
-    throw new Error("Failed to create identity")
+    const error = new Error("Failed to create identity")
+    ;(error as { status?: number }).status = res.status
+    throw error
   }
   return res.json()
 }
@@ -79,7 +84,9 @@ async function updateIdentity(identityId: string, data: UpdateIdentityInput): Pr
     body: JSON.stringify(data),
   })
   if (!res.ok) {
-    throw new Error("Failed to update identity")
+    const error = new Error("Failed to update identity")
+    ;(error as { status?: number }).status = res.status
+    throw error
   }
   return res.json()
 }
@@ -90,15 +97,19 @@ async function deleteIdentity(identityId: string): Promise<void> {
     method: "DELETE",
   })
   if (!res.ok) {
-    throw new Error("Failed to delete identity")
+    const error = new Error("Failed to delete identity")
+    ;(error as { status?: number }).status = res.status
+    throw error
   }
 }
 
-// Hook: Fetch all identities
+// Hook: Fetch all identities with retry logic
 export function useIdentities() {
   return useQuery({
     queryKey: ["identities"],
     queryFn: fetchIdentities,
+    retry: 2, // Retry failed requests 2 times
+    retryDelay: getRetryDelay, // Exponential backoff
   })
 }
 
@@ -113,7 +124,7 @@ export function useCreateIdentity() {
       toast.success("Identita byla úspěšně vytvořena!")
     },
     onError: (error: Error) => {
-      toast.error("Nepodařilo se vytvořit identitu: " + error.message)
+      toast.error(getErrorMessage(error))
     },
   })
 }
@@ -130,7 +141,7 @@ export function useUpdateIdentity() {
       toast.success("Identita byla úspěšně upravena!")
     },
     onError: (error: Error) => {
-      toast.error("Nepodařilo se upravit identitu: " + error.message)
+      toast.error(getErrorMessage(error))
     },
   })
 }
@@ -161,7 +172,7 @@ export function useDeleteIdentity() {
     onError: (error: Error, _identityId, context) => {
       // Rollback on error
       queryClient.setQueryData(["identities"], context?.previousIdentities)
-      toast.error("Nepodařilo se smazat identitu: " + error.message)
+      toast.error(getErrorMessage(error))
     },
   })
 }

@@ -4,28 +4,27 @@ import { useState } from "react"
 import { Sparkles, Plus, Lightbulb } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
 import { useIdentities } from "@/hooks/use-identities"
 import { IdentityCard } from "@/components/identity/identity-card"
 import { IdentityEmptyState } from "@/components/identity/identity-empty-state"
+import { IdentityListSkeleton } from "@/components/identity/identity-list-skeleton"
 import dynamic from "next/dynamic"
 import { motion } from "framer-motion"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { HELP_CONTENT } from "@/lib/help-content"
+import { getErrorMessage } from "@/lib/utils/error-handler"
 
 // Lazy load dialog (only when needed)
 const CreateIdentityDialog = dynamic(
-  () => import("@/components/identity/create-identity-dialog").then(mod => ({ default: mod.CreateIdentityDialog })),
+  () =>
+    import("@/components/identity/create-identity-dialog").then((mod) => ({
+      default: mod.CreateIdentityDialog,
+    })),
   { ssr: false }
 )
 
 export default function IdentityPage() {
-  const { data: identities, isLoading } = useIdentities()
+  const { data: identities, isLoading, error } = useIdentities()
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
 
   return (
@@ -99,21 +98,24 @@ export default function IdentityPage() {
       >
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Tvoje identity</h2>
-          <p className="text-sm text-muted-foreground">
-            {identities?.length || 0}{" "}
-            {identities?.length === 1
-              ? "identita"
-              : identities?.length && identities.length < 5
-              ? "identity"
-              : "identit"}
-          </p>
+          {!isLoading && identities && (
+            <p className="text-sm text-muted-foreground">
+              {identities.length}{" "}
+              {identities.length === 1
+                ? "identita"
+                : identities.length < 5
+                  ? "identity"
+                  : "identit"}
+            </p>
+          )}
         </div>
 
         {isLoading ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-64 w-full" />
+          <IdentityListSkeleton />
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center rounded-lg border border-destructive p-8 text-center">
+            <h3 className="text-lg font-semibold text-destructive">Chyba při načítání</h3>
+            <p className="text-sm text-muted-foreground mt-2">{getErrorMessage(error)}</p>
           </div>
         ) : identities && identities.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

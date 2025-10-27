@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { getErrorMessage, getRetryDelay } from "@/lib/utils/error-handler"
 
 // Types
 export interface WoopPlan {
@@ -31,7 +32,9 @@ export interface UpdateWoopInput {
 async function fetchWoopPlans(habitId: string): Promise<WoopPlan[]> {
   const res = await fetch(`/api/habits/${habitId}/woop`)
   if (!res.ok) {
-    throw new Error("Failed to fetch WOOP plans")
+    const error = new Error("Failed to fetch WOOP plans")
+    ;(error as { status?: number }).status = res.status
+    throw error
   }
   const data = await res.json()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -50,7 +53,9 @@ async function createWoopPlan(habitId: string, data: CreateWoopInput): Promise<W
     body: JSON.stringify(data),
   })
   if (!res.ok) {
-    throw new Error("Failed to create WOOP plan")
+    const error = new Error("Failed to create WOOP plan")
+    ;(error as { status?: number }).status = res.status
+    throw error
   }
   return res.json()
 }
@@ -67,7 +72,9 @@ async function updateWoopPlan(
     body: JSON.stringify(data),
   })
   if (!res.ok) {
-    throw new Error("Failed to update WOOP plan")
+    const error = new Error("Failed to update WOOP plan")
+    ;(error as { status?: number }).status = res.status
+    throw error
   }
   return res.json()
 }
@@ -78,16 +85,20 @@ async function deleteWoopPlan(habitId: string, woopId: string): Promise<void> {
     method: "DELETE",
   })
   if (!res.ok) {
-    throw new Error("Failed to delete WOOP plan")
+    const error = new Error("Failed to delete WOOP plan")
+    ;(error as { status?: number }).status = res.status
+    throw error
   }
 }
 
-// Hook: Fetch all WOOP plans for a habit
+// Hook: Fetch all WOOP plans for a habit with retry logic
 export function useWoopPlans(habitId: string) {
   return useQuery({
     queryKey: ["woop", habitId],
     queryFn: () => fetchWoopPlans(habitId),
     enabled: !!habitId,
+    retry: 2, // Retry failed requests 2 times
+    retryDelay: getRetryDelay, // Exponential backoff
   })
 }
 
@@ -99,10 +110,10 @@ export function useCreateWoop(habitId: string) {
     mutationFn: (data: CreateWoopInput) => createWoopPlan(habitId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["woop", habitId] })
-      toast.success("WOOP plan created successfully!")
+      toast.success("WOOP plán byl úspěšně vytvořen!")
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to create WOOP plan")
+      toast.error(getErrorMessage(error))
     },
   })
 }
@@ -115,10 +126,10 @@ export function useUpdateWoop(habitId: string, woopId: string) {
     mutationFn: (data: UpdateWoopInput) => updateWoopPlan(habitId, woopId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["woop", habitId] })
-      toast.success("WOOP plan updated successfully!")
+      toast.success("WOOP plán byl úspěšně upraven!")
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to update WOOP plan")
+      toast.error(getErrorMessage(error))
     },
   })
 }
@@ -131,10 +142,10 @@ export function useDeleteWoop(habitId: string) {
     mutationFn: (woopId: string) => deleteWoopPlan(habitId, woopId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["woop", habitId] })
-      toast.success("WOOP plan deleted successfully!")
+      toast.success("WOOP plán byl smazán!")
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to delete WOOP plan")
+      toast.error(getErrorMessage(error))
     },
   })
 }
