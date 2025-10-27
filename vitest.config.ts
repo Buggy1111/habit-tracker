@@ -31,7 +31,7 @@ export default defineConfig({
       },
     },
     include: ["**/__tests__/**/*.{test,spec}.{ts,tsx}", "**/*.{test,spec}.{ts,tsx}"],
-    exclude: ["node_modules", ".next", "dist"],
+    exclude: ["node_modules", ".next", "dist", "e2e/**", "playwright-report/**", "test-results/**"],
   },
   resolve: {
     alias: {

@@ -20,7 +20,7 @@ describe("Habit Strength Algorithm", () => {
 
   describe("calculateHabitStrength", () => {
     it("should return 0 for empty logs", () => {
-      const strength = calculateHabitStrength([], startDate)
+      const strength = calculateHabitStrength([])
       expect(strength).toBe(0)
     })
 
@@ -31,7 +31,7 @@ describe("Habit Strength Algorithm", () => {
         date.setDate(today.getDate() - i)
         logs.push({ date, completed: true })
       }
-      const strength = calculateHabitStrength(logs, startDate)
+      const strength = calculateHabitStrength(logs)
       expect(strength).toBe(100)
     })
 
@@ -42,7 +42,7 @@ describe("Habit Strength Algorithm", () => {
         date.setDate(today.getDate() - i)
         logs.push({ date, completed: false })
       }
-      const strength = calculateHabitStrength(logs, startDate)
+      const strength = calculateHabitStrength(logs)
       expect(strength).toBe(0)
     })
 
@@ -60,11 +60,11 @@ describe("Habit Strength Algorithm", () => {
 
       // 7 recent days completed (days 0-6), rest missed
       const recentLogs = createLogsWithCompletions([0, 1, 2, 3, 4, 5, 6])
-      const recentStrength = calculateHabitStrength(recentLogs, startDate)
+      const recentStrength = calculateHabitStrength(recentLogs)
 
       // 7 old days completed (days 20-26), rest missed
       const oldLogs = createLogsWithCompletions([20, 21, 22, 23, 24, 25, 26])
-      const oldStrength = calculateHabitStrength(oldLogs, startDate)
+      const oldStrength = calculateHabitStrength(oldLogs)
 
       // Recent completions should result in higher strength due to exponential decay
       expect(recentStrength).toBeGreaterThan(oldStrength)
@@ -80,7 +80,7 @@ describe("Habit Strength Algorithm", () => {
         const completed = i !== 10 && i !== 20
         logs.push({ date, completed })
       }
-      const strength = calculateHabitStrength(logs, startDate)
+      const strength = calculateHabitStrength(logs)
 
       // Should still have high strength (90+)
       expect(strength).toBeGreaterThanOrEqual(90)
@@ -94,7 +94,7 @@ describe("Habit Strength Algorithm", () => {
         date.setDate(today.getDate() - i)
         logs.push({ date, completed: i % 2 === 0 })
       }
-      const strength = calculateHabitStrength(logs, startDate)
+      const strength = calculateHabitStrength(logs)
 
       // Should be around 50% (allowing for some variance due to weighting)
       expect(strength).toBeGreaterThanOrEqual(40)
@@ -110,7 +110,7 @@ describe("Habit Strength Algorithm", () => {
         // Complete first 15 days (recent), miss last 15
         recentHeavyLogs.push({ date, completed: i < 15 })
       }
-      const recentHeavyStrength = calculateHabitStrength(recentHeavyLogs, startDate)
+      const recentHeavyStrength = calculateHabitStrength(recentHeavyLogs)
 
       // 30 days with: recent 15 missed, old 15 completed
       const oldHeavyLogs: HabitLog[] = []
@@ -120,7 +120,7 @@ describe("Habit Strength Algorithm", () => {
         // Miss first 15 days (recent), complete last 15
         oldHeavyLogs.push({ date, completed: i >= 15 })
       }
-      const oldHeavyStrength = calculateHabitStrength(oldHeavyLogs, startDate)
+      const oldHeavyStrength = calculateHabitStrength(oldHeavyLogs)
 
       // Recent completions should result in significantly higher strength
       // due to exponential decay favoring recent days
@@ -366,7 +366,7 @@ describe("Habit Strength Algorithm", () => {
       ]
 
       // Should not crash
-      expect(() => calculateHabitStrength(logs, startDate)).not.toThrow()
+      expect(() => calculateHabitStrength(logs)).not.toThrow()
       expect(() => calculateCurrentStreak(logs)).not.toThrow()
       expect(() => calculateLongestStreak(logs)).not.toThrow()
     })
@@ -377,7 +377,7 @@ describe("Habit Strength Algorithm", () => {
       const logs: HabitLog[] = [{ date: futureDate, completed: true }]
 
       // Should not crash
-      expect(() => calculateHabitStrength(logs, startDate)).not.toThrow()
+      expect(() => calculateHabitStrength(logs)).not.toThrow()
       expect(() => calculateCurrentStreak(logs)).not.toThrow()
       expect(() => calculateLongestStreak(logs)).not.toThrow()
     })
@@ -387,7 +387,7 @@ describe("Habit Strength Algorithm", () => {
       veryOldDate.setDate(today.getDate() - 365)
       const logs: HabitLog[] = [{ date: veryOldDate, completed: true }]
 
-      const strength = calculateHabitStrength(logs, veryOldDate)
+      const strength = calculateHabitStrength(logs)
 
       // Very old completion should have minimal impact (due to exponential decay)
       expect(strength).toBeLessThanOrEqual(100)

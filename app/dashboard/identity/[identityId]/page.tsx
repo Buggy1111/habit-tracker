@@ -5,7 +5,6 @@ import { useParams, useRouter } from "next/navigation"
 import { ArrowLeft, Edit, Trash2, Sparkles, Plus, Target, Trophy } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -67,9 +66,7 @@ export default function IdentityDetailPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-2">Identita nenalezena</h1>
-          <p className="text-muted-foreground mb-4">
-            Tato identita neexistuje nebo byla smazána.
-          </p>
+          <p className="text-muted-foreground mb-4">Tato identita neexistuje nebo byla smazána.</p>
           <Button onClick={() => router.push("/dashboard/identity")}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Zpět na identity
@@ -121,11 +118,7 @@ export default function IdentityDetailPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Button
-            variant="ghost"
-            onClick={() => router.back()}
-            className="gap-2"
-          >
+          <Button variant="ghost" onClick={() => router.back()} className="gap-2">
             <ArrowLeft className="h-4 w-4" />
             Zpět
           </Button>
@@ -221,9 +214,7 @@ export default function IdentityDetailPage() {
                       </div>
                       <div>
                         <p className="font-medium">{habit.name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          Klikni pro detail návyku
-                        </p>
+                        <p className="text-xs text-muted-foreground">Klikni pro detail návyku</p>
                       </div>
                     </div>
                   </Card>
@@ -363,8 +354,8 @@ export default function IdentityDetailPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Opravdu chceš smazat tuto identitu?</AlertDialogTitle>
             <AlertDialogDescription>
-              Tato akce je nevratná. Identita "{identity.title}" bude trvale smazána.
-              Propojené návyky zůstanou zachovány, ale ztratí propojení s touto identitou.
+              Tato akce je nevratná. Identita "{identity.title}" bude trvale smazána. Propojené
+              návyky zůstanou zachovány, ale ztratí propojení s touto identitou.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

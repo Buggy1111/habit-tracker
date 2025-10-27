@@ -4,6 +4,7 @@ import "./globals.css"
 import { Toaster } from "@/components/ui/sonner"
 import { Providers } from "./providers"
 import { PWAInstallPrompt } from "@/components/pwa/install-prompt"
+import { CookieConsentBanner } from "@/components/common/cookie-consent-banner"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -75,6 +76,7 @@ export default function RootLayout({
           {children}
           <Toaster />
           <PWAInstallPrompt />
+          <CookieConsentBanner />
         </Providers>
       </body>
     </html>

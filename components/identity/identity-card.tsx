@@ -3,13 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { MoreVertical, Sparkles, Target, Trophy, Edit, Trash2 } from "lucide-react"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +25,6 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { useDeleteIdentity } from "@/hooks/use-identities"
 import type { Identity } from "@/hooks/use-identities"
-import { motion } from "framer-motion"
 
 interface IdentityCardProps {
   identity: Identity
@@ -190,8 +183,8 @@ export function IdentityCard({ identity }: IdentityCardProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Opravdu chceš smazat tuto identitu?</AlertDialogTitle>
             <AlertDialogDescription>
-              Tato akce je nevratná. Identita "{identity.title}" bude trvale smazána.
-              Propojené návyky zůstanou zachovány, ale ztratí propojení s touto identitou.
+              Tato akce je nevratná. Identita "{identity.title}" bude trvale smazána. Propojené
+              návyky zůstanou zachovány, ale ztratí propojení s touto identitou.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

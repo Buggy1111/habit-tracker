@@ -2,7 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { User, Lock, Settings, Database } from "lucide-react"
+import { User, Settings, Database } from "lucide-react"
 import ProfileSection from "@/components/settings/sections/profile-section"
 import PreferencesSection from "@/components/settings/sections/preferences-section"
 import DataPrivacySection from "@/components/settings/sections/data-privacy-section"

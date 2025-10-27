@@ -21,7 +21,6 @@ import {
   ArrowLeft,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { useRouter } from "next/navigation"
 
 const WELCOME_SEEN_KEY = "habit-tracker-welcome-seen"
 
@@ -33,7 +32,6 @@ interface WelcomeDialogProps {
 export function WelcomeDialog({ open: controlledOpen, onComplete }: WelcomeDialogProps = {}) {
   const [internalOpen, setInternalOpen] = useState(false)
   const [step, setStep] = useState(1)
-  const router = useRouter()
   const totalSteps = 4
 
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen

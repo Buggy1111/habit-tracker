@@ -28,7 +28,6 @@ export function CalendarDayView({ currentDate, logs, onEditClick }: CalendarDayV
 
   const isToday = normalizedDate.getTime() === today.getTime()
   const isFuture = normalizedDate > today
-  const isPast = normalizedDate < today
 
   const status = log?.completed ? "completed" : isFuture ? "future" : isToday ? "today" : "missed"
 

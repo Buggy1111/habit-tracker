@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs"
 import { z } from "zod"
 import { checkAuthRateLimit, getClientIp } from "@/lib/rate-limit"
 import { apiLogger } from "@/lib/logger"
+import { createVerificationToken } from "@/lib/auth/tokens"
+import { sendVerificationEmail } from "@/lib/email"
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -59,8 +61,28 @@ export async function POST(req: Request) {
       },
     })
 
+    // Create verification token and send email
+    try {
+      const verificationToken = await createVerificationToken(email)
+      const emailResult = await sendVerificationEmail(email, verificationToken.token)
+
+      if (!emailResult.success) {
+        apiLogger.error(`Failed to send verification email to ${email}`)
+        // Don't fail registration if email fails - user can request resend
+      } else {
+        apiLogger.info(`Verification email sent to ${email}`)
+      }
+    } catch (emailError) {
+      apiLogger.error(`Error sending verification email: ${emailError}`)
+      // Don't fail registration if email fails
+    }
+
     return NextResponse.json(
-      { message: "User created successfully", userId: user.id },
+      {
+        message: "User created successfully. Please check your email to verify your account.",
+        userId: user.id,
+        emailSent: true,
+      },
       { status: 201 }
     )
   } catch (error) {

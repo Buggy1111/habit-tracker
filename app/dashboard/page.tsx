@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { motion } from "framer-motion"
 import { WelcomeDialog } from "@/components/onboarding/welcome-dialog"
 import { FirstHabitTutorial } from "@/components/onboarding/first-habit-tutorial"
+import { UnverifiedEmailBanner } from "@/components/dashboard/unverified-email-banner"
 import { calculateWeeklyInsights, getWeekStart, getWeekEnd } from "@/lib/algorithms/weekly-insights"
 import { Habit } from "@prisma/client"
 import { logger } from "@/lib/logger"
@@ -83,6 +84,12 @@ export default function DashboardPage() {
   const { data: habits, isLoading } = useHabits()
   const { data: identities } = useIdentities()
   const { showWelcome, completeOnboarding } = useOnboarding()
+
+  // User data state
+  const [currentUser, setCurrentUser] = useState<{
+    email: string
+    emailVerified: Date | null
+  } | null>(null)
 
   // Onboarding state
   const [showTutorial, setShowTutorial] = useState(false)
@@ -173,6 +180,22 @@ export default function DashboardPage() {
     setShowWeeklyReviewDialog(true)
   }
 
+  // Fetch current user data
+  useEffect(() => {
+    async function fetchCurrentUser() {
+      try {
+        const response = await fetch("/api/user/me")
+        if (response.ok) {
+          const data = await response.json()
+          setCurrentUser(data.user)
+        }
+      } catch (error) {
+        logger.error("Failed to fetch current user:", error)
+      }
+    }
+    fetchCurrentUser()
+  }, [])
+
   // Show weekly review prompt if it's Monday and we have habits
   useEffect(() => {
     if (!isLoading && habits && habits.length > 0 && shouldShowWeeklyReview()) {
@@ -238,6 +261,18 @@ export default function DashboardPage() {
           currentStreak={currentStreak}
         />
       </motion.section>
+
+      {/* Unverified Email Banner */}
+      {currentUser && !currentUser.emailVerified && (
+        <motion.section
+          className="mb-8 lg:mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.05 }}
+        >
+          <UnverifiedEmailBanner email={currentUser.email} />
+        </motion.section>
+      )}
 
       {/* Extinction Burst Alerts */}
       {!isLoading && habitsWithExtinctionBurst.length > 0 && (

@@ -21,6 +21,12 @@ const eslintConfig = [
     ],
   },
   {
+    files: ["**/__tests__/**/*.ts", "**/__tests__/**/*.tsx", "**/*.test.ts", "**/*.test.tsx"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
+  {
     rules: {
       // Vypnout pravidlo pro uvozovky v JSX - máme české texty
       "react/no-unescaped-entities": "off",

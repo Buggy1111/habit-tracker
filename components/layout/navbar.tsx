@@ -13,10 +13,9 @@ import {
   Moon,
   Sun,
   Book,
-  Lightbulb,
   TrendingUp,
   Zap,
-  Award
+  Award,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -51,7 +50,7 @@ export function Navbar() {
   const handleSignOut = async () => {
     await signOut({
       callbackUrl: "/login",
-      redirect: true
+      redirect: true,
     })
   }
 
@@ -90,7 +89,10 @@ export function Navbar() {
           <div className="flex items-center space-x-2 sm:space-x-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 rounded-full">
+                <Button
+                  variant="ghost"
+                  className="relative h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 rounded-full"
+                >
                   <Avatar className="h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10">
                     <AvatarImage src={session?.user?.image || undefined} alt={userName} />
                     <AvatarFallback className="text-xs sm:text-sm lg:text-base bg-primary/10 text-primary font-semibold">
@@ -106,9 +108,7 @@ export function Navbar() {
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{userName}</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {userEmail}
-                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">{userEmail}</p>
                   </div>
                 </DropdownMenuLabel>
 
@@ -164,7 +164,9 @@ export function Navbar() {
                         <Sparkles className="mr-2 h-4 w-4" />
                         <span>Začínáme</span>
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => router.push("/help/implementation-intentions")}>
+                      <DropdownMenuItem
+                        onClick={() => router.push("/help/implementation-intentions")}
+                      >
                         <Zap className="mr-2 h-4 w-4" />
                         <span>IF-THEN plány</span>
                       </DropdownMenuItem>

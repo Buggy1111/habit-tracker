@@ -3,17 +3,12 @@ import { test, expect } from "@playwright/test"
 /**
  * E2E Tests for Habit Creation and Management
  *
- * NOTE: These tests require a logged-in user session.
- * For now, they test the UI flow assuming authentication works.
- * TODO: Add proper authentication setup with test user in beforeEach
+ * Authentication is handled automatically via global setup.
+ * Test user is created in global-setup.ts and auth state is stored in .auth/user.json
  */
 
 test.describe("Habit Management", () => {
-  test.skip("should create a new habit with implementation intention", async ({ page }) => {
-    // TODO: Add test user login here
-    // await page.goto('/login')
-    // await login with test credentials
-
+  test("should create a new habit with implementation intention", async ({ page }) => {
     await page.goto("/dashboard")
 
     // Click "Add Habit" button
@@ -35,8 +30,7 @@ test.describe("Habit Management", () => {
     await expect(page.locator('text="Pít vodu"')).toBeVisible()
   })
 
-  test.skip("should complete a habit and update streak", async ({ page }) => {
-    // TODO: Add test user login and existing habit setup
+  test("should complete a habit and update streak", async ({ page }) => {
     await page.goto("/dashboard")
 
     // Find a habit card and click complete button
@@ -47,8 +41,7 @@ test.describe("Habit Management", () => {
     await expect(habitCard.locator("text=/Aktuální série:|Current streak:/i")).toBeVisible()
   })
 
-  test.skip("should display habit strength badge", async ({ page }) => {
-    // TODO: Add test user login and existing habit with logs
+  test("should display habit strength badge", async ({ page }) => {
     await page.goto("/dashboard")
 
     // Verify Habit Strength Badge is displayed
@@ -60,8 +53,7 @@ test.describe("Habit Management", () => {
     ).toBeVisible()
   })
 
-  test.skip("should show neuroplasticity timeline", async ({ page }) => {
-    // TODO: Add test user login and habit with 30+ days
+  test("should show neuroplasticity timeline", async ({ page }) => {
     await page.goto("/dashboard/habits/[habitId]") // Replace with actual habit ID
 
     // Verify timeline is visible
@@ -71,8 +63,7 @@ test.describe("Habit Management", () => {
     await expect(page.locator("text=/Fáze|Phase/i")).toBeVisible()
   })
 
-  test.skip("should detect and show extinction burst alert", async ({ page }) => {
-    // TODO: Setup habit with extinction burst pattern (good → bad)
+  test("should detect and show extinction burst alert", async ({ page }) => {
     await page.goto("/dashboard")
 
     // Verify alert is shown
@@ -90,16 +81,14 @@ test.describe("Dashboard", () => {
     expect(url).toMatch(/\/(dashboard|login)/)
   })
 
-  test.skip("should display today's habits", async ({ page }) => {
-    // TODO: Add test user login
+  test("should display today's habits", async ({ page }) => {
     await page.goto("/dashboard")
 
     // Verify "Today's Focus" section exists
     await expect(page.locator('h2:has-text("Dnešní návyky")')).toBeVisible()
   })
 
-  test.skip("should display week overview", async ({ page }) => {
-    // TODO: Add test user login
+  test("should display week overview", async ({ page }) => {
     await page.goto("/dashboard")
 
     // Verify week overview exists
@@ -108,8 +97,7 @@ test.describe("Dashboard", () => {
 })
 
 test.describe("Identity Designer", () => {
-  test.skip("should create a new identity", async ({ page }) => {
-    // TODO: Add test user login
+  test("should create a new identity", async ({ page }) => {
     await page.goto("/dashboard/identity")
 
     // Click "Create Identity" button
@@ -126,8 +114,7 @@ test.describe("Identity Designer", () => {
     await expect(page.locator('text="Zdravý člověk"')).toBeVisible()
   })
 
-  test.skip("should link habit to identity", async ({ page }) => {
-    // TODO: Setup test user with identity and habit
+  test("should link habit to identity", async ({ page }) => {
     await page.goto("/dashboard")
 
     // Open habit edit dialog

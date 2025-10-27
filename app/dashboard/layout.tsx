@@ -14,7 +14,6 @@ import {
   X,
   LogOut,
   Settings,
-  User,
   HelpCircle,
   Moon,
   Sun,

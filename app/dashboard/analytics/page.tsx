@@ -4,7 +4,7 @@ import { StatsOverview } from "@/components/dashboard/stats-overview"
 import { WeekOverviewChart } from "@/components/dashboard/week-overview-chart"
 import { useHabits } from "@/hooks/use-habits"
 import { motion } from "framer-motion"
-import { TrendingUp, Target, Calendar, Award, BarChart3 } from "lucide-react"
+import { TrendingUp, Calendar, Award, BarChart3 } from "lucide-react"
 
 export default function AnalyticsPage() {
   const { data: habits, isLoading } = useHabits()
@@ -24,9 +24,7 @@ export default function AnalyticsPage() {
     let totalCompleted = 0
 
     habits.forEach((habit) => {
-      const recentLogs = habit.logs.filter(
-        (log) => new Date(log.date) >= last7Days
-      )
+      const recentLogs = habit.logs.filter((log) => new Date(log.date) >= last7Days)
       totalPossible += 7 // 7 days
       totalCompleted += recentLogs.filter((log) => log.completed).length
     })
@@ -51,9 +49,7 @@ export default function AnalyticsPage() {
     let totalCompleted = 0
 
     habits.forEach((habit) => {
-      const recentLogs = habit.logs.filter(
-        (log) => new Date(log.date) >= last30Days
-      )
+      const recentLogs = habit.logs.filter((log) => new Date(log.date) >= last30Days)
       totalPossible += 30
       totalCompleted += recentLogs.filter((log) => log.completed).length
     })
@@ -65,9 +61,10 @@ export default function AnalyticsPage() {
   const monthlyCompletionRate = calculateMonthlyRate()
 
   // Calculate total completions
-  const totalCompletions = habits?.reduce((sum, habit) => {
-    return sum + habit.logs.filter(log => log.completed).length
-  }, 0) || 0
+  const totalCompletions =
+    habits?.reduce((sum, habit) => {
+      return sum + habit.logs.filter((log) => log.completed).length
+    }, 0) || 0
 
   return (
     <div className="relative mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
@@ -81,9 +78,7 @@ export default function AnalyticsPage() {
         <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
           Statistiky & Analytics
         </h1>
-        <p className="text-muted-foreground mt-2">
-          Detailní přehled tvého pokroku a výkonnosti
-        </p>
+        <p className="text-muted-foreground mt-2">Detailní přehled tvého pokroku a výkonnosti</p>
       </motion.div>
 
       {/* Main Stats Overview */}
@@ -197,30 +192,37 @@ export default function AnalyticsPage() {
             {habits && habits.length > 0 ? (
               <div className="space-y-4">
                 {(() => {
-                  const bestHabit = habits.reduce((best, habit) =>
-                    habit.streak > best.streak ? habit : best
-                  , habits[0])
+                  const bestHabit = habits.reduce(
+                    (best, habit) => (habit.streak > best.streak ? habit : best),
+                    habits[0]
+                  )
 
                   return (
                     <>
                       <div className="flex items-center gap-3">
                         <div
                           className="h-10 w-10 rounded-full flex items-center justify-center text-2xl"
-                          style={{ backgroundColor: bestHabit.color + '20' }}
+                          style={{ backgroundColor: bestHabit.color + "20" }}
                         >
-                          {bestHabit.icon || '🎯'}
+                          {bestHabit.icon || "🎯"}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-medium truncate">{bestHabit.name}</div>
                           <div className="text-sm text-muted-foreground">
-                            Aktuální série: {bestHabit.streak} {bestHabit.streak === 1 ? 'den' : bestHabit.streak < 5 ? 'dny' : 'dní'}
+                            Aktuální série: {bestHabit.streak}{" "}
+                            {bestHabit.streak === 1 ? "den" : bestHabit.streak < 5 ? "dny" : "dní"}
                           </div>
                         </div>
                       </div>
 
                       <div className="pt-4 border-t border-white/10">
                         <div className="text-2xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
-                          {Math.round((bestHabit.logs.filter(l => l.completed).length / Math.max(bestHabit.logs.length, 1)) * 100)}%
+                          {Math.round(
+                            (bestHabit.logs.filter((l) => l.completed).length /
+                              Math.max(bestHabit.logs.length, 1)) *
+                              100
+                          )}
+                          %
                         </div>
                         <div className="text-sm text-muted-foreground">Celková úspěšnost</div>
                       </div>
@@ -263,7 +265,9 @@ export default function AnalyticsPage() {
                 <div className="flex gap-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20">
                   <div className="text-2xl">🎉</div>
                   <div className="flex-1">
-                    <div className="font-medium text-green-700 dark:text-green-300">Skvělá práce!</div>
+                    <div className="font-medium text-green-700 dark:text-green-300">
+                      Skvělá práce!
+                    </div>
                     <div className="text-sm text-muted-foreground">
                       Tvoje úspěšnost je nad 80%. Pokračuj v tomhle trendu!
                     </div>
@@ -273,7 +277,9 @@ export default function AnalyticsPage() {
                 <div className="flex gap-3 p-4 rounded-lg bg-orange-500/10 border border-orange-500/20">
                   <div className="text-2xl">💪</div>
                   <div className="flex-1">
-                    <div className="font-medium text-orange-700 dark:text-orange-300">Dobrá práce!</div>
+                    <div className="font-medium text-orange-700 dark:text-orange-300">
+                      Dobrá práce!
+                    </div>
                     <div className="text-sm text-muted-foreground">
                       Máš slušnou úspěšnost. Zkus se zaměřit na konzistenci.
                     </div>
@@ -295,9 +301,13 @@ export default function AnalyticsPage() {
                 <div className="flex gap-3 p-4 rounded-lg bg-purple-500/10 border border-purple-500/20">
                   <div className="text-2xl">🔥</div>
                   <div className="flex-1">
-                    <div className="font-medium text-purple-700 dark:text-purple-300">Máš aktivní sérii!</div>
+                    <div className="font-medium text-purple-700 dark:text-purple-300">
+                      Máš aktivní sérii!
+                    </div>
                     <div className="text-sm text-muted-foreground">
-                      {currentStreak} {currentStreak === 1 ? 'den' : currentStreak < 5 ? 'dny' : 'dní'} v řadě. Neuhasni plamen!
+                      {currentStreak}{" "}
+                      {currentStreak === 1 ? "den" : currentStreak < 5 ? "dny" : "dní"} v řadě.
+                      Neuhasni plamen!
                     </div>
                   </div>
                 </div>

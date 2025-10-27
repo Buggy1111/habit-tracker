@@ -1,4 +1,4 @@
-import { expect, afterEach, vi } from "vitest"
+import { afterEach, vi } from "vitest"
 import { cleanup } from "@testing-library/react"
 import "@testing-library/jest-dom/vitest"
 
@@ -6,6 +6,9 @@ import "@testing-library/jest-dom/vitest"
 afterEach(() => {
   cleanup()
 })
+
+// Mock server-only package for tests
+vi.mock("server-only", () => ({}))
 
 // Mock Next.js router
 vi.mock("next/navigation", () => ({

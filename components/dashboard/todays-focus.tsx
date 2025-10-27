@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useCompleteHabit } from "@/hooks/use-habits"
-import { cn } from "@/lib/utils"
 import { InfoTooltip } from "@/components/ui/info-tooltip"
 
 interface TodaysFocusProps {
@@ -114,7 +113,10 @@ export function TodaysFocus({ habits }: TodaysFocusProps) {
                     {habit.name}
                   </div>
                 </div>
-                <Badge variant="secondary" className="flex-shrink-0 bg-green-500/20 text-green-700 dark:text-green-300 text-xs">
+                <Badge
+                  variant="secondary"
+                  className="flex-shrink-0 bg-green-500/20 text-green-700 dark:text-green-300 text-xs"
+                >
                   Hotovo
                 </Badge>
               </div>

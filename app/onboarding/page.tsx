@@ -12,7 +12,6 @@ import {
   Zap,
   Users,
   CheckCircle,
-  TrendingUp,
   ArrowRight,
   BookOpen,
 } from "lucide-react"

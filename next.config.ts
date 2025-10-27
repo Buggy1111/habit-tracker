@@ -1,4 +1,5 @@
 import type { NextConfig } from "next"
+import { withSentryConfig } from "@sentry/nextjs"
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const withPWA = require("next-pwa")({
@@ -186,4 +187,39 @@ const nextConfig: NextConfig = {
   poweredByHeader: false, // Remove X-Powered-By header
 }
 
-export default withPWA(nextConfig)
+// Wrap config with Sentry (must be outermost wrapper)
+export default withSentryConfig(withPWA(nextConfig), {
+  // For all available options, see:
+  // https://github.com/getsentry/sentry-webpack-plugin#options
+
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+
+  // Only print logs for uploading source maps in CI
+  silent: !process.env.CI,
+
+  // Upload source maps during production build
+  // Enables automatic instrumentation of Vercel Cron Monitors
+  // See: https://docs.sentry.io/product/crons/
+  // See: https://vercel.com/docs/cron-jobs
+  automaticVercelMonitors: true,
+
+  // Automatically annotate React components to show their full name in breadcrumbs and session replay
+  reactComponentAnnotation: {
+    enabled: true,
+  },
+
+  // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
+  // This can increase your server load as well as your hosting bill.
+  // Note: Check that the Sentry DSN in your .env is correct when enabling this option.
+  tunnelRoute: "/monitoring",
+
+  // Hides source maps from generated client bundles
+  // hideSourceMaps: true, // TODO: Fix - this option doesn't exist in Sentry v8
+
+  // Automatically tree-shake Sentry logger statements to reduce bundle size
+  disableLogger: true,
+
+  // Enables automatic instrumentation of Vercel Cron Monitors (Next.js 14.2.0+)
+  // automaticVercelMonitors: true, // Already defined above, commented out to prevent duplicate
+})

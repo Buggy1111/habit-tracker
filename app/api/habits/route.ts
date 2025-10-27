@@ -90,7 +90,7 @@ export async function GET() {
 
       // Calculate science-based metrics ONCE on server
       const days = daysSinceStart(habit.startDate)
-      const habitStrength = calculateHabitStrength(habit.logs, habit.startDate)
+      const habitStrength = calculateHabitStrength(habit.logs)
       const strengthLevel = getStrengthLevel(habitStrength)
       const neuroplasticityPhase = getNeuroplasticityPhase(days)
       const nextPhase = daysUntilNextPhase(days)

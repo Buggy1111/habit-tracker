@@ -7,13 +7,6 @@
  * TODO: Integrate with Sentry or other error tracking service for production
  */
 
-type LogLevel = "log" | "info" | "warn" | "error" | "debug"
-
-interface LoggerOptions {
-  prefix?: string
-  timestamp?: boolean
-}
-
 class Logger {
   private isDevelopment = process.env.NODE_ENV === "development"
 

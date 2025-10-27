@@ -20,13 +20,9 @@ export interface HabitLog {
  * Calculate habit strength score (0-100)
  *
  * @param logs - Array of habit completion logs
- * @param startDate - When the habit was started
  * @returns Score from 0 to 100
  */
-export function calculateHabitStrength(
-  logs: HabitLog[],
-  startDate: Date
-): number {
+export function calculateHabitStrength(logs: HabitLog[]): number {
   if (logs.length === 0) return 0
 
   const today = new Date()
@@ -110,9 +106,7 @@ export function calculateCurrentStreak(logs: HabitLog[]): number {
   if (logs.length === 0) return 0
 
   // Sort logs by date descending
-  const sortedLogs = [...logs].sort(
-    (a, b) => b.date.getTime() - a.date.getTime()
-  )
+  const sortedLogs = [...logs].sort((a, b) => b.date.getTime() - a.date.getTime())
 
   let streak = 0
   const today = new Date()
@@ -127,10 +121,7 @@ export function calculateCurrentStreak(logs: HabitLog[]): number {
     expectedDate.setDate(today.getDate() - i)
 
     // If log matches expected date and is completed
-    if (
-      logDate.getTime() === expectedDate.getTime() &&
-      sortedLogs[i].completed
-    ) {
+    if (logDate.getTime() === expectedDate.getTime() && sortedLogs[i].completed) {
       streak++
     } else {
       break
@@ -146,9 +137,7 @@ export function calculateCurrentStreak(logs: HabitLog[]): number {
 export function calculateLongestStreak(logs: HabitLog[]): number {
   if (logs.length === 0) return 0
 
-  const sortedLogs = [...logs].sort(
-    (a, b) => a.date.getTime() - b.date.getTime()
-  )
+  const sortedLogs = [...logs].sort((a, b) => a.date.getTime() - b.date.getTime())
 
   let longestStreak = 0
   let currentStreak = 0

@@ -16,11 +16,7 @@ interface NeuroplasticityTimelineProps {
   habitName: string
 }
 
-export function NeuroplasticityTimeline({
-  phase,
-  daysUntilNext,
-  habitName,
-}: NeuroplasticityTimelineProps) {
+export function NeuroplasticityTimeline({ phase, daysUntilNext }: NeuroplasticityTimelineProps) {
   const phaseColor = getPhaseColor(phase.phase)
 
   const getIcon = () => {

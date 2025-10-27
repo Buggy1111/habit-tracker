@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { HelpCircle, X, Sparkles, Target, Brain, Award, Lightbulb } from "lucide-react"
+import { HelpCircle, Sparkles, Target, Brain, Award, Lightbulb } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -134,9 +134,7 @@ export function FloatingHelpButton() {
             {/* Quick Tips */}
             <Card className="bg-primary/5 border-primary/20">
               <CardHeader className="p-4">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  💡 Rychlé tipy
-                </CardTitle>
+                <CardTitle className="text-sm flex items-center gap-2">💡 Rychlé tipy</CardTitle>
               </CardHeader>
               <CardContent className="p-4 pt-0 space-y-2 text-sm">
                 <p>

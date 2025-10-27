@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion"
 import { AlertTriangle, Heart, Lightbulb } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"

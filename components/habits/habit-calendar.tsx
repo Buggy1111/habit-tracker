@@ -15,7 +15,7 @@ interface HabitCalendarProps {
   }[]
 }
 
-export function HabitCalendar({ habitId, habitName, logs }: HabitCalendarProps) {
+export function HabitCalendar({ habitName, logs }: HabitCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
 
   // Get first and last day of current month
@@ -108,10 +108,7 @@ export function HabitCalendar({ habitId, habitName, logs }: HabitCalendarProps) 
         {/* Weekday headers */}
         <div className="grid grid-cols-7 gap-2 mb-2">
           {["Po", "Út", "St", "Čt", "Pá", "So", "Ne"].map((day) => (
-            <div
-              key={day}
-              className="text-center text-xs font-medium text-muted-foreground"
-            >
+            <div key={day} className="text-center text-xs font-medium text-muted-foreground">
               {day}
             </div>
           ))}

@@ -10,7 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
@@ -23,7 +22,6 @@ import {
 } from "@/components/ui/select"
 import { useCreateWoop } from "@/hooks/use-woop"
 import {
-  WOOP_TEMPLATES,
   WOOP_CATEGORIES,
   getWoopTemplatesByCategory,
   type WoopTemplate,
@@ -41,18 +39,11 @@ interface WoopWizardProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function WoopWizard({
-  habitId,
-  habitName,
-  open,
-  onOpenChange,
-}: WoopWizardProps) {
+export function WoopWizard({ habitId, open, onOpenChange }: WoopWizardProps) {
   const [step, setStep] = useState(1)
   const [useTemplate, setUseTemplate] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState("Všechny")
-  const [selectedTemplate, setSelectedTemplate] = useState<WoopTemplate | null>(
-    null
-  )
+  const [selectedTemplate, setSelectedTemplate] = useState<WoopTemplate | null>(null)
 
   const [wish, setWish] = useState("")
   const [outcome, setOutcome] = useState("")
@@ -158,7 +149,8 @@ export function WoopWizard({
               </div>
 
               <p className="text-sm text-muted-foreground">
-                Definujte svůj cíl. Buďte konkrétní a pozitivní. Příklad: "Chci cvičit každý den 30 minut"
+                Definujte svůj cíl. Buďte konkrétní a pozitivní. Příklad: "Chci cvičit každý den 30
+                minut"
               </p>
 
               {/* Template vs Custom Toggle */}
@@ -184,10 +176,7 @@ export function WoopWizard({
                 <div className="space-y-4">
                   <div>
                     <Label>Kategorie</Label>
-                    <Select
-                      value={selectedCategory}
-                      onValueChange={setSelectedCategory}
-                    >
+                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -218,9 +207,7 @@ export function WoopWizard({
                               <Badge variant="outline" className="text-xs">
                                 {template.category}
                               </Badge>
-                              <span className="font-medium text-sm">
-                                {template.habitType}
-                              </span>
+                              <span className="font-medium text-sm">{template.habitType}</span>
                             </div>
                             <p className="text-sm text-muted-foreground line-clamp-2">
                               {template.wish}
@@ -278,7 +265,8 @@ export function WoopWizard({
               </div>
 
               <p className="text-sm text-muted-foreground">
-                Vizualizujte pozitivní výsledek. Jak se budete cítit? Co získáte? Příklad: "Budu mít více energie, lepší kondici a sebevědomí"
+                Vizualizujte pozitivní výsledek. Jak se budete cítit? Co získáte? Příklad: "Budu mít
+                více energie, lepší kondici a sebevědomí"
               </p>
 
               <div>
@@ -296,7 +284,8 @@ export function WoopWizard({
               <Card className="p-4 bg-blue-50 border-blue-200">
                 <p className="text-sm font-medium mb-2">💡 Tip:</p>
                 <p className="text-sm text-muted-foreground">
-                  Zaměřte se na emoce a konkrétní změny. "Budu se cítit..." je silnější než "Chci mít..."
+                  Zaměřte se na emoce a konkrétní změny. "Budu se cítit..." je silnější než "Chci
+                  mít..."
                 </p>
               </Card>
             </div>
@@ -317,7 +306,8 @@ export function WoopWizard({
               </div>
 
               <p className="text-sm text-muted-foreground">
-                Identifikujte HLAVNÍ vnitřní překážku (ne vnější okolnosti). Příklad: "Večer jsem unavený a nemám motivaci"
+                Identifikujte HLAVNÍ vnitřní překážku (ne vnější okolnosti). Příklad: "Večer jsem
+                unavený a nemám motivaci"
               </p>
 
               <div>
@@ -335,7 +325,8 @@ export function WoopWizard({
               <Card className="p-4 bg-orange-50 border-orange-200">
                 <p className="text-sm font-medium mb-2">⚠️ Důležité:</p>
                 <p className="text-sm text-muted-foreground">
-                  Překážka by měla být VNITŘNÍ (pocity, myšlenky), ne vnější ("nemám čas" → "cítím se přetížený"). Pouze to můžete kontrolovat.
+                  Překážka by měla být VNITŘNÍ (pocity, myšlenky), ne vnější ("nemám čas" → "cítím
+                  se přetížený"). Pouze to můžete kontrolovat.
                 </p>
               </Card>
             </div>
@@ -356,7 +347,8 @@ export function WoopWizard({
               </div>
 
               <p className="text-sm text-muted-foreground">
-                Vytvořte IF-THEN plán. Příklad: "Když jsem večer unavený, udělám jen 10 minut lehkého cvičení místo plných 30"
+                Vytvořte IF-THEN plán. Příklad: "Když jsem večer unavený, udělám jen 10 minut
+                lehkého cvičení místo plných 30"
               </p>
 
               <div>
@@ -426,11 +418,7 @@ export function WoopWizard({
               <Button
                 onClick={handleSubmit}
                 disabled={
-                  !wish.trim() ||
-                  !outcome.trim() ||
-                  !obstacle.trim() ||
-                  !plan.trim() ||
-                  isPending
+                  !wish.trim() || !outcome.trim() || !obstacle.trim() || !plan.trim() || isPending
                 }
               >
                 {isPending ? "Ukládám..." : "Vytvořit WOOP plán"}

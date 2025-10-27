@@ -112,7 +112,7 @@ export function FirstHabitTutorial({ open, onClose }: FirstHabitTutorialProps) {
       toast.success("🎉 Tvůj první návyk je vytvořen!")
       onClose()
       router.push("/dashboard")
-    } catch (error) {
+    } catch {
       toast.error("Nepodařilo se vytvořit návyk")
     }
   }

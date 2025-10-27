@@ -12,12 +12,7 @@ interface DashboardHeroProps {
   currentStreak: number
 }
 
-export function DashboardHero({
-  userName = "Vítej",
-  completedToday,
-  totalHabits,
-  currentStreak,
-}: DashboardHeroProps) {
+export function DashboardHero({ completedToday, totalHabits, currentStreak }: DashboardHeroProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
 
   useEffect(() => {
@@ -91,9 +86,7 @@ export function DashboardHero({
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
           <div className="space-y-2">
             <div className="flex flex-col gap-2">
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold">
-                {getGreeting()}! 👋
-              </h2>
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold">{getGreeting()}! 👋</h2>
               <div className="flex items-center gap-3 text-sm sm:text-base text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <CalendarIcon className="h-4 w-4" />
@@ -134,9 +127,7 @@ export function DashboardHero({
               >
                 {percentage}%
               </motion.div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">
-                Dnes
-              </div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">Dnes</div>
             </motion.div>
             {currentStreak > 0 && (
               <motion.div
@@ -159,9 +150,7 @@ export function DashboardHero({
                     <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7" />
                   </motion.div>
                 </div>
-                <div className="text-xs sm:text-sm text-muted-foreground mt-1">
-                  Série
-                </div>
+                <div className="text-xs sm:text-sm text-muted-foreground mt-1">Série</div>
               </motion.div>
             )}
           </div>

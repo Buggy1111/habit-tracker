@@ -13,16 +13,16 @@ import { motion } from "framer-motion"
 
 // Lazy load wizard dialog
 const WoopWizard = dynamic(
-  () => import("@/components/woop/woop-wizard").then(mod => ({ default: mod.WoopWizard })),
+  () => import("@/components/woop/woop-wizard").then((mod) => ({ default: mod.WoopWizard })),
   { ssr: false }
 )
 
 export default function WoopPage() {
   const { data: habits, isLoading: habitsLoading } = useHabits()
-  const [selectedHabitId, setSelectedHabitId] = useState<string | null>(null)
+  const [selectedHabitId] = useState<string | null>(null)
   const [woopWizardOpen, setWoopWizardOpen] = useState(false)
 
-  const selectedHabit = habits?.find(h => h.id === selectedHabitId)
+  const selectedHabit = habits?.find((h) => h.id === selectedHabitId)
 
   // Note: This page shows info about WOOP method
   // Individual WOOP plans are viewed on habit detail pages
@@ -62,14 +62,20 @@ export default function WoopPage() {
             <div className="flex-1">
               <h3 className="font-semibold text-lg mb-2">Co je WOOP?</h3>
               <p className="text-sm text-muted-foreground mb-3">
-                WOOP je vědecky podložená metoda pro dosažení cílů vyvinutá psycholožkou Gabriele Oettingen.
-                Kombinuje pozitivní myšlení s realistickým plánováním překážek.
+                WOOP je vědecky podložená metoda pro dosažení cílů vyvinutá psycholožkou Gabriele
+                Oettingen. Kombinuje pozitivní myšlení s realistickým plánováním překážek.
               </p>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+                <Badge
+                  variant="secondary"
+                  className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
+                >
                   2x vyšší úspěšnost
                 </Badge>
-                <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                <Badge
+                  variant="secondary"
+                  className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                >
                   Vědecky ověřeno
                 </Badge>
               </div>
@@ -131,8 +137,8 @@ export default function WoopPage() {
             <Target className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Nejdříve vytvořte návyk</h3>
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              WOOP plány se vytvářejí pro konkrétní návyky.
-              Začněte tím, že si vytvoříte první návyk.
+              WOOP plány se vytvářejí pro konkrétní návyky. Začněte tím, že si vytvoříte první
+              návyk.
             </p>
             <Link href="/dashboard/habits">
               <Button>
