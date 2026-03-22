@@ -4,6 +4,7 @@ import { verifyPasswordResetToken } from "@/lib/auth/tokens"
 import bcrypt from "bcryptjs"
 import { z } from "zod"
 import { logger } from "@/lib/logger"
+import { checkAuthRateLimit, getClientIp } from "@/lib/rate-limit"
 
 // Validation schema
 const resetPasswordSchema = z.object({
@@ -13,6 +14,22 @@ const resetPasswordSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    // Rate limiting
+    const ip = getClientIp(req)
+    const rateLimitResult = await checkAuthRateLimit(ip)
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: "Příliš mnoho požadavků. Zkuste to později." },
+        {
+          status: 429,
+          headers: {
+
+            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+          },
+        }
+      )
+    }
+
     const body = await req.json()
 
     // Validate request

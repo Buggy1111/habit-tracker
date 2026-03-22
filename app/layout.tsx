@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/sonner"
 import { Providers } from "./providers"
 import { PWAInstallPrompt } from "@/components/pwa/install-prompt"
 import { CookieConsentBanner } from "@/components/common/cookie-consent-banner"
+import { NextIntlClientProvider } from "next-intl"
+import { getMessages, getLocale } from "next-intl/server"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,24 +62,29 @@ export const viewport: Viewport = {
   userScalable: false,
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const locale = await getLocale()
+  const messages = await getMessages()
+
   return (
-    <html lang="cs" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>
-          {children}
-          <Toaster />
-          <PWAInstallPrompt />
-          <CookieConsentBanner />
-        </Providers>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Providers>
+            {children}
+            <Toaster />
+            <PWAInstallPrompt />
+            <CookieConsentBanner />
+          </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   )

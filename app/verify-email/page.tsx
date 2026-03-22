@@ -1,18 +1,28 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { Suspense, useEffect, useState, useCallback } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { CheckCircle2, XCircle, Loader2, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useTranslations } from "next-intl"
 
 type VerificationState = "loading" | "success" | "error" | "expired"
 
 export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin" /></div>}>
+      <VerifyEmailContent />
+    </Suspense>
+  )
+}
+
+function VerifyEmailContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
+  const t = useTranslations("auth.verifyEmail")
 
   const [state, setState] = useState<VerificationState>("loading")
   const [email, setEmail] = useState<string>("")
@@ -43,7 +53,7 @@ export default function VerifyEmailPage() {
             setState("expired")
           } else {
             setState("error")
-            setErrorMessage(data.error || "Nepodařilo se ověřit email")
+            setErrorMessage(data.error || t("verifyFailed"))
           }
         }
       } catch (error) {
@@ -52,21 +62,21 @@ export default function VerifyEmailPage() {
           console.error("Verification error:", error)
         }
         setState("error")
-        setErrorMessage("Chyba při ověřování emailu")
+        setErrorMessage(t("verifyError"))
       }
     },
-    [router]
+    [router, t]
   )
 
   useEffect(() => {
     if (!token) {
       setState("error")
-      setErrorMessage("Chybí verifikační token")
+      setErrorMessage(t("missingToken"))
       return
     }
 
     verifyEmail(token)
-  }, [token, verifyEmail])
+  }, [token, verifyEmail, t])
 
   async function handleResendVerification() {
     if (!email) return
@@ -82,16 +92,16 @@ export default function VerifyEmailPage() {
       const data = await response.json()
 
       if (response.ok && data.success) {
-        alert("Nový verifikační email byl odeslán. Zkontroluj svou schránku.")
+        alert(t("resendSuccess"))
       } else {
-        alert(data.error || "Nepodařilo se odeslat email")
+        alert(data.error || t("resendFailed"))
       }
     } catch (error) {
       // Error in client component - log only in development
       if (process.env.NODE_ENV === "development") {
         console.error("Resend error:", error)
       }
-      alert("Chyba při odesílání emailu")
+      alert(t("resendError"))
     } finally {
       setResending(false)
     }
@@ -101,36 +111,36 @@ export default function VerifyEmailPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Ověření emailu</CardTitle>
+          <CardTitle className="text-2xl">{t("title")}</CardTitle>
           <CardDescription>
-            {state === "loading" && "Ověřujeme tvůj email..."}
-            {state === "success" && "Email úspěšně ověřen"}
-            {state === "expired" && "Platnost tokenu vypršela"}
-            {state === "error" && "Chyba při ověřování"}
+            {state === "loading" && t("loadingDesc")}
+            {state === "success" && t("successDesc")}
+            {state === "expired" && t("expiredDesc")}
+            {state === "error" && t("errorDesc")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {state === "loading" && (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <Loader2 className="mb-4 h-16 w-16 animate-spin text-indigo-600" />
-              <p className="text-sm text-gray-600">Prosím počkej, ověřujeme tvůj email...</p>
+              <p className="text-sm text-gray-600">{t("loadingMessage")}</p>
             </div>
           )}
 
           {state === "success" && (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <CheckCircle2 className="mb-4 h-16 w-16 text-green-600" />
-              <h3 className="mb-2 text-lg font-semibold text-gray-900">Email ověřen!</h3>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">{t("successTitle")}</h3>
               <p className="mb-4 text-sm text-gray-600">
-                Tvůj email <span className="font-medium">{email}</span> byl úspěšně ověřen.
+                {t("successMessage", { email })}
               </p>
               <Alert className="border-green-200 bg-green-50">
                 <AlertDescription className="text-sm text-green-800">
-                  Za chvíli tě přesměrujeme na přihlašovací stránku...
+                  {t("redirectMessage")}
                 </AlertDescription>
               </Alert>
               <Button onClick={() => router.push("/login")} className="mt-4 w-full">
-                Přejít na přihlášení
+                {t("goToLogin")}
               </Button>
             </div>
           )}
@@ -138,9 +148,9 @@ export default function VerifyEmailPage() {
           {state === "expired" && (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <XCircle className="mb-4 h-16 w-16 text-amber-600" />
-              <h3 className="mb-2 text-lg font-semibold text-gray-900">Token vypršel</h3>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">{t("expiredTitle")}</h3>
               <p className="mb-4 text-sm text-gray-600">
-                Verifikační odkaz je platný pouze 24 hodin. Můžeš si nechat poslat nový email.
+                {t("expiredMessage")}
               </p>
               {email && (
                 <Button
@@ -152,12 +162,12 @@ export default function VerifyEmailPage() {
                   {resending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Odesílám...
+                      {t("resending")}
                     </>
                   ) : (
                     <>
                       <Mail className="mr-2 h-4 w-4" />
-                      Poslat nový email
+                      {t("resendEmail")}
                     </>
                   )}
                 </Button>
@@ -167,7 +177,7 @@ export default function VerifyEmailPage() {
                 variant="outline"
                 className="mt-2 w-full"
               >
-                Zpět na přihlášení
+                {t("backToLogin")}
               </Button>
             </div>
           )}
@@ -175,12 +185,11 @@ export default function VerifyEmailPage() {
           {state === "error" && (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <XCircle className="mb-4 h-16 w-16 text-red-600" />
-              <h3 className="mb-2 text-lg font-semibold text-gray-900">Chyba při ověřování</h3>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">{t("errorTitle")}</h3>
               <p className="mb-4 text-sm text-gray-600">{errorMessage}</p>
               <Alert className="border-red-200 bg-red-50">
                 <AlertDescription className="text-sm text-red-800">
-                  Token může být neplatný, již použitý nebo vypršel. Zkus si nechat poslat nový
-                  email.
+                  {t("errorTokenMessage")}
                 </AlertDescription>
               </Alert>
               <Button
@@ -188,7 +197,7 @@ export default function VerifyEmailPage() {
                 variant="outline"
                 className="mt-4 w-full"
               >
-                Zpět na přihlášení
+                {t("backToLogin")}
               </Button>
             </div>
           )}

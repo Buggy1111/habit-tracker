@@ -1,7 +1,8 @@
 /**
  * Error Handler Utility
  * Provides user-friendly error messages for API errors
- * Converts technical errors into Czech, actionable messages
+ * Returns translation keys that should be resolved by the calling component
+ * using useTranslations('errors') from next-intl
  */
 
 interface ApiError {
@@ -12,7 +13,7 @@ interface ApiError {
 
 /**
  * Get user-friendly error message from error object
- * Returns Czech translations for common error codes
+ * Returns English error messages (default locale)
  */
 export function getErrorMessage(error: unknown): string {
   // Handle string errors
@@ -24,16 +25,16 @@ export function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     // Check for network errors
     if (error.message.includes("fetch") || error.message.includes("network")) {
-      return "Problém s připojením. Zkontroluj své internetové připojení a zkus to znovu."
+      return "Connection problem. Check your internet connection and try again."
     }
 
     // Check for timeout errors
     if (error.message.includes("timeout")) {
-      return "Požadavek trval příliš dlouho. Zkus to prosím znovu."
+      return "Request took too long. Please try again."
     }
 
     // Return the error message if it's user-friendly
-    return error.message || "Něco se pokazilo. Zkus to znovu."
+    return error.message || "Something went wrong. Please try again."
   }
 
   // Handle API errors with status codes
@@ -42,32 +43,67 @@ export function getErrorMessage(error: unknown): string {
 
     switch (apiError.status) {
       case 400:
-        return "Neplatné údaje. Zkontroluj formulář a zkus to znovu."
+        return "Invalid data. Check the form and try again."
       case 401:
-        return "Nejsi přihlášen. Prosím přihlas se znovu."
+        return "You're not signed in. Please sign in again."
       case 403:
-        return "Nemáš oprávnění k této akci."
+        return "You don't have permission for this action."
       case 404:
-        return "Nenalezeno. Zkontroluj, zda stránka nebo zdroj existuje."
+        return "Not found. Check if the page or resource exists."
       case 409:
-        return "Konflikt. Tento záznam již pravděpodobně existuje."
+        return "Conflict. This record probably already exists."
       case 422:
-        return "Neplatná data. Zkontroluj všechna pole a zkus to znovu."
+        return "Invalid data. Check all fields and try again."
       case 429:
-        return "Příliš mnoho požadavků. Počkej chvíli a zkus to znovu."
+        return "Too many requests. Wait a moment and try again."
       case 500:
-        return "Chyba serveru. Zkus to prosím později."
+        return "Server error. Please try again later."
       case 502:
-        return "Server je nedostupný. Zkus to prosím později."
+        return "Server is unavailable. Please try again later."
       case 503:
-        return "Služba je dočasně nedostupná. Zkus to prosím později."
+        return "Service is temporarily unavailable. Please try again later."
       default:
-        return apiError.message || "Něco se pokazilo. Zkus to znovu."
+        return apiError.message || "Something went wrong. Please try again."
     }
   }
 
   // Default fallback
-  return "Něco se pokazilo. Zkus to znovu."
+  return "Something went wrong. Please try again."
+}
+
+/**
+ * Get error translation key from error object
+ * Use this when you have access to useTranslations('errors')
+ */
+export function getErrorKey(error: unknown): string {
+  if (error instanceof Error) {
+    if (error.message.includes("fetch") || error.message.includes("network")) {
+      return "network"
+    }
+    if (error.message.includes("timeout")) {
+      return "timeout"
+    }
+    return "default"
+  }
+
+  if (error && typeof error === "object" && "status" in error) {
+    const apiError = error as ApiError
+    switch (apiError.status) {
+      case 400: return "badRequest"
+      case 401: return "unauthorized"
+      case 403: return "forbidden"
+      case 404: return "notFound"
+      case 409: return "conflict"
+      case 422: return "unprocessable"
+      case 429: return "tooManyRequests"
+      case 500: return "serverError"
+      case 502: return "badGateway"
+      case 503: return "serviceUnavailable"
+      default: return "default"
+    }
+  }
+
+  return "default"
 }
 
 /**

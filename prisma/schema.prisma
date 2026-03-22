@@ -18,7 +18,7 @@ model User {
   id            String    @id @default(cuid())
   email         String    @unique
   name          String?
-  password      String
+  password      String?
   emailVerified DateTime?
   image         String?
   createdAt     DateTime  @default(now())
@@ -32,6 +32,7 @@ model User {
   lastActivityAt DateTime?
 
   // Relations
+  accounts       Account[]
   habits         Habit[]
   habitLogs      HabitLog[]
   identities     Identity[]
@@ -40,8 +41,33 @@ model User {
   preferences    UserPreferences?
   sessions       UserSession[]
   auditLogs      AuditLog[]
+  pushSubscriptions PushSubscription[]
 
   @@map("users")
+}
+
+// ============================================
+// OAUTH ACCOUNTS (for Google, etc.)
+// ============================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
 }
 
 // ============================================
@@ -312,7 +338,7 @@ model UserPreferences {
 
   // Appearance
   theme     String   @default("system") // "light" | "dark" | "system"
-  language  String   @default("cs")     // "cs" | "en"
+  language  String   @default("en")     // "en" | "cs"
 
   // Notifications
   emailNotifications       Boolean @default(true)
@@ -373,4 +399,27 @@ model AuditLog {
   @@index([userId, createdAt])
   @@index([action])
   @@map("audit_logs")
+}
+
+// ============================================
+// PUSH NOTIFICATIONS
+// ============================================
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+
+  deviceName String?
+  userAgent  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("push_subscriptions")
 }

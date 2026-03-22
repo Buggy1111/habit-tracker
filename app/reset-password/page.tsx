@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Lock, Loader2, CheckCircle2, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -8,13 +8,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useTranslations } from "next-intl"
 
 type ResetState = "idle" | "loading" | "success" | "error" | "invalid_token"
 
 export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin" /></div>}>
+      <ResetPasswordContent />
+    </Suspense>
+  )
+}
+
+function ResetPasswordContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
+  const t = useTranslations("auth.resetPassword")
 
   const [state, setState] = useState<ResetState>("idle")
   const [password, setPassword] = useState("")
@@ -33,17 +43,17 @@ export default function ResetPasswordPage() {
 
     // Validate passwords
     if (password.length < 6) {
-      setError("Heslo musí mít alespoň 6 znaků")
+      setError(t("passwordMinLength"))
       return
     }
 
     if (password !== confirmPassword) {
-      setError("Hesla se neshodují")
+      setError(t("passwordMismatch"))
       return
     }
 
     if (!token) {
-      setError("Chybí token pro obnovení hesla")
+      setError(t("missingToken"))
       return
     }
 
@@ -66,7 +76,7 @@ export default function ResetPasswordPage() {
         }, 3000)
       } else {
         setState("error")
-        setError(data.error || "Nepodařilo se obnovit heslo")
+        setError(data.error || t("failed"))
       }
     } catch (error) {
       // Error in client component - log only in development
@@ -74,7 +84,7 @@ export default function ResetPasswordPage() {
         console.error("Reset password error:", error)
       }
       setState("error")
-      setError("Chyba při obnovování hesla. Zkus to znovu.")
+      setError(t("sendError"))
     }
   }
 
@@ -84,17 +94,17 @@ export default function ResetPasswordPage() {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <XCircle className="mx-auto mb-4 h-16 w-16 text-red-600" />
-            <CardTitle className="text-2xl">Neplatný odkaz</CardTitle>
-            <CardDescription>Odkaz pro obnovení hesla není platný</CardDescription>
+            <CardTitle className="text-2xl">{t("invalidLinkTitle")}</CardTitle>
+            <CardDescription>{t("invalidLinkSubtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Alert variant="destructive">
               <AlertDescription>
-                Tento odkaz je neplatný nebo vypršel. Platnost odkazu je pouze 1 hodinu.
+                {t("invalidLinkMessage")}
               </AlertDescription>
             </Alert>
             <Button onClick={() => router.push("/forgot-password")} className="mt-4 w-full">
-              Zkusit znovu
+              {t("submit")}
             </Button>
           </CardContent>
         </Card>
@@ -108,17 +118,17 @@ export default function ResetPasswordPage() {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-green-600" />
-            <CardTitle className="text-2xl">Heslo obnoveno</CardTitle>
-            <CardDescription>Tvé heslo bylo úspěšně změněno</CardDescription>
+            <CardTitle className="text-2xl">{t("successTitle")}</CardTitle>
+            <CardDescription>{t("successSubtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Alert className="border-green-200 bg-green-50">
               <AlertDescription className="text-sm text-green-800">
-                Tvé heslo bylo úspěšně obnoveno. Nyní se můžeš přihlásit s novým heslem.
+                {t("successMessage")}
               </AlertDescription>
             </Alert>
             <Button onClick={() => router.push("/login")} className="mt-4 w-full">
-              Přejít na přihlášení
+              {t("goToLogin")}
             </Button>
           </CardContent>
         </Card>
@@ -130,8 +140,8 @@ export default function ResetPasswordPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-amber-50 via-white to-red-50 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Nové heslo</CardTitle>
-          <CardDescription>Zadej své nové heslo</CardDescription>
+          <CardTitle className="text-2xl">{t("title")}</CardTitle>
+          <CardDescription>{t("subtitle")}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -142,26 +152,26 @@ export default function ResetPasswordPage() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="password">Nové heslo</Label>
+              <Label htmlFor="password">{t("newPassword")}</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="Zadej nové heslo"
+                placeholder={t("newPasswordPlaceholder")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={state === "loading"}
                 minLength={6}
               />
-              <p className="text-xs text-gray-500">Minimálně 6 znaků</p>
+              <p className="text-xs text-gray-500">{t("minChars")}</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Potvrď heslo</Label>
+              <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
               <Input
                 id="confirmPassword"
                 type="password"
-                placeholder="Zadej heslo znovu"
+                placeholder={t("confirmPasswordPlaceholder")}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
@@ -174,12 +184,12 @@ export default function ResetPasswordPage() {
               {state === "loading" ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Obnovuji heslo...
+                  {t("submitting")}
                 </>
               ) : (
                 <>
                   <Lock className="mr-2 h-4 w-4" />
-                  Obnovit heslo
+                  {t("submit")}
                 </>
               )}
             </Button>

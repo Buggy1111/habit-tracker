@@ -7,10 +7,12 @@ import { TodaysFocus } from "@/components/dashboard/todays-focus"
 import { useState } from "react"
 import { useHabits } from "@/hooks/use-habits"
 import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
 
 export default function TodayPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const { data: habits, isLoading } = useHabits()
+  const t = useTranslations("habits.today")
 
   // Prepare habits for today
   const habitsForToday = habits?.map((habit) => ({
@@ -33,10 +35,10 @@ export default function TodayPage() {
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
-          Dnešní úkoly
+          {t("title")}
         </h1>
         <p className="text-muted-foreground mt-2">
-          Soustřeď se na to, co je důležité dnes
+          {t("subtitle")}
         </p>
       </motion.div>
 
@@ -56,14 +58,14 @@ export default function TodayPage() {
                 <div className="flex flex-col items-center justify-center p-12">
                   <div className="text-6xl mb-4">📋</div>
                   <p className="text-lg font-medium text-center mb-2">
-                    Žádné návyky pro dnešek
+                    {t("noHabits")}
                   </p>
                   <p className="text-muted-foreground text-center mb-6">
-                    Vytvoř svůj první návyk a začni budovat lepší verzi sebe!
+                    {t("noHabitsDesc")}
                   </p>
                   <Button onClick={() => setIsAddDialogOpen(true)} size="lg">
                     <Plus className="mr-2 h-5 w-5" />
-                    Přidat návyk
+                    {t("manageHabits")}
                   </Button>
                 </div>
               </div>
@@ -78,9 +80,9 @@ export default function TodayPage() {
 
               <div className="relative flex flex-col gap-4 p-6">
                 <div>
-                  <h3 className="font-semibold mb-1">Rychlé akce</h3>
+                  <h3 className="font-semibold mb-1">{t("quickActions")}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Spravuj své návyky
+                    {t("manageHabits")}
                   </p>
                 </div>
                 <Button
@@ -90,7 +92,7 @@ export default function TodayPage() {
                 >
                   <span className="relative z-10 flex items-center justify-center">
                     <Plus className="mr-2 h-5 w-5" />
-                    Nový návyk
+                    {t("manageHabits")}
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/20 to-primary/0 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700" />
                 </Button>
@@ -98,17 +100,17 @@ export default function TodayPage() {
                 {/* Stats */}
                 <div className="mt-4 pt-4 border-t border-white/10 space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Celkem návyků</span>
+                    <span className="text-sm text-muted-foreground">{t("totalHabits")}</span>
                     <span className="text-lg font-bold">{habits?.length || 0}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Splněno dnes</span>
+                    <span className="text-sm text-muted-foreground">{t("completedToday")}</span>
                     <span className="text-lg font-bold text-green-600">
                       {habits?.filter((h) => h.completed).length || 0}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Zbývá</span>
+                    <span className="text-sm text-muted-foreground">{t("remaining")}</span>
                     <span className="text-lg font-bold text-orange-600">
                       {habits?.filter((h) => !h.completed).length || 0}
                     </span>

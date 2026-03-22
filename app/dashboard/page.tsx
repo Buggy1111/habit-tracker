@@ -1,13 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowRight, Target, Calendar, ListTodo, TrendingUp, Sparkles } from "lucide-react"
-import Link from "next/link"
 import { useHabits } from "@/hooks/use-habits"
 import { useIdentities } from "@/hooks/use-identities"
 import { useOnboarding } from "@/hooks/use-onboarding"
 import { useRouter } from "next/navigation"
 import dynamic from "next/dynamic"
+import { useTranslations } from "next-intl"
 import { Skeleton } from "@/components/ui/skeleton"
 import { motion } from "framer-motion"
 import { WelcomeDialog } from "@/components/onboarding/welcome-dialog"
@@ -16,6 +15,7 @@ import { UnverifiedEmailBanner } from "@/components/dashboard/unverified-email-b
 import { calculateWeeklyInsights, getWeekStart, getWeekEnd } from "@/lib/algorithms/weekly-insights"
 import { Habit } from "@prisma/client"
 import { logger } from "@/lib/logger"
+import { DashboardQuickLinks } from "./_components/dashboard-quick-links"
 
 // Lazy load heavy components
 const DashboardHero = dynamic(
@@ -81,6 +81,8 @@ const WeeklyReviewDialog = dynamic(
 
 export default function DashboardPage() {
   const router = useRouter()
+  const t = useTranslations("dashboard")
+  const tCommon = useTranslations("common")
   const { data: habits, isLoading } = useHabits()
   const { data: identities } = useIdentities()
   const { showWelcome, completeOnboarding } = useOnboarding()
@@ -203,49 +205,6 @@ export default function DashboardPage() {
     }
   }, [isLoading, habits])
 
-  const quickLinks = [
-    {
-      title: "Dnešní úkoly",
-      description: "Zaměř se na dnešní návyky",
-      href: "/dashboard/today",
-      icon: Target,
-      gradient: "from-blue-500 to-cyan-500",
-      stats: `${completedToday}/${totalHabits} splněno`,
-    },
-    {
-      title: "Identity Designer",
-      description: "Kým se chceš stát?",
-      href: "/dashboard/identity",
-      icon: Sparkles,
-      gradient: "from-purple-500 to-pink-500",
-      stats: `${totalIdentities} ${totalIdentities === 1 ? "identita" : totalIdentities < 5 ? "identity" : "identit"}`,
-    },
-    {
-      title: "Týdenní přehled",
-      description: "Sleduj svůj pokrok za týden",
-      href: "/dashboard/week",
-      icon: Calendar,
-      gradient: "from-indigo-500 to-purple-500",
-      stats: `${weeklyCompletionRate}% úspěšnost`,
-    },
-    {
-      title: "Všechny návyky",
-      description: "Spravuj všechny své návyky",
-      href: "/dashboard/habits",
-      icon: ListTodo,
-      gradient: "from-green-500 to-emerald-500",
-      stats: `${totalHabits} aktivních`,
-    },
-    {
-      title: "Statistiky",
-      description: "Detailní analýza pokroku",
-      href: "/dashboard/analytics",
-      icon: TrendingUp,
-      gradient: "from-orange-500 to-red-500",
-      stats: `${longestStreak} nejdelší série`,
-    },
-  ]
-
   return (
     <div className="relative mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
       {/* Hero Section - Full width banner with animation */}
@@ -337,15 +296,15 @@ export default function DashboardPage() {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Tvůj Neuroplasticity Progress</h2>
+            <h2 className="text-2xl font-bold">{t("neuroplasticityProgress")}</h2>
             <span className="text-sm text-muted-foreground">
               {habitsWithNeuroplasticity.length}{" "}
               {habitsWithNeuroplasticity.length === 1
-                ? "návyk"
+                ? tCommon("habit1")
                 : habitsWithNeuroplasticity.length < 5
-                  ? "návyky"
-                  : "návyků"}{" "}
-              v progresu
+                  ? tCommon("habit2to4")
+                  : tCommon("habit5plus")}{" "}
+              {tCommon("inProgress")}
             </span>
           </div>
           <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
@@ -401,63 +360,13 @@ export default function DashboardPage() {
       </motion.section>
 
       {/* Quick Links Section */}
-      <motion.section
-        className="mb-8 lg:mb-12"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        <h2 className="text-2xl font-bold mb-6">Rychlý přístup</h2>
-
-        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {quickLinks.map((link, index) => {
-            const Icon = link.icon
-
-            return (
-              <motion.div
-                key={link.href}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-                whileHover={{ y: -4 }}
-              >
-                <Link href={link.href}>
-                  <div className="relative group h-full rounded-2xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden">
-                    {/* Gradient accent line */}
-                    <div
-                      className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${link.gradient}`}
-                    />
-
-                    {/* Shine effect on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-
-                    {/* Content */}
-                    <div className="relative p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div
-                          className={`p-3 rounded-xl bg-gradient-to-br ${link.gradient} bg-opacity-20`}
-                        >
-                          <Icon className="h-6 w-6" />
-                        </div>
-                        <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform duration-300" />
-                      </div>
-
-                      <h3 className="text-lg font-semibold mb-2">{link.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-3">{link.description}</p>
-
-                      <div
-                        className={`text-sm font-medium bg-gradient-to-r ${link.gradient} bg-clip-text text-transparent`}
-                      >
-                        {link.stats}
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            )
-          })}
-        </div>
-      </motion.section>
+      <DashboardQuickLinks
+        completedToday={completedToday}
+        totalHabits={totalHabits}
+        totalIdentities={totalIdentities}
+        weeklyCompletionRate={weeklyCompletionRate}
+        longestStreak={longestStreak}
+      />
 
       {/* Welcome Dialog for first-time users */}
       <WelcomeDialog

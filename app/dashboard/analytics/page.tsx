@@ -5,9 +5,12 @@ import { WeekOverviewChart } from "@/components/dashboard/week-overview-chart"
 import { useHabits } from "@/hooks/use-habits"
 import { motion } from "framer-motion"
 import { TrendingUp, Calendar, Award, BarChart3 } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 export default function AnalyticsPage() {
   const { data: habits, isLoading } = useHabits()
+  const t = useTranslations("analytics")
+  const tc = useTranslations("common")
 
   // Calculate stats
   const totalHabits = habits?.length || 0
@@ -76,9 +79,9 @@ export default function AnalyticsPage() {
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
-          Statistiky & Analytics
+          {t("title")}
         </h1>
-        <p className="text-muted-foreground mt-2">Detailní přehled tvého pokroku a výkonnosti</p>
+        <p className="text-muted-foreground mt-2">{t("subtitle")}</p>
       </motion.div>
 
       {/* Main Stats Overview */}
@@ -115,9 +118,9 @@ export default function AnalyticsPage() {
                   <BarChart3 className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">Týdenní přehled</h3>
+                  <h3 className="font-semibold text-lg">{t("weeklyOverview")}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Úspěšnost dokončení za posledních 7 dní
+                    {t("completionLast7")}
                   </p>
                 </div>
               </div>
@@ -145,15 +148,15 @@ export default function AnalyticsPage() {
                 <Calendar className="h-6 w-6 text-orange-600 dark:text-orange-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Měsíční výkon</h3>
-                <p className="text-sm text-muted-foreground">Posledních 30 dní</p>
+                <h3 className="font-semibold text-lg">{t("monthlyPerformance")}</h3>
+                <p className="text-sm text-muted-foreground">{t("last30Days")}</p>
               </div>
             </div>
 
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-muted-foreground">Úspěšnost</span>
+                  <span className="text-sm text-muted-foreground">{t("successRate")}</span>
                   <span className="text-sm font-medium">{monthlyCompletionRate}%</span>
                 </div>
                 <div className="h-2 bg-muted/30 rounded-full overflow-hidden">
@@ -168,7 +171,7 @@ export default function AnalyticsPage() {
                 <div className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
                   {totalCompletions}
                 </div>
-                <div className="text-sm text-muted-foreground">Celkem dokončeno</div>
+                <div className="text-sm text-muted-foreground">{t("totalCompleted")}</div>
               </div>
             </div>
           </div>
@@ -184,8 +187,8 @@ export default function AnalyticsPage() {
                 <Award className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Nejlepší návyk</h3>
-                <p className="text-sm text-muted-foreground">Největší série</p>
+                <h3 className="font-semibold text-lg">{t("bestHabit")}</h3>
+                <p className="text-sm text-muted-foreground">{t("longestStreak")}</p>
               </div>
             </div>
 
@@ -209,8 +212,8 @@ export default function AnalyticsPage() {
                         <div className="flex-1 min-w-0">
                           <div className="font-medium truncate">{bestHabit.name}</div>
                           <div className="text-sm text-muted-foreground">
-                            Aktuální série: {bestHabit.streak}{" "}
-                            {bestHabit.streak === 1 ? "den" : bestHabit.streak < 5 ? "dny" : "dní"}
+                            {t("currentStreak")} {bestHabit.streak}{" "}
+                            {bestHabit.streak === 1 ? tc("day") : bestHabit.streak < 5 ? tc("days2to4") : tc("days5plus")}
                           </div>
                         </div>
                       </div>
@@ -224,7 +227,7 @@ export default function AnalyticsPage() {
                           )}
                           %
                         </div>
-                        <div className="text-sm text-muted-foreground">Celková úspěšnost</div>
+                        <div className="text-sm text-muted-foreground">{t("overallSuccess")}</div>
                       </div>
                     </>
                   )
@@ -232,7 +235,7 @@ export default function AnalyticsPage() {
               </div>
             ) : (
               <div className="text-sm text-muted-foreground text-center py-4">
-                Zatím žádné návyky
+                {t("noHabitsYet")}
               </div>
             )}
           </div>
@@ -255,8 +258,8 @@ export default function AnalyticsPage() {
                 <TrendingUp className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Insights & Doporučení</h3>
-                <p className="text-sm text-muted-foreground">Personalizované tipy pro zlepšení</p>
+                <h3 className="font-semibold text-lg">{t("insightsTitle")}</h3>
+                <p className="text-sm text-muted-foreground">{t("personalizedTips")}</p>
               </div>
             </div>
 
@@ -266,10 +269,10 @@ export default function AnalyticsPage() {
                   <div className="text-2xl">🎉</div>
                   <div className="flex-1">
                     <div className="font-medium text-green-700 dark:text-green-300">
-                      Skvělá práce!
+                      {t("greatWork")}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      Tvoje úspěšnost je nad 80%. Pokračuj v tomhle trendu!
+                      {t("above80")}
                     </div>
                   </div>
                 </div>
@@ -278,10 +281,10 @@ export default function AnalyticsPage() {
                   <div className="text-2xl">💪</div>
                   <div className="flex-1">
                     <div className="font-medium text-orange-700 dark:text-orange-300">
-                      Dobrá práce!
+                      {t("goodWork")}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      Máš slušnou úspěšnost. Zkus se zaměřit na konzistenci.
+                      {t("decentSuccess")}
                     </div>
                   </div>
                 </div>
@@ -289,9 +292,9 @@ export default function AnalyticsPage() {
                 <div className="flex gap-3 p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
                   <div className="text-2xl">🌱</div>
                   <div className="flex-1">
-                    <div className="font-medium text-blue-700 dark:text-blue-300">Začínáš</div>
+                    <div className="font-medium text-blue-700 dark:text-blue-300">{t("starting")}</div>
                     <div className="text-sm text-muted-foreground">
-                      Každý začátek je těžký. Soustřeď se na malé kroky každý den.
+                      {t("everyStartHard")}
                     </div>
                   </div>
                 </div>
@@ -302,12 +305,10 @@ export default function AnalyticsPage() {
                   <div className="text-2xl">🔥</div>
                   <div className="flex-1">
                     <div className="font-medium text-purple-700 dark:text-purple-300">
-                      Máš aktivní sérii!
+                      {t("activeSeries")}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {currentStreak}{" "}
-                      {currentStreak === 1 ? "den" : currentStreak < 5 ? "dny" : "dní"} v řadě.
-                      Neuhasni plamen!
+                      {t("daysInRow", { count: currentStreak })}
                     </div>
                   </div>
                 </div>

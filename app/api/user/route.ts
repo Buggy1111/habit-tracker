@@ -28,7 +28,10 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    // Verify password
+    // Verify password (OAuth users don't have a password)
+    if (!user.password) {
+      return NextResponse.json({ error: "Use your OAuth provider to manage this account" }, { status: 400 })
+    }
     const passwordMatch = await bcrypt.compare(validatedData.password, user.password)
 
     if (!passwordMatch) {

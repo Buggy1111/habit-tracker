@@ -9,7 +9,8 @@ import { useHabits } from "@/hooks/use-habits"
 import dynamic from "next/dynamic"
 import { motion } from "framer-motion"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { HELP_CONTENT } from "@/lib/help-content"
+import { useHelpContent } from "@/hooks/use-help-content"
+import { useTranslations } from "next-intl"
 
 // Lazy load heavy components
 const AddHabitDialog = dynamic(
@@ -19,8 +20,10 @@ const AddHabitDialog = dynamic(
 )
 
 export default function HabitsPage() {
+  const HELP_CONTENT = useHelpContent()
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const { data: habits, isLoading } = useHabits()
+  const t = useTranslations("habits")
 
   const totalHabits = habits?.length || 0
   const completedToday = habits?.filter((h) => h.completed).length || 0
@@ -37,10 +40,10 @@ export default function HabitsPage() {
       >
         <div>
           <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
-            Všechny návyky
+            {t("title")}
           </h1>
           <p className="text-muted-foreground mt-2">
-            Kompletní seznam tvých návyků ({totalHabits})
+            {t("subtitle", { count: totalHabits })}
           </p>
         </div>
         <TooltipProvider>
@@ -53,7 +56,7 @@ export default function HabitsPage() {
               >
                 <span className="relative z-10 flex items-center">
                   <Plus className="mr-2 h-5 w-5" />
-                  Nový návyk
+                  {t("newHabit")}
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/20 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
               </Button>
@@ -74,7 +77,7 @@ export default function HabitsPage() {
         transition={{ duration: 0.5, delay: 0.1 }}
       >
         <div className="rounded-xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-xl p-6">
-          <div className="text-sm text-muted-foreground mb-1">Celkem návyků</div>
+          <div className="text-sm text-muted-foreground mb-1">{t("totalHabits")}</div>
           {isLoading ? (
             <Skeleton className="h-9 w-16 mt-1" />
           ) : (
@@ -85,7 +88,7 @@ export default function HabitsPage() {
         </div>
 
         <div className="rounded-xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-xl p-6">
-          <div className="text-sm text-muted-foreground mb-1">Aktivní návyky</div>
+          <div className="text-sm text-muted-foreground mb-1">{t("activeHabits")}</div>
           {isLoading ? (
             <Skeleton className="h-9 w-16 mt-1" />
           ) : (
@@ -96,7 +99,7 @@ export default function HabitsPage() {
         </div>
 
         <div className="rounded-xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-xl p-6">
-          <div className="text-sm text-muted-foreground mb-1">Splněno dnes</div>
+          <div className="text-sm text-muted-foreground mb-1">{t("completedToday")}</div>
           {isLoading ? (
             <Skeleton className="h-9 w-16 mt-1" />
           ) : (

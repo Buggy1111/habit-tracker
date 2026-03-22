@@ -15,6 +15,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
 import { LayoutGrid, Calendar } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 type CalendarView = "compact" | "detailed"
 
@@ -22,6 +23,7 @@ export default function WeekPage() {
   const { data: habits, isLoading } = useHabits()
   const [calendarView, setCalendarView] = useState<CalendarView>("compact")
   const [selectedHabitId, setSelectedHabitId] = useState<string | null>(null)
+  const t = useTranslations("week")
 
   // Auto-select first habit when habits load
   useEffect(() => {
@@ -73,9 +75,9 @@ export default function WeekPage() {
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
-          Týdenní přehled
+          {t("title")}
         </h1>
-        <p className="text-muted-foreground mt-2">Tvůj progress za posledních 7 dní</p>
+        <p className="text-muted-foreground mt-2">{t("subtitle")}</p>
       </motion.div>
 
       {/* Stats Cards */}
@@ -86,21 +88,21 @@ export default function WeekPage() {
         transition={{ duration: 0.5, delay: 0.1 }}
       >
         <div className="rounded-xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-xl p-6">
-          <div className="text-sm text-muted-foreground mb-1">Úspěšnost týdne</div>
+          <div className="text-sm text-muted-foreground mb-1">{t("weeklyRate")}</div>
           <div className="text-3xl font-bold bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
             {weeklyRate}%
           </div>
         </div>
 
         <div className="rounded-xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-xl p-6">
-          <div className="text-sm text-muted-foreground mb-1">Aktivní návyky</div>
+          <div className="text-sm text-muted-foreground mb-1">{t("activeHabits")}</div>
           <div className="text-3xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
             {habits?.length || 0}
           </div>
         </div>
 
         <div className="rounded-xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-xl p-6">
-          <div className="text-sm text-muted-foreground mb-1">Celkem completions</div>
+          <div className="text-sm text-muted-foreground mb-1">{t("totalCompletions")}</div>
           <div className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
             {habits?.reduce(
               (sum, habit) =>
@@ -127,11 +129,11 @@ export default function WeekPage() {
             {/* View Switcher */}
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold flex items-center gap-2">📅 Týdenní kalendář</h2>
+                <h2 className="text-2xl font-bold flex items-center gap-2">{t("weeklyCalendar")}</h2>
                 <p className="text-muted-foreground mt-1">
                   {calendarView === "compact"
-                    ? "Všechny návyky - kompaktní zobrazení posledních 7 dní"
-                    : "Detailní kalendář s možností editace záznamů a poznámek"}
+                    ? t("compactDesc")
+                    : t("detailedDesc")}
                 </p>
               </div>
 
@@ -142,11 +144,11 @@ export default function WeekPage() {
                 <TabsList>
                   <TabsTrigger value="compact" className="gap-2">
                     <LayoutGrid className="h-4 w-4" />
-                    Kompaktní
+                    {t("compact")}
                   </TabsTrigger>
                   <TabsTrigger value="detailed" className="gap-2">
                     <Calendar className="h-4 w-4" />
-                    Detailní
+                    {t("detailed")}
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -169,14 +171,14 @@ export default function WeekPage() {
                         id="habit-selector-label"
                         className="text-sm font-medium text-muted-foreground"
                       >
-                        Vybraný návyk:
+                        {t("selectedHabit")}
                       </Label>
                       <Select
                         value={selectedHabitId || undefined}
                         onValueChange={setSelectedHabitId}
                       >
                         <SelectTrigger className="w-[280px]" aria-labelledby="habit-selector-label">
-                          <SelectValue placeholder="Vyber návyk" />
+                          <SelectValue placeholder={t("selectHabit")} />
                         </SelectTrigger>
                         <SelectContent>
                           {habits?.map((habit) => (
@@ -212,9 +214,9 @@ export default function WeekPage() {
           <div className="rounded-2xl border border-white/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl shadow-2xl">
             <div className="flex flex-col items-center justify-center p-12">
               <div className="text-6xl mb-4">📅</div>
-              <p className="text-lg font-medium text-center mb-2">Žádná data k zobrazení</p>
+              <p className="text-lg font-medium text-center mb-2">{t("noData")}</p>
               <p className="text-muted-foreground text-center">
-                Začni sledovat návyky a uvidíš zde týdenní přehled
+                {t("noDataDesc")}
               </p>
             </div>
           </div>

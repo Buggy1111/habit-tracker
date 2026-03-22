@@ -10,6 +10,7 @@ import { useHabits } from "@/hooks/use-habits"
 import Link from "next/link"
 import dynamic from "next/dynamic"
 import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
 
 // Lazy load wizard dialog
 const WoopWizard = dynamic(
@@ -21,6 +22,8 @@ export default function WoopPage() {
   const { data: habits, isLoading: habitsLoading } = useHabits()
   const [selectedHabitId] = useState<string | null>(null)
   const [woopWizardOpen, setWoopWizardOpen] = useState(false)
+  const t = useTranslations("woop")
+  const tp = useTranslations("woop.page")
 
   const selectedHabit = habits?.find((h) => h.id === selectedHabitId)
 
@@ -40,10 +43,10 @@ export default function WoopPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <Sparkles className="w-8 h-8 text-purple-500" />
-            <h1 className="text-3xl sm:text-4xl font-bold">WOOP Metoda</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold">{t("title")}</h1>
           </div>
           <p className="text-muted-foreground">
-            Wish · Outcome · Obstacle · Plan - Gabriele Oettingen
+            {t("subtitle")}
           </p>
         </div>
       </motion.div>
@@ -60,23 +63,22 @@ export default function WoopPage() {
               <Sparkles className="w-6 h-6 text-purple-600 dark:text-purple-400" />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-lg mb-2">Co je WOOP?</h3>
+              <h3 className="font-semibold text-lg mb-2">{tp("infoTitle")}</h3>
               <p className="text-sm text-muted-foreground mb-3">
-                WOOP je vědecky podložená metoda pro dosažení cílů vyvinutá psycholožkou Gabriele
-                Oettingen. Kombinuje pozitivní myšlení s realistickým plánováním překážek.
+                {tp("infoDesc")}
               </p>
               <div className="flex flex-wrap gap-2">
                 <Badge
                   variant="secondary"
                   className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
                 >
-                  2x vyšší úspěšnost
+                  {tp("successBadge")}
                 </Badge>
                 <Badge
                   variant="secondary"
                   className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
                 >
-                  Vědecky ověřeno
+                  {tp("verifiedBadge")}
                 </Badge>
               </div>
             </div>
@@ -91,7 +93,7 @@ export default function WoopPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <h2 className="text-2xl font-bold">Vytvořte WOOP plán pro svůj návyk</h2>
+        <h2 className="text-2xl font-bold">{tp("createForHabit")}</h2>
 
         {habitsLoading ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -121,11 +123,11 @@ export default function WoopPage() {
                     </div>
                     <h3 className="font-semibold text-lg mb-2">{habit.name}</h3>
                     <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                      {habit.description || "Klikněte pro vytvoření WOOP plánu"}
+                      {habit.description || tp("clickToCreate")}
                     </p>
                     <Button variant="outline" size="sm" className="w-full">
                       <Plus className="w-4 h-4 mr-2" />
-                      Vytvořit WOOP
+                      {tp("createWoop")}
                     </Button>
                   </Card>
                 </Link>
@@ -135,15 +137,14 @@ export default function WoopPage() {
         ) : (
           <Card className="p-12 text-center border-2 border-dashed">
             <Target className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Nejdříve vytvořte návyk</h3>
+            <h3 className="text-xl font-semibold mb-2">{tp("createHabitFirst")}</h3>
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              WOOP plány se vytvářejí pro konkrétní návyky. Začněte tím, že si vytvoříte první
-              návyk.
+              {tp("createHabitFirstDesc")}
             </p>
             <Link href="/dashboard/habits">
               <Button>
                 <Plus className="w-4 h-4 mr-2" />
-                Vytvořit první návyk
+                {tp("createFirstHabit")}
               </Button>
             </Link>
           </Card>

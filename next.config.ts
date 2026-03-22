@@ -1,5 +1,8 @@
 import type { NextConfig } from "next"
 import { withSentryConfig } from "@sentry/nextjs"
+import createNextIntlPlugin from "next-intl/plugin"
+
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts")
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const withPWA = require("next-pwa")({
@@ -9,6 +12,7 @@ const withPWA = require("next-pwa")({
   disable: false, // Povolit PWA i v dev módu pro testování
   buildExcludes: [/middleware-manifest\.json$/],
   publicExcludes: ["!robots.txt", "!sitemap.xml"],
+  importScripts: ["/push-sw.js"],
   runtimeCaching: [
     {
       urlPattern: /^https:\/\/fonts\.(?:gstatic)\.com\/.*/i,
@@ -188,7 +192,8 @@ const nextConfig: NextConfig = {
 }
 
 // Wrap config with Sentry (must be outermost wrapper)
-export default withSentryConfig(withPWA(nextConfig), {
+// Chain: nextConfig -> withNextIntl -> withPWA -> withSentryConfig
+export default withSentryConfig(withPWA(withNextIntl(nextConfig)), {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
 

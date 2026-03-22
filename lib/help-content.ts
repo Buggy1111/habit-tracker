@@ -1,6 +1,7 @@
 /**
- * Centralizovaný obsah nápovědy pro aplikaci
- * Všechny tooltipy, help texty a vzdělávací obsah na jednom místě
+ * Centralized help content for the app
+ * All tooltips, help texts, and educational content in one place
+ * Supports both English and Czech locales
  */
 
 export interface HelpContent {
@@ -373,5 +374,345 @@ Návyky by měly časem být snazší!`,
 Vynechali jste den? V pořádku! Vraťte se zítra.`,
   },
 } as const
+
+/** Czech version (kept for backwards compatibility) */
+export const HELP_CONTENT_CS = HELP_CONTENT
+
+/** English version of help content */
+export const HELP_CONTENT_EN: Record<keyof typeof HELP_CONTENT, HelpContent> = {
+  habitStrength: {
+    title: "Habit Strength",
+    short: "Calculated from the last 30 days with emphasis on recent days. One missed day won't destroy your progress!",
+    full: `Unlike simple streak counting, Habit Strength uses an algorithm that weighs recent completions more.
+
+This means:
+• One missed day won't destroy your progress
+• Recent consistency is most important
+• More forgiving and realistic
+
+Score is 0-100 and reflects how automatic the habit has become.`,
+    citations: ["Loop Habit Tracker algorithm", "Lally et al. (2010)"],
+    learnMoreLink: "/help/habit-strength",
+  },
+  implementationIntentions: {
+    title: "IF-THEN Implementation Intentions",
+    short: "Specific 'If-Then' plans increase success by 65%!",
+    full: `When you specify WHEN and WHERE you'll do a habit, your brain creates a mental connection between the situation and action.
+
+Example:
+Bad: "I'll drink more water"
+Good: "When I wake up, I'll drink a glass of water in the kitchen"
+
+Research shows this simple method increases success by 65%!`,
+    citations: ["Gollwitzer (1999)", "Effect size: d=0.65"],
+    learnMoreLink: "/help/implementation-intentions",
+  },
+  implementationIntentionWhen: {
+    title: "When (Trigger)",
+    short: "Specify the exact situation or time that triggers your habit.",
+    full: `Be as specific as possible about WHEN you'll do this habit.
+
+Good examples:
+• "When I wake up at 7:00"
+• "After I finish breakfast"
+• "When I sit down at my desk"
+• "After my evening shower"
+
+The more specific, the better!`,
+  },
+  implementationIntentionAction: {
+    title: "What I'll Do (Action)",
+    short: "Describe the exact action you'll take. Be specific!",
+    full: `Determine the exact action you'll perform.
+
+Good examples:
+• "I'll drink one glass of water"
+• "I'll do 10 push-ups"
+• "I'll write in my journal for 5 minutes"
+• "I'll meditate for 2 minutes"
+
+Avoid vague actions like "exercise" or "be healthy".`,
+  },
+  implementationIntentionContext: {
+    title: "Where (Context/Place)",
+    short: "Where will you do it? Context helps the brain create stronger associations.",
+    full: `Specify WHERE you'll perform the action.
+
+Good examples:
+• "In the kitchen"
+• "At my desk"
+• "In the living room"
+• "At the gym"
+
+A consistent place helps build the habit faster!`,
+  },
+  neuroplasticity: {
+    title: "66-Day Neuroplasticity Timeline",
+    short: "Your brain needs an average of ~66 days to automate a habit.",
+    full: `Research by Lally et al. (2010) found it takes an average of 66 days for a habit to become automatic (range: 18-254 days).
+
+During this time your brain:
+• Builds new neural pathways (Phase 1: Days 1-21)
+• Strengthens connections (Phase 2: Days 22-42)
+• Approaches automation (Phase 3: Days 43-66)
+• Integrates the habit (Phase 4: Day 67+)
+
+Be patient with yourself - it's a biological process!`,
+    citations: ["Lally et al. (2010)", "European Journal of Social Psychology"],
+    learnMoreLink: "/help/neuroplasticity",
+  },
+  neuroplasticityPhase1: {
+    title: "Phase 1: Building Neural Pathways",
+    short: "Days 1-21: The hardest phase. Your brain is creating new connections.",
+    full: `This is the most demanding phase! Your brain is literally building new neural pathways.
+
+What to expect:
+• High effort needed
+• Easy to forget
+• Feels unnatural
+• Requires conscious attention
+
+This is NORMAL. Keep going!`,
+  },
+  neuroplasticityPhase2: {
+    title: "Phase 2: Strengthening Connections",
+    short: "Days 22-42: It should be getting easier. Synapses are strengthening.",
+    full: `Congratulations on reaching Phase 2! Neural connections are strengthening.
+
+What to expect:
+• Starting to get easier
+• Still requires effort
+• Occasional lapses are normal
+• Building momentum
+
+The worst is behind you!`,
+  },
+  neuroplasticityPhase3: {
+    title: "Phase 3: Approaching Automation",
+    short: "Days 43-66: Almost there! The habit is becoming automatic.",
+    full: `You're in the final phase! The habit is becoming part of your routine.
+
+What to expect:
+• Feels much more natural
+• Requires less conscious effort
+• Forgetting is rare
+• Almost automatic behavior
+
+Stay consistent - you're almost there!`,
+  },
+  neuroplasticityPhase4: {
+    title: "Phase 4: Habit Integrated",
+    short: "Day 67+: Congratulations! This is now part of who you are.",
+    full: `You did it! The habit is now automatic and integrated into your identity.
+
+What this means:
+• Minimal effort needed
+• Feels natural and automatic
+• Part of your routine
+• Hardened neural pathways
+
+Maintain it, and it will stay with you!`,
+  },
+  extinctionBurst: {
+    title: "Extinction Burst Detection",
+    short: "Your streak dropped after being strong? THIS IS NORMAL! 24-36% of people experience it.",
+    full: `Extinction burst happens when your brain "tests" whether the new habit is truly necessary.
+
+What's happening:
+• You had a strong streak (70%+ success)
+• Suddenly it dropped (below 50%)
+• Feels like failure - but IT ISN'T!
+
+Why it happens:
+Your brain is efficient. After ~3-4 weeks it checks: "Do we really need this new behavior?" This temporary resistance is a sign you're making real change!
+
+What to do:
+• Don't give up! This is expected
+• Use WOOP to plan for obstacles
+• Practice self-compassion
+• Remember: 24-36% experience this
+
+Push through and you'll be stronger!`,
+    citations: ["Behavioral Psychology", "Habit Formation Research"],
+    learnMoreLink: "/help/extinction-burst",
+  },
+  woop: {
+    title: "WOOP Method",
+    short: "A 4-step mental strategy that doubles your success rate!",
+    full: `WOOP is a scientifically backed goal-setting technique by Gabriele Oettingen.
+
+4 steps:
+1. **Wish**: What do you want to achieve?
+2. **Outcome**: How will you feel when you succeed?
+3. **Obstacle**: What might stand in your way?
+4. **Plan**: How will you overcome obstacles?
+
+Research shows WOOP participants are 2x more likely to achieve their goals!
+
+Unlike positive thinking alone, WOOP prepares you for real obstacles.`,
+    citations: ["Gabriele Oettingen", "2x increased activity in studies"],
+    learnMoreLink: "/help/woop",
+  },
+  woopWish: {
+    title: "Wish",
+    short: "What do you want to achieve with this habit?",
+    full: `Express your wish clearly and specifically.
+
+Example:
+"I want to become a regular reader and expand my knowledge."
+
+Be ambitious but realistic!`,
+  },
+  woopOutcome: {
+    title: "Outcome",
+    short: "How will you feel when you achieve it? Visualize success.",
+    full: `Imagine the best outcome and how you'll feel.
+
+Example:
+"I'll feel educated, calm, and proud of learning new things every day."
+
+Make it vivid and emotional!`,
+  },
+  woopObstacle: {
+    title: "Obstacle",
+    short: "What might prevent your success? Be honest.",
+    full: `Identify the main obstacle that might stand in your way.
+
+Example:
+"I might be too tired in the evening or distracted by my phone."
+
+Being realistic helps you prepare!`,
+  },
+  woopPlan: {
+    title: "Plan",
+    short: "What will you do when you encounter this obstacle?",
+    full: `Create an IF-THEN plan for your obstacle.
+
+Example:
+"When I feel too tired, I'll read just one page before bed instead of scrolling social media."
+
+This mental contrasting prepares you for challenges!`,
+  },
+  identity: {
+    title: "Identity-Based Habits",
+    short: "The best way to change habits is to change who you are.",
+    full: `James Clear: "The highest form of intrinsic motivation is when a habit becomes part of your identity."
+
+Instead of:
+Bad: "I want to run" (goal-based)
+Good: "I'm a runner" (identity-based)
+
+When habits align with your identity:
+• Higher motivation
+• Better consistency
+• Longer-term success
+• Self-reinforcing behavior
+
+Who do you want to be?`,
+    citations: ["James Clear - Atomic Habits"],
+    learnMoreLink: "/help/identity",
+  },
+  identityMilestones: {
+    title: "Identity Milestones",
+    short: "Track key achievements that reinforce your new identity.",
+    full: `Milestones help solidify your identity transformation.
+
+Examples:
+• "I completed my first 5K" (for a runner)
+• "I read 10 books" (for a reader)
+• "30 days of meditation" (for a mindful person)
+
+Each milestone is proof of your new identity!`,
+  },
+  activeHabits: {
+    title: "Active Habits",
+    short: "Number of habits you're currently tracking.",
+    full: `These are habits you're actively working on building.
+
+Tip: Start with 1-3 habits. Once they become automatic (66+ days), you can add more!`,
+  },
+  currentStreak: {
+    title: "Current Streak",
+    short: "Consecutive days you've completed the habit.",
+    full: `Your current streak shows consistency.
+
+Remember: One missed day is fine! What matters is getting back on track immediately.`,
+  },
+  completionRate: {
+    title: "Completion Rate",
+    short: "Percentage of completed habit check-ins.",
+    full: `Your overall success rate across all habits.
+
+Research shows:
+• 80%+ = Excellent consistency
+• 60-79% = Good, keep going
+• Below 60% = Check your habits - are they too ambitious?`,
+  },
+  habitStacking: {
+    title: "Habit Stacking",
+    short: "Chain habits together: 'After [current habit], then [new habit]'",
+    full: `Habit stacking uses existing habits as triggers for new ones.
+
+Formula: "After [CURRENT HABIT], I will [NEW HABIT]"
+
+Example:
+"After I pour my morning coffee, I'll meditate for 2 minutes"
+
+This creates natural sequences and uses existing routines!`,
+    citations: ["BJ Fogg", "James Clear"],
+    learnMoreLink: "/help/habit-stacking",
+  },
+  difficultyTracking: {
+    title: "Difficulty Tracking",
+    short: "Track how hard the habit feels to understand your progress.",
+    full: `Weekly check-in: "How hard was this habit this week?" (1-5)
+
+Why track difficulty:
+• See if it's getting easier (neuroplasticity!)
+• Identify problems early
+• Celebrate progress
+• Adjust if it's consistently too hard
+
+Habits should get easier over time!`,
+  },
+  createHabit: {
+    title: "Create New Habit",
+    short: "Start with ONE habit. Use IF-THEN format for 65% higher success!",
+    full: `Creating a new habit:
+• Start with a small, specific habit
+• Use an IF-THEN implementation intention
+• Link it with an identity you're building
+• Remember: 66 days to automation!`,
+  },
+  createIdentity: {
+    title: "Create New Identity",
+    short: "Define who you want to be. Identities are stronger than goals!",
+    full: `Creating a new identity:
+• Who do you want to be? (Not what you want to do)
+• Link habits with this identity
+• Every habit is a vote for the new identity
+• "I'm a runner" > "I want to run"`,
+  },
+  completeHabit: {
+    title: "Mark Habit as Complete",
+    short: "Click after completing today's habit. Every completion strengthens neural pathways!",
+    full: `Marking a habit as complete:
+• Click right after completing it
+• Increases your Habit Strength
+• Advances you on the 66-day timeline
+• Every completion = a vote for your identity
+
+Missed a day? That's fine! Come back tomorrow.`,
+  },
+} as const
+
+/**
+ * Get help content for the specified locale
+ * Falls back to English for unknown locales
+ */
+export function getHelpContent(locale: string): Record<HelpContentKey, HelpContent> {
+  if (locale === "cs") return HELP_CONTENT as unknown as Record<HelpContentKey, HelpContent>
+  return HELP_CONTENT_EN as unknown as Record<HelpContentKey, HelpContent>
+}
 
 export type HelpContentKey = keyof typeof HELP_CONTENT
