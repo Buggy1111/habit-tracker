@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { apiLogger } from "@/lib/logger"
+import { z } from "zod"
 
 // GET /api/identities - Fetch all identities for current user
 export async function GET() {
@@ -63,11 +64,21 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { title, description } = body
 
-    if (!title || title.trim() === "") {
-      return NextResponse.json({ error: "Title is required" }, { status: 400 })
+    const createIdentitySchema = z.object({
+      title: z.string().min(1).max(100),
+      description: z.string().max(500).optional(),
+    })
+
+    const validation = createIdentitySchema.safeParse(body)
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: "Invalid input", details: validation.error.issues },
+        { status: 400 }
+      )
     }
+
+    const { title, description } = validation.data
 
     const identity = await prisma.identity.create({
       data: {

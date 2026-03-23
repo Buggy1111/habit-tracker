@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { apiLogger } from "@/lib/logger"
+import { z } from "zod"
 
 // PATCH /api/identities/[identityId] - Update identity
 export async function PATCH(
@@ -26,6 +27,19 @@ export async function PATCH(
     const { identityId } = await params
     const body = await request.json()
 
+    const updateIdentitySchema = z.object({
+      title: z.string().min(1).max(100).optional(),
+      description: z.string().max(500).optional(),
+    })
+
+    const validation = updateIdentitySchema.safeParse(body)
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: "Invalid input", details: validation.error.issues },
+        { status: 400 }
+      )
+    }
+
     // Verify identity belongs to user
     const existingIdentity = await prisma.identity.findUnique({
       where: { id: identityId },
@@ -38,8 +52,8 @@ export async function PATCH(
     const identity = await prisma.identity.update({
       where: { id: identityId },
       data: {
-        title: body.title?.trim() || existingIdentity.title,
-        description: body.description?.trim() || existingIdentity.description,
+        title: validation.data.title?.trim() || existingIdentity.title,
+        description: validation.data.description?.trim() || existingIdentity.description,
       },
       include: {
         habits: true,

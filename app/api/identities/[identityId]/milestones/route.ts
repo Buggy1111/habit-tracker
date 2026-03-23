@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { apiLogger } from "@/lib/logger"
+import { z } from "zod"
 
 // GET /api/identities/[identityId]/milestones - Get all milestones for identity
 export async function GET(
@@ -68,11 +69,20 @@ export async function POST(
 
     const { identityId } = await params
     const body = await request.json()
-    const { title } = body
 
-    if (!title || title.trim() === "") {
-      return NextResponse.json({ error: "Title is required" }, { status: 400 })
+    const createMilestoneSchema = z.object({
+      title: z.string().min(1).max(200),
+    })
+
+    const validation = createMilestoneSchema.safeParse(body)
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: "Invalid input", details: validation.error.issues },
+        { status: 400 }
+      )
     }
+
+    const { title } = validation.data
 
     // Verify identity belongs to user
     const identity = await prisma.identity.findUnique({

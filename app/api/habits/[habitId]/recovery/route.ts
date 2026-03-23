@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { apiLogger } from "@/lib/logger"
 import { verifyHabitOwnership } from "@/lib/auth-helpers"
+import { z } from "zod"
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ habitId: string }> }) {
   try {
@@ -13,7 +14,21 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ hab
       return verification.error
     }
 
-    const { selfCompassionNote } = await req.json()
+    const body = await req.json()
+
+    const recoverySchema = z.object({
+      selfCompassionNote: z.string().max(2000).optional(),
+    })
+
+    const validation = recoverySchema.safeParse(body)
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: "Invalid input", details: validation.error.issues },
+        { status: 400 }
+      )
+    }
+
+    const { selfCompassionNote } = validation.data
 
     // Mark the most recent extinction burst as addressed
     await prisma.extinctionBurstEvent.updateMany({

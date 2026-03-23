@@ -9,7 +9,7 @@ import { checkAuthRateLimit, getClientIp } from "@/lib/rate-limit"
 // Validation schema
 const resetPasswordSchema = z.object({
   token: z.string().min(1, "Token je povinný"),
-  password: z.string().min(6, "Heslo musí mít alespoň 6 znaků"),
+  password: z.string().min(8, "Heslo musí mít alespoň 8 znaků"),
 })
 
 export async function POST(req: Request) {

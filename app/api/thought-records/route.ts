@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { apiLogger } from "@/lib/logger"
+import { z } from "zod"
 
 // GET /api/thought-records - Get all thought records for current user
 export async function GET() {
@@ -60,6 +61,27 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
+
+    const createThoughtRecordSchema = z.object({
+      habitId: z.string().optional(),
+      adversity: z.string().min(1).max(1000),
+      belief: z.string().min(1).max(1000),
+      consequence: z.string().min(1).max(1000),
+      evidence: z.string().max(1000).optional(),
+      alternative: z.string().max(1000).optional(),
+      permanence: z.string().max(500).optional(),
+      pervasiveness: z.string().max(500).optional(),
+      personalization: z.string().max(500).optional(),
+    })
+
+    const validation = createThoughtRecordSchema.safeParse(body)
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: "Invalid input", details: validation.error.issues },
+        { status: 400 }
+      )
+    }
+
     const {
       habitId,
       adversity,
@@ -70,13 +92,15 @@ export async function POST(request: NextRequest) {
       permanence,
       pervasiveness,
       personalization,
-    } = body
+    } = validation.data
 
-    if (!adversity || !belief || !consequence) {
-      return NextResponse.json(
-        { error: "Adversity, belief, and consequence are required" },
-        { status: 400 }
-      )
+    if (habitId) {
+      const habit = await prisma.habit.findFirst({
+        where: { id: habitId, userId: user.id },
+      })
+      if (!habit) {
+        return NextResponse.json({ error: "Habit not found" }, { status: 404 })
+      }
     }
 
     const thoughtRecord = await prisma.thoughtRecord.create({

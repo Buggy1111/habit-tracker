@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { apiLogger } from "@/lib/logger"
+import { z } from "zod"
 
 // PATCH /api/identities/[identityId]/milestones/[milestoneId] - Toggle milestone achievement
 export async function PATCH(
@@ -25,7 +26,20 @@ export async function PATCH(
 
     const { identityId, milestoneId } = await params
     const body = await request.json()
-    const { achieved } = body
+
+    const toggleMilestoneSchema = z.object({
+      achieved: z.boolean(),
+    })
+
+    const validation = toggleMilestoneSchema.safeParse(body)
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: "Invalid input", details: validation.error.issues },
+        { status: 400 }
+      )
+    }
+
+    const { achieved } = validation.data
 
     // Verify identity belongs to user
     const identity = await prisma.identity.findUnique({

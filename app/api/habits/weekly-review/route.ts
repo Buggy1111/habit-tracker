@@ -11,7 +11,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { weekStart, weekEnd, difficultyRatings, reflection, insights } = await req.json()
+    const body = await req.json()
+    const { weekStart, weekEnd, reflection, insights } = body
+    let difficultyRatings = body.difficultyRatings as { habitId: string; rating: number; note?: string }[] | undefined
+
+    // Verify all habit IDs belong to user
+    if (difficultyRatings && difficultyRatings.length > 0) {
+      const habitIds = difficultyRatings.map(r => r.habitId)
+      const userHabits = await prisma.habit.findMany({
+        where: { id: { in: habitIds }, userId: session.user.id },
+        select: { id: true },
+      })
+      const validIds = new Set(userHabits.map(h => h.id))
+      difficultyRatings = difficultyRatings.filter(r => validIds.has(r.habitId))
+    }
 
     // Create weekly review
     const weeklyReview = await prisma.weeklyReview.create({
