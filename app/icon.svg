@@ -1,0 +1,42 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients for brain -->
+    <linearGradient id="orange-brain" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff9966;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ff7744;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff6633;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="blue-brain" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5588dd;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3366bb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2255aa;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- WHITE Background -->
+  <rect width="32" height="32" fill="#ffffff"/>
+
+  <!-- Brain -->
+  <g transform="translate(16, 16)">
+    <!-- Left hemisphere (orange) -->
+    <ellipse cx="-4" cy="0" rx="6" ry="8" fill="url(#orange-brain)"/>
+
+    <!-- Right hemisphere (blue) -->
+    <ellipse cx="4" cy="0" rx="6" ry="8" fill="url(#blue-brain)"/>
+
+    <!-- Brain folds on left -->
+    <path d="M -6 -3 Q -5 -2 -4 -3 M -6 0 Q -5 1 -4 0 M -6 3 Q -5 4 -4 3"
+          stroke="#dd5522" stroke-width="0.5" fill="none" opacity="0.6"/>
+
+    <!-- Brain folds on right -->
+    <path d="M 4 -3 Q 5 -2 6 -3 M 4 0 Q 5 1 6 0 M 4 3 Q 5 4 6 3"
+          stroke="#1144aa" stroke-width="0.5" fill="none" opacity="0.6"/>
+
+    <!-- Corpus callosum (center) -->
+    <ellipse cx="0" cy="0" rx="0.8" ry="6" fill="#886655" opacity="0.7"/>
+
+    <!-- Brain stem -->
+    <ellipse cx="0" cy="8" rx="2.5" ry="1.5" fill="#775544" opacity="0.8"/>
+  </g>
+</svg>

@@ -1,7 +1,7 @@
 {
-  "name": "Habit Tracker - Vědecký přístup k návykům",
+  "name": "Habit Tracker - Science-Based Habit Building",
   "short_name": "Habit Tracker",
-  "description": "První česká habit tracking aplikace založená na vědě, ne na pseudovědě. IF-THEN implementační záměry, WOOP metoda, neuroplasticita, a další research-backed features.",
+  "description": "Build lasting habits using 6 research-backed methods. Implementation Intentions, WOOP, Neuroplasticity Timeline, Extinction Burst Detection, CBT, and Identity Design.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -9,59 +9,66 @@
   "orientation": "portrait-primary",
   "icons": [
     {
+      "src": "/icon-48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
       "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "categories": ["health", "lifestyle", "productivity"],
-  "lang": "cs",
+  "lang": "en",
   "dir": "ltr",
   "scope": "/",
   "shortcuts": [
     {
       "name": "Dashboard",
       "short_name": "Dashboard",
-      "description": "Otevřít hlavní přehled",
+      "description": "Open main dashboard",
       "url": "/dashboard",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Přidat návyk",
-      "short_name": "Nový návyk",
-      "description": "Vytvořit nový návyk",
+      "name": "Add Habit",
+      "short_name": "New Habit",
+      "description": "Create a new habit",
       "url": "/dashboard/habits",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Dnes",
-      "short_name": "Dnes",
-      "description": "Dnešní návyky",
+      "name": "Today",
+      "short_name": "Today",
+      "description": "Today's habits",
       "url": "/dashboard/today",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Dashboard s přehledem návyků"
-    },
-    {
-      "src": "/screenshot-narrow.png",
-      "sizes": "750x1334",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Mobilní zobrazení návyků"
     }
   ]
 }
