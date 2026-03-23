@@ -32,6 +32,9 @@ jobs:
         run: npm run build
         env:
           SKIP_ENV_VALIDATION: true
+          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
+          NEXTAUTH_SECRET: "ci-build-secret-not-real"
+          NEXTAUTH_URL: "http://localhost:3000"
 
   tests:
     name: Unit Tests
